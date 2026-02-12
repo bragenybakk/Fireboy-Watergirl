@@ -1,0 +1,26 @@
+package inf112.skeleton.model.entity;
+
+import inf112.skeleton.coordinateSystem.Position;
+import inf112.skeleton.model.ElementState;
+import inf112.skeleton.model.player.IPlayer;
+
+public class Pool extends StaticEntity {
+    private ElementState element;
+    public Pool(Position position, double width, double height, ElementState element) {
+        super(position, width, height);
+        this.element = element;
+    }
+
+    public ElementState getElement() {
+        return element;
+    }
+
+    public void setElement(ElementState element) {
+        this.element = element;
+    }
+
+    @Override
+    public void whenContact(IPlayer player) {
+        throw new UnsupportedOperationException("Unimplemented method 'whenContact'");
+    }
+}
