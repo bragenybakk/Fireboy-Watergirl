@@ -11,6 +11,8 @@ A2: Noen ideer om prosess
     Bruker Kanban ved gitlabs innebygde Issue boards. Her fordeler vi oppgaver og har oversikt over hva som må gjøres og hvem som jobber med hva.
 
 A3: Brukerhistorier og Minimal Viable Product
+    Som to venner som ønsker å spille sammen så ønsker vi et spill hvor ingen må vente på tur. Vi ønsker at spillet skal være utfordrende nok og kreve sammarbeid fra begge spillere for å løse brettene. Det må kunne pauses og vi ønsker flere ulike brett slik at vi kan spille flere ganger.
+    
     Begynnt å skape et minimal viable product i form av en firkantet boks(spiller) som kan bevege seg frem og tilbake på skjermen. Ønsker også å implemenetere hopp, og senere noen enkle vegger og platformer.
 
 A4: Ha installert nødvendige verktøy
