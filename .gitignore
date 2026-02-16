@@ -22,7 +22,6 @@
 target
 .idea
 *.iml
-.vscode
 
 # Eclipse stuff
 bin

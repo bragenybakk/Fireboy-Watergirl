@@ -1,0 +1,8 @@
+ID : Egenskap
+
+Hva som eksisterer:
+FIREBOY x x (for start posisjon i double)
+WATERGIRL - || -
+WALL x x x x (venstre hjørne, venstre topp, høyre hjørne, høyre topp) (bruk for vegg også)
+BOX x x x x ( - || -)
+
