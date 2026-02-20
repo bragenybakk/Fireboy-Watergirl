@@ -1,6 +1,7 @@
 package inf112.skeleton.model.entity;
 
 import inf112.skeleton.coordinateSystem.Position;
+import inf112.skeleton.model.player.IPlayer;
 
 /**
  * Abstract base class for static entities (buttons, doors, levers, pools,
@@ -47,4 +48,37 @@ public abstract class StaticEntity implements IStaticEntity {
     public double getHeight() {
         return height;
     }
+
+    @Override
+    public void whenContact(IPlayer player) {
+        CollisionSide side = calculateCollisionSide(player);
+        contactAction(player, side);
+    }
+
+    private CollisionSide calculateCollisionSide(IPlayer player) {
+        double pX = player.getPos().x();
+        double pY = player.getPos().y();
+        double pW = player.getWidth();
+        double pH = player.getHeight();
+        double eX = this.getPos().x();
+        double eY = this.getPos().y();
+        double eW = this.getWidth();
+        double eH = this.getHeight();
+        double overlapLeft = (pX + pW) - eX;
+        double overlapRight = (eX + eW) - pX;
+        double overlapTop = (pY + pH) - eY;
+        double overlapBottom = (eY + eH) - pY;
+        double min = Math.min(Math.min(overlapLeft, overlapRight), Math.min(overlapTop, overlapBottom));
+        if (min == overlapLeft)
+            return CollisionSide.LEFT;
+        if (min == overlapRight)
+            return CollisionSide.RIGHT;
+        if (min == overlapTop)
+            return CollisionSide.TOP;
+        if (min == overlapBottom)
+            return CollisionSide.BOTTOM;
+        return CollisionSide.NONE;
+    }
+
+    protected abstract void contactAction(IPlayer player, CollisionSide side);
 }
