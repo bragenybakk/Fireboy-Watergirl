@@ -2,7 +2,10 @@ package inf112.skeleton.view;
 
 import javax.swing.JPanel;
 
+import inf112.skeleton.coordinateSystem.Board;
+import inf112.skeleton.model.ElementState;
 import inf112.skeleton.model.GameState;
+import inf112.skeleton.model.entity.StaticEntity;
 import inf112.skeleton.model.player.Player;
 
 import java.awt.BasicStroke;
@@ -106,35 +109,60 @@ public class GameView extends JPanel {
     }
 
     private void drawGame(Graphics2D g2) {
-        // Bakgrunn
-        g2.setColor(Color.decode("#35654d"));
-        g2.fillRect(0, 0, windowWidth, windowHeight);
-        // Tegn spillere
-        if (viewableGameModel.getBoard() != null && viewableGameModel.getPlayers() != null) {
+        Board board = viewableGameModel.getBoard();
+        if (board == null)
+            return;
+        int viewWidth = getWidth();
+        int viewHeight = getHeight();
+        double screenRelation = Math.min((double) viewWidth / board.boardWidth(),
+                (double) viewHeight / board.boardHeight());
+        int diff_X = (int) (viewWidth - (board.boardWidth() * screenRelation)) / 2;
+        int diff_Y = (int) (viewHeight - (board.boardHeight() * screenRelation)) / 2;
+        double scale = screenRelation;
+        // --- TEGNING ---
+        drawBackground(g2);
+        g2.setColor(Color.decode("#2d5440"));
+        g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
+        for (StaticEntity entity : board.entities()) {
+            drawEntity(g2, entity, scale, diff_X, diff_Y);
+        }
+        if (viewableGameModel.getPlayers() != null) {
             for (Player player : viewableGameModel.getPlayers()) {
-                drawPlayer(g2, player);
+                drawPlayer(g2, player, scale, diff_X, diff_Y);
             }
         }
-        // Debug info
-        g2.setFont(font);
-        g2.setColor(Color.WHITE);
-        g2.drawString("Game is running... (Press ESC for pause, Use LEFT/RIGHT arrows to move)", 20, 30);
     }
 
-    private void drawPlayer(Graphics2D g2, Player player) {
-        // Konverter spill-koordinater til pixel-koordinater
-        int scale = 30; // 30 pixels per spill-enhet
-        int x = (int) (player.getPos().x() * scale);
-        int y = (int) (player.getPos().y() * scale);
-        int width = (int) (player.getWidth() * scale);
-        int height = (int) (player.getHeight() * scale);
-        // Tegn svart firkant for spilleren
+    private void drawBackground(Graphics2D g2) {
+        g2.setColor(Color.decode("#35654d"));
+        g2.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void drawEntity(Graphics2D g2, StaticEntity entity, double scale, int diff_X, int diff_Y) {
+        int x = (int) (diff_X + (entity.getPos().x() * scale));
+        int y = (int) (diff_Y + (entity.getPos().y() * scale));
+        int w = (int) (entity.getWidth() * scale);
+        int h = (int) (entity.getHeight() * scale);
+        g2.setColor(Color.GRAY);
+        g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
-        g2.fillRect(x, y, width, height);
-        // Tegn border
+        g2.drawRect(x, y, w, h);
+    }
+
+    private void drawPlayer(Graphics2D g2, Player player, double scale, int diff_X, int diff_Y) {
+        int x = (int) (diff_X + (player.getPos().x() * scale));
+        int y = (int) (diff_Y + (player.getPos().y() * scale));
+        int w = (int) (player.getWidth() * scale);
+        int h = (int) (player.getHeight() * scale);
+        if (player.getElementState() == ElementState.FIRE) {
+            g2.setColor(Color.RED);
+        } else {
+            g2.setColor(Color.BLUE);
+        }
+        g2.fillRect(x, y, w, h);
         g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(2));
-        g2.drawRect(x, y, width, height);
+        g2.setStroke(new BasicStroke(1));
+        g2.drawRect(x, y, w, h);
     }
 
     private void drawPauseMenu(Graphics2D g2) {

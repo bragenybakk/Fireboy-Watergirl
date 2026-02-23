@@ -20,4 +20,6 @@ public interface ControllableGameModel {
     void movePlayerLeft();
 
     void stopPlayer();
+
+    void playerJump();
 }

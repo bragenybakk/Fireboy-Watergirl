@@ -103,6 +103,8 @@ public class GameController implements KeyListener {
             case KeyEvent.VK_D:
                 rightPressed = true;
                 break;
+            case KeyEvent.VK_UP:
+                gameModel.playerJump();
         }
     }
 

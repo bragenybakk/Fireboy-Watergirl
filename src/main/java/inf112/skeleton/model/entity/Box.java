@@ -17,4 +17,10 @@ public class Box extends StaticEntity {
     public void whenContact(IPlayer player) {
         throw new UnsupportedOperationException("Unimplemented method 'whenContact'");
     }
+
+    @Override
+    protected void contactAction(IPlayer player, CollisionSide side) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
+    }
 }

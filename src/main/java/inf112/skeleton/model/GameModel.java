@@ -20,6 +20,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "Start Game", "Level Select", "Settings", "Exit" };
+    private boolean testModeSinglePlayer = true;
     // Konstruktør for kun meny (uten brett)
     public GameModel() {
         this.board = null;
@@ -62,7 +63,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     @Override
     public Board getBoard() {
-        return board;
+        return this.board;
     }
 
     @Override
@@ -96,7 +97,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private void handleMainMenuSelection() {
         switch (selectedMenuOption) {
             case 0: // Start Game
-                initializeTestLevel();
+                // initializeTestLevel();src/main/java/
+                loadLevel("level2.txt");
                 setGameState(GameState.PLAYING);
                 break;
             case 1: // Level Select
@@ -111,10 +113,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    // =============== LEVEL READER / LOADER ===============
     private void initializeTestLevel() {
         // Laster et testbrett med en spiller
         try {
-            this.board = GameReader.loadLevel("src/main/java/inf112/skeleton/model/data/level1.txt");
+            this.board = GameReader.loadLevel("src/main/java/inf112/skeleton/model/data/level2.txt");
             this.players = board.players();
             this.entities = board.entities();
         } catch (Exception e) {
@@ -128,6 +131,24 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>());
         this.players = board.players();
         this.entities = board.entities();
+    }
+
+    public void loadLevel(String levelFileName) {
+        try {
+            String path = "src/main/java/inf112/skeleton/data/" + levelFileName;
+            this.board = GameReader.loadLevel(path);
+            List<Player> allPlayers = board.players();
+            if (testModeSinglePlayer && !allPlayers.isEmpty()) {
+                this.players = new java.util.ArrayList<>();
+                this.players.add(allPlayers.get(0));
+            } else {
+                this.players = allPlayers;
+            }
+            this.entities = board.entities();
+            setGameState(GameState.PLAYING);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handlePauseMenuSelection() {
@@ -147,6 +168,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    @Override
+    public void playerJump() {
+        if (players != null && !players.isEmpty()) {
+            players.get(0).setVelocityY(-2.5);
+        }
+    }
+
     public void stopPlayer() {
         if (players != null && !players.isEmpty()) {
             players.get(0).setVelocityX(0);
@@ -154,21 +182,22 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     public void clockTick() {
-        if (entities == null || players == null) {
+        if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
         for (IStaticEntity entity : entities)
             if (entity instanceof IMovable movable) {
                 applyGravity(movable);
             }
+        updateAllPositions();
         for (Player player : players) {
+            applyGravity(player);
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
                     entity.whenContact(player);
                 }
             }
         }
-        updateAllPositions();
     }
 
     private void applyGravity(IMovable obj) {
