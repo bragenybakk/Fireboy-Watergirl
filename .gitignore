@@ -29,6 +29,9 @@ bin
 .classpath
 .settings
 
+# VSCode
+.vscode/settings.json
+
 # OS stuff
 .DS_Store
 __MACOSX

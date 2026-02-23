@@ -2,6 +2,5 @@
     "java.format.settings.url": "${workspaceFolder}/java-formatter.xml",
     "java.format.settings.profile": "INF112",
     "editor.formatOnSave": true,
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.jdt.ls.java.home": "C:\\Program Files\\Amazon Corretto\\jdk25.0.2_10"
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
