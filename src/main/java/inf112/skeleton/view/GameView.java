@@ -191,6 +191,31 @@ public class GameView extends JPanel {
         FontMetrics fm = g2.getFontMetrics();
         int x = (windowWidth - fm.stringWidth(text)) / 2;
         g2.drawString(text, x, 120);
+        // Draw available levels
+        java.util.List<String> levels = viewableGameModel.getLevelNames();
+        int selected = viewableGameModel.getSelectedMenuOption();
+        g2.setFont(menuFont);
+        int startY = 220;
+        int spacing = 48;
+        for (int i = 0; i < levels.size(); i++) {
+            String name = levels.get(i);
+            if (i == selected) {
+                g2.setFont(selectedMenuFont);
+                g2.setColor(Color.decode("#f5a623"));
+                String marker = "► ";
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(marker + name);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(marker + name, tx, startY + i * spacing);
+            } else {
+                g2.setFont(menuFont);
+                g2.setColor(Color.WHITE);
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(name);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(name, tx, startY + i * spacing);
+            }
+        }
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String hint = "Press ESC to go back";

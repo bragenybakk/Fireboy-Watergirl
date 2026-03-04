@@ -28,8 +28,8 @@ public class Player implements IPlayer {
         this.velocityX = 0;
         this.velocityY = 0;
         this.position = position;
-        this.height = 1.0;
-        this.width = 1.0;
+        this.height = 4.0;
+        this.width = 4.0;
         this.weight = 1.0;
     }
 

@@ -16,4 +16,6 @@ public interface ViewableGameModel {
     List<Player> getPlayers();
 
     Board getBoard();
+
+    java.util.List<String> getLevelNames();
 }

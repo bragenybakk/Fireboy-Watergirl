@@ -2,6 +2,10 @@ package inf112.skeleton.model;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import inf112.skeleton.controller.ControllableGameModel;
 import inf112.skeleton.coordinateSystem.Board;
@@ -14,13 +18,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
     private List<Player> players;
     private List<StaticEntity> entities;
-    private final double GRAVITY = 0.4;
+    private final double GRAVITY = 0.2;
     private final double FRICTION = 0.9;
     // Meny-relaterte felt
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
-    private String[] mainMenuOptions = { "Start Game", "Level Select", "Settings", "Exit" };
+    private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
     private boolean testModeSinglePlayer = true;
+    // Cached level file names (just filenames, e.g. level1.txt)
+    private List<String> levelNames = null;
     // Konstruktør for kun meny (uten brett)
     public GameModel() {
         this.board = null;
@@ -44,6 +50,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void setGameState(GameState state) {
         this.gameState = state;
         this.selectedMenuOption = 0; // Reset valg når tilstand endres
+        if (state == GameState.LEVEL_SELECT) {
+            // Load available level files when entering level select
+            try {
+                this.levelNames = loadLevelNamesFromDisk();
+            } catch (Exception e) {
+                this.levelNames = new ArrayList<>();
+            }
+        }
     }
 
     @Override
@@ -75,7 +89,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     @Override
     public void menuDown() {
-        if (selectedMenuOption < mainMenuOptions.length - 1) {
+        int maxIndex = mainMenuOptions.length - 1;
+        if (gameState == GameState.LEVEL_SELECT && levelNames != null) {
+            maxIndex = Math.max(0, levelNames.size() - 1);
+        }
+        if (selectedMenuOption < maxIndex) {
             selectedMenuOption++;
         }
     }
@@ -85,6 +103,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         switch (gameState) {
             case MAIN_MENU:
                 handleMainMenuSelection();
+                break;
+            case LEVEL_SELECT:
+                handleLevelSelect();
                 break;
             case PAUSED:
                 handlePauseMenuSelection();
@@ -96,21 +117,26 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handleMainMenuSelection() {
         switch (selectedMenuOption) {
-            case 0: // Start Game
-                // initializeTestLevel();src/main/java/
-                loadLevel("level2.txt");
-                setGameState(GameState.PLAYING);
-                break;
-            case 1: // Level Select
+            case 0: // Level Select
                 setGameState(GameState.LEVEL_SELECT);
                 break;
-            case 2: // Settings
+            case 1: // Settings
                 setGameState(GameState.SETTINGS);
                 break;
-            case 3: // Exit
+            case 2: // Exit
                 System.exit(0);
                 break;
         }
+    }
+
+    private void handleLevelSelect() {
+        if (levelNames == null || levelNames.isEmpty()) {
+            // nothing to load
+            return;
+        }
+        int idx = Math.max(0, Math.min(selectedMenuOption, levelNames.size() - 1));
+        String chosen = levelNames.get(idx);
+        loadLevel(chosen + ".txt");
     }
 
     // =============== LEVEL READER / LOADER ===============
@@ -149,6 +175,30 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public java.util.List<String> getLevelNames() {
+        if (levelNames == null) {
+            try {
+                levelNames = loadLevelNamesFromDisk();
+            } catch (Exception e) {
+                levelNames = new ArrayList<>();
+            }
+        }
+        return levelNames;
+    }
+
+    private List<String> loadLevelNamesFromDisk() throws Exception {
+        Path dir = Paths.get("src/main/java/inf112/skeleton/data");
+        if (!Files.exists(dir) || !Files.isDirectory(dir))
+            return new ArrayList<>();
+        return Files.list(dir)
+                .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().toLowerCase().startsWith("level")
+                        && p.getFileName().toString().toLowerCase().endsWith(".txt"))
+                .map(p -> p.getFileName().toString().replaceAll("\\.txt$", ""))
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private void handlePauseMenuSelection() {
