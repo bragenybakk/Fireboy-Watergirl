@@ -12,4 +12,20 @@ public interface IPlayer extends IMovable {
      * Returns the current element state of the player (FIRE or WATER).
      */
     ElementState getElementState();
+
+    /**
+     * 
+     * @return true if the player is on the ground, false otherwise
+     */
+    boolean isOnGround();
+
+    /**
+     * Sets the player's onGround status to true.
+     */
+    void setOnGroundTRUE();
+
+    /**
+     * Sets the player's onGround status to false.
+     */
+    void setOnGroundFALSE();
 }

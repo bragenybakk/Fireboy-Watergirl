@@ -15,14 +15,17 @@ public class Wall extends StaticEntity {
             case LEFT:
                 player.setPos(new Position(this.getPos().x() - player.getWidth(), pos.y()));
                 player.setVelocityX(0);
+                player.setOnGroundTRUE();
                 break;
             case RIGHT:
                 player.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
                 player.setVelocityX(0);
+                player.setOnGroundTRUE();
                 break;
             case TOP:
                 player.setPos(new Position(pos.x(), this.getPos().y() - player.getHeight()));
                 player.setVelocityY(0);
+                player.setOnGroundTRUE();
                 break;
             case BOTTOM:
                 player.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));

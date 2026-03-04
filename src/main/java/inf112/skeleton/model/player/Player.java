@@ -15,6 +15,7 @@ public class Player implements IPlayer {
     private double height;
     private double width;
     private double weight;
+    private boolean isOnGround;
     /**
      * Constructs a Player with the given position and element state.
      * 
@@ -31,6 +32,7 @@ public class Player implements IPlayer {
         this.height = 4.0;
         this.width = 4.0;
         this.weight = 1.0;
+        this.isOnGround = true;
     }
 
     public ElementState getElementState() {
@@ -75,6 +77,18 @@ public class Player implements IPlayer {
 
     public double getWeight() {
         return weight;
+    }
+
+    public boolean isOnGround() {
+        return isOnGround;
+    }
+
+    public void setOnGroundTRUE() {
+        this.isOnGround = true;
+    }
+
+    public void setOnGroundFALSE() {
+        this.isOnGround = false;
     }
 
     /**

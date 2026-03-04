@@ -25,7 +25,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
     private boolean testModeSinglePlayer = true;
-    // Cached level file names (just filenames, e.g. level1.txt)
+    // Filnavn for nivåer
     private List<String> levelNames = null;
     // Konstruktør for kun meny (uten brett)
     public GameModel() {
@@ -165,7 +165,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             this.board = GameReader.loadLevel(path);
             List<Player> allPlayers = board.players();
             if (testModeSinglePlayer && !allPlayers.isEmpty()) {
-                this.players = new java.util.ArrayList<>();
+                this.players = new ArrayList<>();
                 this.players.add(allPlayers.get(0));
             } else {
                 this.players = allPlayers;
@@ -220,8 +220,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     @Override
     public void playerJump() {
-        if (players != null && !players.isEmpty()) {
+        if (players != null && !players.isEmpty() && players.get(0).isOnGround()) {
             players.get(0).setVelocityY(-2.5);
+            players.get(0).setOnGroundFALSE();
         }
     }
 
