@@ -109,6 +109,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return players;
     }
 
+    public List<StaticEntity> getStaticEntities() {
+        return entities;
+    }
+
     @Override
     public List<IEnemy> getEnemies() {
         return enemies;
@@ -243,7 +247,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private List<String> loadLevelNamesFromDisk() throws Exception {
-        Path dir = Paths.get("src/main/java/inf112/skeleton/data");
+        Path dir = Paths.get("src/main/resources");
         if (!Files.exists(dir) || !Files.isDirectory(dir))
             return new ArrayList<>();
         return Files.list(dir)
@@ -339,9 +343,5 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 player.getPos().x() + player.getWidth() > entity.getPos().x() &&
                 player.getPos().y() < entity.getPos().y() + entity.getHeight() &&
                 player.getPos().y() + player.getHeight() > entity.getPos().y();
-    }
-
-    // ------------ to do functions --------------
-    private void restartLevel() {
     }
 }

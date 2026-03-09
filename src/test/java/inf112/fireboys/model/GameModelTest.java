@@ -21,6 +21,17 @@ public class GameModelTest {
         return null;
     }
 
+    private Board readGameFalling() {
+        GameReader reader = new GameReader();
+        try {
+            Board board = reader.loadLevel("src/test/resources/falling.txt");
+            return board;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Test
     void testLoadLevel() {
         Board board = readGameEasy();
@@ -43,33 +54,66 @@ public class GameModelTest {
     }
 
     @Test
-    void testGameModelInitialization() {
-        GameModel model = new GameModel();
-        assertNotNull(model);
-        // Add more assertions to check the initial state of the model
+    void testPlayerMoveLeft() {
+        Board board = readGameEasy();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        Position initialPosition = model.getPlayers().get(0).getPos();
+        model.movePlayerLeft();
+        model.clockTick();
+        assertTrue(model.getPlayers().get(0).getPos().x() < initialPosition.x(), "Player should have moved left");
     }
 
     @Test
-    void testPlayerMovement() {
-        GameModel model = new GameModel();
-        // Simulate player movement and assert the expected outcomes
+    void testPlayerMoveRight() {
+        Board board = readGameEasy();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        Position initialPosition = model.getPlayers().get(0).getPos();
+        model.movePlayerRight();
+        model.clockTick();
+        assertTrue(model.getPlayers().get(0).getPos().x() > initialPosition.x(), "Player should have moved right");
     }
 
     @Test
-    void testCollisionDetection() {
-        GameModel model = new GameModel();
-        // Simulate collisions and assert the expected outcomes
+    void testFalling() {
+        Board board = readGameFalling();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        Position initialPosition = model.getPlayers().get(0).getPos();
+        for (int i = 0; i < 10; i++) {
+            model.clockTick();
+        }
+        assertTrue(model.getPlayers().get(0).getPos().y() > initialPosition.y(), "Player should have fallen");
+        for (int i = 0; i < 19; i++) {
+            model.clockTick();
+        }
+        double playerBottom = model.getPlayers().get(0).getPos().y() + model.getPlayers().get(0).getHeight();
+        double platformTop = model.getStaticEntities().get(0).getPos().y();
+        assertTrue(Math.abs(playerBottom - platformTop) < 0.1,
+                "Player should land on platform");
     }
 
     @Test
-    void testLevelCompletion() {
-        GameModel model = new GameModel();
-        // Simulate level completion and assert the expected outcomes
+    void testPlayerDoorInteraction() {
+        Board board = readGameEasy();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        model.getPlayers().get(0).setPos(new Position(80, 80));
+        model.clockTick();
+        assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
+                "Game state should be LEVEL_SELECT after completing the level");
     }
 
     @Test
-    void testGameOverCondition() {
-        GameModel model = new GameModel();
-        // Simulate game over condition and assert the expected outcomes
+    void testMeetingEnemy() {
+        Board board = readGameEasy();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        Position initialPosition = model.getPlayers().get(0).getPos();
+        model.getPlayers().get(0).setPos(new Position(0, 0));
+        model.clockTick();
+        assertEquals(initialPosition, model.getPlayers().get(0).getPos(),
+                "Player should have been reset to initial position after meeting enemy");
     }
 }
