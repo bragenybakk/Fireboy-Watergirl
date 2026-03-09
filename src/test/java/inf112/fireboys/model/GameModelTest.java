@@ -1,4 +1,4 @@
-package inf112.skeleton.model;
+package inf112.fireboys.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,15 +6,14 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import inf112.skeleton.coordinateSystem.Board;
-import inf112.skeleton.coordinateSystem.Position;
-import inf112.skeleton.coordinateSystem.Position;
+import inf112.fireboys.coordinateSystem.Board;
+import inf112.fireboys.coordinateSystem.Position;
 
 public class GameModelTest {
     private Board readGameEasy() {
         GameReader reader = new GameReader();
         try {
-            Board board = reader.loadLevel("src/test/java/inf112/skeleton/model/data/easy.txt");
+            Board board = reader.loadLevel("src/test/resources/easy.txt");
             return board;
         } catch (Exception e) {
             e.printStackTrace();
