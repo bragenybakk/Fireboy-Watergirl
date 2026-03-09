@@ -33,6 +33,7 @@ public class GameModelTest {
     void testPlayerJump() {
         Board board = readGameEasy();
         GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
         Position initialPosition = model.getPlayers().get(0).getPos();
         model.playerJump();
         for (int i = 0; i < 10; i++) {
