@@ -76,6 +76,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     enemy.whenContact(player);
                 }
             }
+            for (StaticEntity entity : entities) {
+                if (entity instanceof IMovable movable) {
+                    for (StaticEntity otherEntity : entities) {
+                        // Pass på at boksen ikke kolliderer med seg selv, og sjekk mot vegger
+                        if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                            otherEntity.whenContact(movable);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -313,13 +323,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         }
         if (entities != null) {
-        for (StaticEntity e : entities) {
-            if (e instanceof IMovable movable) {
-                moveObj(movable);
-                keepInsideBounds(movable);
+            for (StaticEntity e : entities) {
+                if (e instanceof IMovable movable) {
+                    moveObj(movable);
+                    keepInsideBounds(movable);
+                }
             }
         }
-    }
     }
 
     private void moveObj(IMovable obj) {
@@ -351,10 +361,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         obj.setPos(new Position(x, y));
     }
 
-    private boolean checkCollision(IStaticEntity entity, Player player) {
-        return player.getPos().x() < entity.getPos().x() + entity.getWidth() &&
-                player.getPos().x() + player.getWidth() > entity.getPos().x() &&
-                player.getPos().y() < entity.getPos().y() + entity.getHeight() &&
-                player.getPos().y() + player.getHeight() > entity.getPos().y();
+    private boolean checkCollision(IStaticEntity entity, IMovable movableEntity) {
+        return movableEntity.getPos().x() < entity.getPos().x() + entity.getWidth() &&
+                movableEntity.getPos().x() + movableEntity.getWidth() > entity.getPos().x() &&
+                movableEntity.getPos().y() < entity.getPos().y() + entity.getHeight() &&
+                movableEntity.getPos().y() + movableEntity.getHeight() > entity.getPos().y();
     }
 }

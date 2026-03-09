@@ -17,12 +17,12 @@ public class Box extends StaticEntity implements IMovable {
     }
 
     @Override
-    public void whenContact(IPlayer player) {
+    public void whenContact(IMovable movableEntity) {
         return;
     }
 
     @Override
-    protected void contactAction(IPlayer player, CollisionSide side) {
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
         return;
     }
 

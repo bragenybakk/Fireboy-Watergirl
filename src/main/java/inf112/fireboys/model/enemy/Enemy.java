@@ -1,6 +1,7 @@
 package inf112.fireboys.model.enemy;
 
 import inf112.fireboys.coordinateSystem.Position;
+import inf112.fireboys.model.entity.IMovable;
 import inf112.fireboys.model.player.IPlayer;
 
 public class Enemy implements IEnemy {
@@ -76,9 +77,12 @@ public class Enemy implements IEnemy {
     }
 
     @Override
-    public void whenContact(IPlayer player) {
-        player.setPos(player.getStartPos());
-        player.setVelocityX(0);
-        player.setVelocityY(0);
+    public void whenContact(IMovable movableEntity) {
+        if (movableEntity instanceof IPlayer) {
+            IPlayer player = (IPlayer) movableEntity;
+            player.setPos(player.getStartPos());
+            player.setVelocityX(0);
+            player.setVelocityY(0);
+        }
     }
 }

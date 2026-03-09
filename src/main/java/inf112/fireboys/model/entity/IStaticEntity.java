@@ -1,7 +1,7 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.player.IPlayer;
+import inf112.fireboys.model.entity.IMovable;
 
 /**
  * Interface for static (non-moving) game objects.
@@ -40,5 +40,5 @@ public interface IStaticEntity {
     /**
      * Decides what happens to the player and the entity when they come in contact.
      */
-    void whenContact(IPlayer player);
+    void whenContact(IMovable movableEntity);
 }

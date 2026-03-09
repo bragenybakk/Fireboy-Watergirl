@@ -19,12 +19,12 @@ public class Button extends StaticEntity {
     }
 
     @Override
-    public void whenContact(IPlayer player) {
+    public void whenContact(IMovable movableEntity) {
         throw new UnsupportedOperationException("Unimplemented method 'whenContact'");
     }
 
     @Override
-    protected void contactAction(IPlayer player, CollisionSide side) {
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
     }

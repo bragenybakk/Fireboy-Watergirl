@@ -2,6 +2,7 @@ package inf112.fireboys.model.player;
 
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
+import inf112.fireboys.model.entity.IMovable;
 
 /**
  * Represents a player in the game.
@@ -108,6 +109,8 @@ public class Player implements IPlayer {
         this.weight = weight;
     }
 
-    public void whenContact(IPlayer player) {
+    @Override
+    public void whenContact(IMovable movableEntity) {
+        return;
     }
 }

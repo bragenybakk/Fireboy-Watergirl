@@ -9,27 +9,36 @@ public class Wall extends StaticEntity {
     }
 
     @Override
-    protected void contactAction(IPlayer player, CollisionSide side) {
-        Position pos = player.getPos();
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
+        Position pos = movableEntity.getPos();
         switch (side) {
             case LEFT:
-                player.setPos(new Position(this.getPos().x() - player.getWidth(), pos.y()));
-                player.setVelocityX(0);
-                player.setOnGroundTRUE();
+                movableEntity.setPos(new Position(this.getPos().x() - movableEntity.getWidth(), pos.y()));
+                movableEntity.setVelocityX(0);
+                if (movableEntity instanceof IPlayer) {
+                    IPlayer player = (IPlayer) movableEntity;
+                    player.setOnGroundTRUE();
+                }
                 break;
             case RIGHT:
-                player.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
-                player.setVelocityX(0);
-                player.setOnGroundTRUE();
+                movableEntity.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
+                movableEntity.setVelocityX(0);
+                if (movableEntity instanceof IPlayer) {
+                    IPlayer player = (IPlayer) movableEntity;
+                    player.setOnGroundTRUE();
+                }
                 break;
             case TOP:
-                player.setPos(new Position(pos.x(), this.getPos().y() - player.getHeight()));
-                player.setVelocityY(0);
-                player.setOnGroundTRUE();
+                movableEntity.setPos(new Position(pos.x(), this.getPos().y() - movableEntity.getHeight()));
+                movableEntity.setVelocityY(0);
+                if (movableEntity instanceof IPlayer) {
+                    IPlayer player = (IPlayer) movableEntity;
+                    player.setOnGroundTRUE();
+                }
                 break;
             case BOTTOM:
-                player.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
-                player.setVelocityY(0);
+                movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
+                movableEntity.setVelocityY(0);
                 break;
         }
     }
