@@ -50,16 +50,16 @@ public abstract class StaticEntity implements IStaticEntity {
     }
 
     @Override
-    public void whenContact(IPlayer player) {
-        CollisionSide side = calculateCollisionSide(player);
-        contactAction(player, side);
+    public void whenContact(IMovable movableEntity) {
+        CollisionSide side = calculateCollisionSide(movableEntity);
+        contactAction(movableEntity, side);
     }
 
-    private CollisionSide calculateCollisionSide(IPlayer player) {
-        double pX = player.getPos().x();
-        double pY = player.getPos().y();
-        double pW = player.getWidth();
-        double pH = player.getHeight();
+    private CollisionSide calculateCollisionSide(IMovable movableEntity) {
+        double pX = movableEntity.getPos().x();
+        double pY = movableEntity.getPos().y();
+        double pW = movableEntity.getWidth();
+        double pH = movableEntity.getHeight();
         double eX = this.getPos().x();
         double eY = this.getPos().y();
         double eW = this.getWidth();
@@ -80,5 +80,5 @@ public abstract class StaticEntity implements IStaticEntity {
         return CollisionSide.NONE;
     }
 
-    protected abstract void contactAction(IPlayer player, CollisionSide side);
+    protected abstract void contactAction(IMovable movableEntity, CollisionSide side);
 }

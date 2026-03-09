@@ -48,19 +48,25 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
-        for (IStaticEntity entity : entities)
-            if (entity instanceof IMovable movable) {
+        for (Player player : players)
+            applyGravity(player);
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof IMovable movable)
                 applyGravity(movable);
-            }
+        }
         for (IEnemy enemy : enemies) {
             applyGravity(enemy);
             enemy.update();
         }
+
         updateAllPositions();
+
         for (Player player : players) {
-            applyGravity(player);
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
+                    if (entity instanceof IMovable movable) {
+                        handlePush(player, movable);
+                    }
                     entity.whenContact(player);
                     if (entity instanceof Door) {
                         ((Door) entity).setOpen(true);
@@ -71,6 +77,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             for (IEnemy enemy : enemies) {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);
+                }
+            }
+        }
+        for (StaticEntity entity : entities) {
+            if (entity instanceof IMovable movable) {
+                for (StaticEntity otherEntity : entities) {
+                    if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                        otherEntity.whenContact(movable);
+                    }
                 }
             }
         }
@@ -296,10 +311,20 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handlePush(Player player, IMovable movable) {
-        double weightFactor = 1.0 / (1.0 + movable.getWeight());
-        double pushForce = player.getVelocityX() * weightFactor;
-        movable.setVelocityX(movable.getVelocityX() + pushForce);
-        player.setVelocityX(pushForce);
+        double playerBottom = player.getPos().y() + player.getHeight();
+        double playerTop = player.getPos().y();
+        double boxTop = movable.getPos().y();
+        double boxBottom = movable.getPos().y() + movable.getHeight();
+        double margin = 1; // Can imagine this need change as we change sizes of players and so on...
+        boolean isAbove = playerBottom < boxTop + margin;
+        boolean isBelow = playerTop > boxBottom - margin;
+        if (!isAbove && !isBelow) {
+            if (movable instanceof Box) {
+                double weight = ((Box) movable).getWeight();
+                double pushForce = (player.getVelocityX() * 1) / weight;
+                movable.setVelocityX(movable.getVelocityX() + pushForce);
+            }
+        }
     }
 
     private void updateAllPositions() {
@@ -307,6 +332,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             for (Player p : players) {
                 moveObj(p);
                 keepInsideBounds(p);
+            }
+        }
+        if (entities != null) {
+            for (StaticEntity e : entities) {
+                if (e instanceof IMovable movable) {
+                    moveObj(movable);
+                    keepInsideBounds(movable);
+                }
             }
         }
     }
@@ -340,10 +373,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         obj.setPos(new Position(x, y));
     }
 
-    private boolean checkCollision(IStaticEntity entity, Player player) {
-        return player.getPos().x() < entity.getPos().x() + entity.getWidth() &&
-                player.getPos().x() + player.getWidth() > entity.getPos().x() &&
-                player.getPos().y() < entity.getPos().y() + entity.getHeight() &&
-                player.getPos().y() + player.getHeight() > entity.getPos().y();
+    private boolean checkCollision(IStaticEntity entity, IMovable movableEntity) {
+        return movableEntity.getPos().x() < entity.getPos().x() + entity.getWidth() &&
+                movableEntity.getPos().x() + movableEntity.getWidth() > entity.getPos().x() &&
+                movableEntity.getPos().y() < entity.getPos().y() + entity.getHeight() &&
+                movableEntity.getPos().y() + movableEntity.getHeight() > entity.getPos().y();
     }
 }

@@ -20,7 +20,7 @@ public class Pool extends StaticEntity {
     }
 
     @Override
-    protected void contactAction(IPlayer player, CollisionSide side) {
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
     }

@@ -20,7 +20,7 @@ public class Door extends StaticEntity {
     }
 
     @Override
-    protected void contactAction(IPlayer player, CollisionSide side) {
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
         setOpen(true);
     }
 }
