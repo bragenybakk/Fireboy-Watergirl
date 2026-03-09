@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
+import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;

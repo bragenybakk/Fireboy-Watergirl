@@ -2,6 +2,7 @@ package inf112.fireboys.model;
 
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Position;
+import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Door;
@@ -25,7 +26,7 @@ public class GameReader {
     public static Board loadLevel(String filePath) throws FileNotFoundException {
         List<StaticEntity> entities = new ArrayList<>();
         List<Player> players = new ArrayList<>();
-        List<Enemy> enemies = new ArrayList<>();
+        List<IEnemy> enemies = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
         File file = new File(filePath);

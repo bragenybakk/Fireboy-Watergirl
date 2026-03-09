@@ -19,7 +19,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
     private List<Player> players;
     private List<StaticEntity> entities;
-    private List<IEnemy> enemies = new ArrayList<>();
+    private List<IEnemy> enemies;
     private final double GRAVITY = 0.2;
     private final double FRICTION = 0.9;
     // Meny-relaterte felt
@@ -34,12 +34,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.board = null;
         this.players = null;
         this.entities = null;
+        this.enemies = null;
     }
 
     public GameModel(Board board) {
         this.board = board;
         this.players = board.players();
         this.entities = board.entities();
+        this.enemies = board.enemies();
     }
 
     public void clockTick() {
