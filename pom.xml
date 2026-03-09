@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- FIXME - set group id -->
 	<groupId>no.uib.ii.inf112</groupId>
-	<!-- FIXME - set artifact name -->
-	<artifactId>gdx-template-25v</artifactId>
+	<artifactId>fireboys</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<!-- FIXME - set app name -->
-	<name>LoverBoy</name>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
+	<name>Fire Boys</name>
+	<url>https://git.app.uib.no/inf112/26v/proj/fireboys</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>25</maven.compiler.release>
 		<libgdx.version>1.13.1</libgdx.version>
 		<slf4j.version>2.0.16</slf4j.version>
-		<!-- FIXME - set to app's main class' -->
-		<main.class>inf112.skeleton.app.Main</main.class>
+		<main.class>inf112.fireboys.app.Main</main.class>
 		<jvm.extra.args></jvm.extra.args>
 	</properties>
 	<dependencies>
