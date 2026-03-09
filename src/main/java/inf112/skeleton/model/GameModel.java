@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import inf112.skeleton.controller.ControllableGameModel;
 import inf112.skeleton.coordinateSystem.Board;
 import inf112.skeleton.coordinateSystem.Position;
+import inf112.skeleton.model.enemy.IEnemy;
 import inf112.skeleton.model.entity.*;
 import inf112.skeleton.model.player.Player;
 import inf112.skeleton.view.ViewableGameModel;
@@ -18,6 +19,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
     private List<Player> players;
     private List<StaticEntity> entities;
+    private List<IEnemy> enemies = new ArrayList<>();
     private final double GRAVITY = 0.2;
     private final double FRICTION = 0.9;
     // Meny-relaterte felt
@@ -38,6 +40,38 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.board = board;
         this.players = board.players();
         this.entities = board.entities();
+    }
+
+    public void clockTick() {
+        if (entities == null || players == null || gameState != GameState.PLAYING) {
+            return;
+        }
+        for (IStaticEntity entity : entities)
+            if (entity instanceof IMovable movable) {
+                applyGravity(movable);
+            }
+        for (IEnemy enemy : enemies) {
+            applyGravity(enemy);
+            enemy.update();
+        }
+        updateAllPositions();
+        for (Player player : players) {
+            applyGravity(player);
+            for (IStaticEntity entity : entities) {
+                if (checkCollision(entity, player)) {
+                    entity.whenContact(player);
+                    if (entity instanceof Door) {
+                        ((Door) entity).setOpen(true);
+                        checkWinConditions();
+                    }
+                }
+            }
+            for (IEnemy enemy : enemies) {
+                if (checkCollision(enemy, player)) {
+                    enemy.whenContact(player);
+                }
+            }
+        }
     }
 
     // ============ Meny-metoder ============
@@ -73,6 +107,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public List<Player> getPlayers() {
         return players;
+    }
+
+    @Override
+    public List<IEnemy> getEnemies() {
+        return enemies;
     }
 
     @Override
@@ -166,7 +205,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void createSimpleTestBoard() {
         // Lag et enkelt testbrett med 20x15 og en spiller
-        this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>());
+        this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>(),
+                new ArrayList<>());
         this.players = board.players();
         this.entities = board.entities();
     }
@@ -183,6 +223,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 this.players = allPlayers;
             }
             this.entities = board.entities();
+            this.enemies = new ArrayList<>(board.enemies());
             setGameState(GameState.PLAYING);
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,29 +282,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void stopPlayer() {
         if (players != null && !players.isEmpty()) {
             players.get(0).setVelocityX(0);
-        }
-    }
-
-    public void clockTick() {
-        if (entities == null || players == null || gameState != GameState.PLAYING) {
-            return;
-        }
-        for (IStaticEntity entity : entities)
-            if (entity instanceof IMovable movable) {
-                applyGravity(movable);
-            }
-        updateAllPositions();
-        for (Player player : players) {
-            applyGravity(player);
-            for (IStaticEntity entity : entities) {
-                if (checkCollision(entity, player)) {
-                    entity.whenContact(player);
-                    if (entity instanceof Door) {
-                        ((Door) entity).setOpen(true);
-                        checkWinConditions();
-                    }
-                }
-            }
         }
     }
 

@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import inf112.skeleton.coordinateSystem.Board;
 import inf112.skeleton.model.ElementState;
 import inf112.skeleton.model.GameState;
+import inf112.skeleton.model.enemy.IEnemy;
 import inf112.skeleton.model.entity.StaticEntity;
 import inf112.skeleton.model.player.Player;
 
@@ -131,6 +132,22 @@ public class GameView extends JPanel {
                 drawPlayer(g2, player, scale, diff_X, diff_Y);
             }
         }
+        if (viewableGameModel.getEnemies() != null) {
+            for (IEnemy enemy : viewableGameModel.getEnemies()) {
+                drawEnemy(g2, enemy, scale, diff_X, diff_Y);
+            }
+        }
+    }
+
+    private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
+        int x = (int) (diff_X + (enemy.getPos().x() * scale));
+        int y = (int) (diff_Y + (enemy.getPos().y() * scale));
+        int w = (int) (enemy.getWidth() * scale);
+        int h = (int) (enemy.getHeight() * scale);
+        g2.setColor(Color.decode("#8B0000"));
+        g2.fillRect(x, y, w, h);
+        g2.setColor(Color.BLACK);
+        g2.drawRect(x, y, w, h);
     }
 
     private void drawBackground(Graphics2D g2) {
