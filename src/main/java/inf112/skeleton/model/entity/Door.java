@@ -1,6 +1,7 @@
 package inf112.skeleton.model.entity;
 
 import inf112.skeleton.coordinateSystem.Position;
+import inf112.skeleton.model.GameModel;
 import inf112.skeleton.model.player.IPlayer;
 
 public class Door extends StaticEntity {
@@ -20,7 +21,6 @@ public class Door extends StaticEntity {
 
     @Override
     protected void contactAction(IPlayer player, CollisionSide side) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
+        setOpen(true);
     }
 }

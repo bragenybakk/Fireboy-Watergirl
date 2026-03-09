@@ -60,6 +60,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
                     entity.whenContact(player);
+                    if (entity instanceof Door) {
+                        ((Door) entity).setOpen(true);
+                        checkWinConditions();
+                    }
                 }
             }
             for (IEnemy enemy : enemies) {
@@ -172,6 +176,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         int idx = Math.max(0, Math.min(selectedMenuOption, levelNames.size() - 1));
         String chosen = levelNames.get(idx);
         loadLevel(chosen + ".txt");
+    }
+
+    private void checkWinConditions() {
+        for (StaticEntity e : entities)
+            if (e instanceof Door) {
+                Door door = (Door) e;
+                if (!door.isOpen()) {
+                    return;
+                }
+                door.setOpen(false);
+            }
+        setGameState(GameState.LEVEL_SELECT);
     }
 
     // =============== LEVEL READER / LOADER ===============
