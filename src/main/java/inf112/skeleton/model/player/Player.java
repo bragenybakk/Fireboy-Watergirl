@@ -12,6 +12,7 @@ public class Player implements IPlayer {
     private double velocityX;
     private double velocityY;
     private Position position;
+    private Position startPos;
     private double height;
     private double width;
     private double weight;
@@ -29,6 +30,7 @@ public class Player implements IPlayer {
         this.velocityX = 0;
         this.velocityY = 0;
         this.position = position;
+        this.startPos = position;
         this.height = 4.0;
         this.width = 4.0;
         this.weight = 1.0;
@@ -37,6 +39,11 @@ public class Player implements IPlayer {
 
     public ElementState getElementState() {
         return elementState;
+    }
+
+    @Override
+    public Position getStartPos() {
+        return startPos;
     }
 
     public void setElementState(ElementState elementState) {
@@ -102,6 +109,5 @@ public class Player implements IPlayer {
     }
 
     public void whenContact(IPlayer player) {
-        // Implement contact behavior with other players when needed
     }
 }

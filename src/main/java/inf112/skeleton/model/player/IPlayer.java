@@ -1,5 +1,6 @@
 package inf112.skeleton.model.player;
 
+import inf112.skeleton.coordinateSystem.Position;
 import inf112.skeleton.model.ElementState;
 import inf112.skeleton.model.entity.IMovable;
 
@@ -12,6 +13,8 @@ public interface IPlayer extends IMovable {
      * Returns the current element state of the player (FIRE or WATER).
      */
     ElementState getElementState();
+
+    Position getStartPos();
 
     /**
      * 
