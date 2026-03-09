@@ -20,7 +20,8 @@ public class Door extends StaticEntity {
 
     @Override
     protected void contactAction(IPlayer player, CollisionSide side) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
+        if (isOpen) {
+            return;
+        }
     }
 }

@@ -3,6 +3,7 @@ package inf112.skeleton.model;
 import inf112.skeleton.coordinateSystem.Board;
 import inf112.skeleton.coordinateSystem.Position;
 import inf112.skeleton.model.entity.Box;
+import inf112.skeleton.model.entity.Door;
 import inf112.skeleton.model.entity.Pool;
 import inf112.skeleton.model.entity.StaticEntity;
 import inf112.skeleton.model.entity.Wall;
@@ -33,6 +34,10 @@ public class GameReader {
                 case "BOARD":
                     boardWidth = sc.nextDouble();
                     boardHeight = sc.nextDouble();
+                    break;
+                case "DOOR":
+                    entities.add(new Door(new Position(sc.nextDouble(), sc.nextDouble()),
+                            sc.nextDouble(), sc.nextDouble()));
                     break;
                 case "PLAYER_BOY":
                     players.add(new Player(new Position(sc.nextDouble(), sc.nextDouble()), ElementState.FIRE));
