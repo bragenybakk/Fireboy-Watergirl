@@ -2,6 +2,7 @@ package inf112.skeleton.model;
 
 import inf112.skeleton.coordinateSystem.Board;
 import inf112.skeleton.coordinateSystem.Position;
+import inf112.skeleton.model.enemy.Enemy;
 import inf112.skeleton.model.entity.Box;
 import inf112.skeleton.model.entity.Pool;
 import inf112.skeleton.model.entity.StaticEntity;
@@ -23,6 +24,7 @@ public class GameReader {
     public static Board loadLevel(String filePath) throws FileNotFoundException {
         List<StaticEntity> entities = new ArrayList<>();
         List<Player> players = new ArrayList<>();
+        List<Enemy> enemies = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
         File file = new File(filePath);
@@ -54,6 +56,9 @@ public class GameReader {
                     entities.add(new Pool(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
                             sc.nextDouble(), elementType));
                     break;
+                case "ENEMY":
+                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble())));
+                    break;
                 default:
                     if (sc.hasNextLine())
                         sc.nextLine();
@@ -61,6 +66,6 @@ public class GameReader {
             }
         }
         sc.close();
-        return new Board(boardWidth, boardHeight, players, entities);
+        return new Board(boardWidth, boardHeight, players, entities, enemies);
     }
 }
