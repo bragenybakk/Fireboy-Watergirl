@@ -17,13 +17,28 @@ public class Box extends StaticEntity implements IMovable {
     }
 
     @Override
-    public void whenContact(IMovable movableEntity) {
-        return;
-    }
-
-    @Override
     protected void contactAction(IMovable movableEntity, CollisionSide side) {
-        return;
+        Position pos = movableEntity.getPos();
+        switch (side) {
+            case LEFT:
+                movableEntity.setPos(new Position(this.getPos().x() - movableEntity.getWidth(), pos.y()));
+                break;
+            case RIGHT:
+                movableEntity.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
+                break;
+            case TOP:
+                movableEntity.setPos(new Position(pos.x(), this.getPos().y() - movableEntity.getHeight()));
+                movableEntity.setVelocityY(0);
+                if (movableEntity instanceof IPlayer) {
+                    IPlayer player = (IPlayer) movableEntity;
+                    player.setOnGroundTRUE();
+                }
+                break;
+            case BOTTOM:
+                movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
+                movableEntity.setVelocityY(0);
+                break;
+        }
     }
 
     @Override

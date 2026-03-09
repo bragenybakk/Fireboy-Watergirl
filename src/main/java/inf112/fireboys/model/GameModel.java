@@ -48,26 +48,29 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
-        for (IStaticEntity entity : entities)
-            if (entity instanceof IMovable movable) {
+        for (Player player : players)
+            applyGravity(player);
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof IMovable movable)
                 applyGravity(movable);
-            }
+        }
         for (IEnemy enemy : enemies) {
             applyGravity(enemy);
             enemy.update();
         }
+
         updateAllPositions();
+
         for (Player player : players) {
-            applyGravity(player);
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
+                    if (entity instanceof IMovable movable) {
+                        handlePush(player, movable);
+                    }
                     entity.whenContact(player);
                     if (entity instanceof Door) {
                         ((Door) entity).setOpen(true);
                         checkWinConditions();
-                    }
-                    if (entity instanceof IMovable movable) {
-                        handlePush(player, movable);
                     }
                 }
             }
@@ -76,13 +79,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     enemy.whenContact(player);
                 }
             }
-            for (StaticEntity entity : entities) {
-                if (entity instanceof IMovable movable) {
-                    for (StaticEntity otherEntity : entities) {
-                        // Pass på at boksen ikke kolliderer med seg selv, og sjekk mot vegger
-                        if (entity != otherEntity && checkCollision(otherEntity, movable)) {
-                            otherEntity.whenContact(movable);
-                        }
+        }
+        for (StaticEntity entity : entities) {
+            if (entity instanceof IMovable movable) {
+                for (StaticEntity otherEntity : entities) {
+                    if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                        otherEntity.whenContact(movable);
                     }
                 }
             }
@@ -309,10 +311,20 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handlePush(Player player, IMovable movable) {
-        double weightFactor = 1.0 / (1.0 + movable.getWeight());
-        double pushForce = player.getVelocityX() * weightFactor;
-        movable.setVelocityX(movable.getVelocityX() + pushForce);
-        player.setVelocityX(pushForce);
+        double playerBottom = player.getPos().y() + player.getHeight();
+        double playerTop = player.getPos().y();
+        double boxTop = movable.getPos().y();
+        double boxBottom = movable.getPos().y() + movable.getHeight();
+        double margin = 1; // Can imagine this need change as we change sizes of players and so on...
+        boolean isAbove = playerBottom < boxTop + margin;
+        boolean isBelow = playerTop > boxBottom - margin;
+        if (!isAbove && !isBelow) {
+            if (movable instanceof Box) {
+                double weight = ((Box) movable).getWeight();
+                double pushForce = (player.getVelocityX() * 1) / weight;
+                movable.setVelocityX(movable.getVelocityX() + pushForce);
+            }
+        }
     }
 
     private void updateAllPositions() {
