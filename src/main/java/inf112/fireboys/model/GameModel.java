@@ -66,6 +66,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                         ((Door) entity).setOpen(true);
                         checkWinConditions();
                     }
+                    if (entity instanceof IMovable movable) {
+                        handlePush(player, movable);
+                    }
                 }
             }
             for (IEnemy enemy : enemies) {
@@ -309,6 +312,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 keepInsideBounds(p);
             }
         }
+        if (entities != null) {
+        for (StaticEntity e : entities) {
+            if (e instanceof IMovable movable) {
+                moveObj(movable);
+                keepInsideBounds(movable);
+            }
+        }
+    }
     }
 
     private void moveObj(IMovable obj) {
