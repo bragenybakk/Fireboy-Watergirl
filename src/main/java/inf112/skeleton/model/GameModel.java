@@ -139,6 +139,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         loadLevel(chosen + ".txt");
     }
 
+    private void checkWinConditions() {
+        for (StaticEntity e : entities)
+            if (e instanceof Door) {
+                Door door = (Door) e;
+                if (!door.isOpen()) {
+                    return;
+                }
+                door.setOpen(false);
+            }
+        setGameState(GameState.LEVEL_SELECT);
+    }
+
     // =============== LEVEL READER / LOADER ===============
     private void initializeTestLevel() {
         // Laster et testbrett med en spiller
@@ -246,6 +258,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
                     entity.whenContact(player);
+                    if (entity instanceof Door) {
+                        ((Door) entity).setOpen(true);
+                        checkWinConditions();
+                    }
                 }
             }
         }
