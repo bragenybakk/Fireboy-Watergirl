@@ -16,14 +16,14 @@ public abstract class StaticEntity implements IStaticEntity {
     /**
      * Creates a new static entity.
      * 
-     * @param type
+     * @param position
      *            the position of the entity
-     * @param width2
+     * @param width
      *            the width of the entity
      * @param height
      *            the height of the entity
      */
-    public StaticEntity(Position position, double height, double width) {
+    public StaticEntity(Position position, double width, double height) {
         this.position = position;
         this.width = width;
         this.height = height;
