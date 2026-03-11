@@ -26,6 +26,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
+    private String[] pauseMenuOptions = { "Resume", "Main Menu" };
     private boolean testModeSinglePlayer = true;
     // Filnavn for nivåer
     private List<String> levelNames = null;
@@ -58,9 +59,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             applyGravity(enemy);
             enemy.update();
         }
-
         updateAllPositions();
-
         for (Player player : players) {
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
@@ -118,6 +117,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     @Override
     public String[] getMenuOptions() {
+        if (gameState == GameState.PAUSED) {
+            return pauseMenuOptions;
+        }
         return mainMenuOptions;
     }
 
@@ -152,6 +154,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         int maxIndex = mainMenuOptions.length - 1;
         if (gameState == GameState.LEVEL_SELECT && levelNames != null) {
             maxIndex = Math.max(0, levelNames.size() - 1);
+        } else if (gameState == GameState.PAUSED) {
+            maxIndex = pauseMenuOptions.length - 1;
         }
         if (selectedMenuOption < maxIndex) {
             selectedMenuOption++;
@@ -276,7 +280,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handlePauseMenuSelection() {
-        // Kan utvides for pause-meny
+        switch (selectedMenuOption) {
+            case 0: // Resume
+                setGameState(GameState.PLAYING);
+                break;
+            case 1: // Main Menu
+                setGameState(GameState.MAIN_MENU);
+                break;
+        }
     }
 
     // ============ Spiller-kontroll ============
