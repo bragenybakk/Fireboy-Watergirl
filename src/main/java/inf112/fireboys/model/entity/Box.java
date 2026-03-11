@@ -22,9 +22,11 @@ public class Box extends StaticEntity implements IMovable {
         switch (side) {
             case LEFT:
                 movableEntity.setPos(new Position(this.getPos().x() - movableEntity.getWidth(), pos.y()));
+                movableEntity.setVelocityX(0);
                 break;
             case RIGHT:
                 movableEntity.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
+                movableEntity.setVelocityX(0);
                 break;
             case TOP:
                 movableEntity.setPos(new Position(pos.x(), this.getPos().y() - movableEntity.getHeight()));
