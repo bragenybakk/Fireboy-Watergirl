@@ -28,7 +28,6 @@ public class GameController implements KeyListener {
 
     private void updateGame() {
         if (gameModel.getGameState() == GameState.PLAYING) {
-            // Apply continuous movement based on which keys are held
             if (leftPressed) {
                 gameModel.movePlayerLeft();
             }
@@ -36,6 +35,9 @@ public class GameController implements KeyListener {
                 gameModel.movePlayerRight();
             }
             gameModel.clockTick();
+        } else {
+            leftPressed = false;
+            rightPressed = false;
         }
         gameView.repaint();
     }
