@@ -7,6 +7,7 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.enemy.IEnemy;
+import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
@@ -161,7 +162,11 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
         int h = (int) (entity.getHeight() * scale);
-        g2.setColor(Color.GRAY);
+        if (entity instanceof Door) {
+            g2.setColor(Color.decode("#8B4513"));
+        } else {
+            g2.setColor(Color.GRAY);
+        }
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
