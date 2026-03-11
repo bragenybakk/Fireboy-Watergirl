@@ -49,17 +49,28 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
-        for (Player player : players)
+        applyGravityAll();
+        updateAllPositions();
+        handlePlayerCollisions();
+        handleEntityCollisions();
+    }
+
+    private void applyGravityAll() {
+        for (Player player : players) {
             applyGravity(player);
+        }
         for (IStaticEntity entity : entities) {
-            if (entity instanceof IMovable movable)
+            if (entity instanceof IMovable movable) {
                 applyGravity(movable);
+            }
         }
         for (IEnemy enemy : enemies) {
             applyGravity(enemy);
             enemy.update();
         }
-        updateAllPositions();
+    }
+
+    private void handlePlayerCollisions() {
         for (Player player : players) {
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
@@ -79,6 +90,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 }
             }
         }
+    }
+
+    private void handleEntityCollisions() {
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
