@@ -97,10 +97,21 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
                     if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                        if (entity instanceof Box && otherEntity instanceof Box) {
+                            transferBoxPush((Box) entity, (Box) otherEntity);
+                        }
                         otherEntity.whenContact(movable);
                     }
                 }
             }
+        }
+    }
+
+    private void transferBoxPush(Box pusher, Box target) {
+        double pusherVx = pusher.getVelocityX();
+        if (pusherVx != 0) {
+            double pushForce = pusherVx / target.getWeight();
+            target.setVelocityX(target.getVelocityX() + pushForce);
         }
     }
 
@@ -228,27 +239,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         setGameState(GameState.LEVEL_SELECT);
     }
-
     // =============== LEVEL READER / LOADER ===============
-    private void initializeTestLevel() {
-        // Laster et testbrett med en spiller
-        try {
-            this.board = GameReader.loadLevel("src/main/resources/level2.txt");
-            this.players = board.players();
-            this.entities = board.entities();
-        } catch (Exception e) {
-            // Hvis fil ikke finnes, lag et enkelt testbrett
-            createSimpleTestBoard();
-        }
-    }
-
-    private void createSimpleTestBoard() {
-        // Lag et enkelt testbrett med 20x15 og en spiller
-        this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>(),
-                new ArrayList<>());
-        this.players = board.players();
-        this.entities = board.entities();
-    }
 
     public void loadLevel(String levelFileName) {
         try {
