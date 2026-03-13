@@ -93,18 +93,52 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handleEntityCollisions() {
+        // Pass 1: resolve movable entities against walls/floors
+        resolveWallCollisions();
+        // Pass 2: resolve box-box collisions, reverting if pushed into a wall
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
-                    if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                    if (entity != otherEntity && otherEntity instanceof IMovable
+                            && checkCollision(otherEntity, movable)) {
                         if (entity instanceof Box && otherEntity instanceof Box) {
                             transferBoxPush((Box) entity, (Box) otherEntity);
                         }
+                        Position prevPos = movable.getPos();
+                        otherEntity.whenContact(movable);
+                        if (isInsideWall(movable, entity, otherEntity)) {
+                            movable.setPos(prevPos);
+                            movable.setVelocityX(0);
+                        }
+                    }
+                }
+            }
+        }
+        // Pass 3: re-resolve walls in case box-box left overlaps
+        resolveWallCollisions();
+    }
+
+    private void resolveWallCollisions() {
+        for (StaticEntity entity : entities) {
+            if (entity instanceof IMovable movable) {
+                for (StaticEntity otherEntity : entities) {
+                    if (entity != otherEntity && !(otherEntity instanceof IMovable)
+                            && checkCollision(otherEntity, movable)) {
                         otherEntity.whenContact(movable);
                     }
                 }
             }
         }
+    }
+
+    private boolean isInsideWall(IMovable movable, StaticEntity self, StaticEntity other) {
+        for (StaticEntity wall : entities) {
+            if (wall != self && wall != other && !(wall instanceof IMovable)
+                    && checkCollision(wall, movable)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void transferBoxPush(Box pusher, Box target) {
