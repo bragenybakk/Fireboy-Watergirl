@@ -365,14 +365,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         double playerTop = player.getPos().y();
         double boxTop = movable.getPos().y();
         double boxBottom = movable.getPos().y() + movable.getHeight();
-        double margin = 1; // Can imagine this need change as we change sizes of players and so on...
+        double margin = 1; // Can imagine this need change as we change sizes of players and so on (Remove)
         boolean isAbove = playerBottom < boxTop + margin;
         boolean isBelow = playerTop > boxBottom - margin;
         if (!isAbove && !isBelow) {
             if (movable instanceof Box) {
                 double weight = ((Box) movable).getWeight();
-                double pushForce = (player.getVelocityX() * 1) / weight;
-                movable.setVelocityX(movable.getVelocityX() + pushForce);
+                double pushForce = player.getVelocityX() / weight;
+                movable.setVelocityX(pushForce);
             }
         }
     }

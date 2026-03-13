@@ -107,4 +107,36 @@ public class BoxChainPushTest {
         assertTrue(boxB.getPos().x() > boxBInitialX,
                 "BoxB should move when player pushes BoxA into it");
     }
+
+    @Test
+    void testPushForceDoesNotAccumulate() {
+        // Position player next to boxA
+        model.getPlayers().get(0).setPos(new Position(boxA.getPos().x() - 4, boxA.getPos().y()));
+        // Push right for many ticks, box velocity should stay bounded
+        double maxVelocity = 0;
+        for (int i = 0; i < 60; i++) {
+            model.movePlayerRight();
+            model.clockTick();
+            maxVelocity = Math.max(maxVelocity, Math.abs(boxA.getVelocityX()));
+        }
+        // Player velocity is 0.5, so push force on weight-1 box is 0.5
+        // Velocity should never significantly exceed the single-frame push force
+        assertTrue(maxVelocity < 1.0,
+                "Box velocity should not accumulate beyond push force, maxVelocity=" + maxVelocity);
+    }
+
+    @Test
+    void testPushVelocityIsBoundedByPlayerSpeed() {
+        // Position player next to boxA, push for two ticks
+        model.getPlayers().get(0).setPos(new Position(boxA.getPos().x() - 4, boxA.getPos().y()));
+        model.movePlayerRight();
+        model.clockTick();
+        double velocityAfterTick1 = boxA.getVelocityX();
+        model.movePlayerRight();
+        model.clockTick();
+        double velocityAfterTick2 = boxA.getVelocityX();
+        // Second tick should not have significantly more velocity than first
+        assertTrue(Math.abs(velocityAfterTick2) <= Math.abs(velocityAfterTick1) + 0.1,
+                "Push velocity should not grow across ticks, tick1=" + velocityAfterTick1 + " tick2=" + velocityAfterTick2);
+    }
 }
