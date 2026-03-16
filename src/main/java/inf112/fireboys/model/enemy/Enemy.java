@@ -11,6 +11,13 @@ public class Enemy implements IEnemy {
     private double height;
     private double width;
     private boolean alive;
+    private double patrolSpeed = 0.3;
+    private boolean movingRight = true;
+    private boolean patrolStarted = false;
+    private int blockedCount = 0;
+    private int jumpCooldown = 0;
+    private static final int MAX_BLOCKED_FRAMES = 30;
+    private static final int JUMP_COOLDOWN_FRAMES = 60;
     public Enemy(Position position) {
         this.position = position;
         this.velocityX = 0;
@@ -23,7 +30,23 @@ public class Enemy implements IEnemy {
 
     @Override
     public void update() {
-        // Implement AI behavior here
+        if (jumpCooldown > 0)
+            jumpCooldown--;
+        boolean blocked = patrolStarted && Math.abs(velocityX) < patrolSpeed * 0.5;
+        if (blocked) {
+            blockedCount++;
+            if (blockedCount >= MAX_BLOCKED_FRAMES) {
+                movingRight = !movingRight;
+                blockedCount = 0;
+            } else if (Math.abs(velocityY) < 0.5 && jumpCooldown == 0) {
+                velocityY = -3.0;
+                jumpCooldown = JUMP_COOLDOWN_FRAMES;
+            }
+        } else {
+            blockedCount = 0;
+        }
+        patrolStarted = true;
+        velocityX = movingRight ? patrolSpeed : -patrolSpeed;
     }
 
     @Override
