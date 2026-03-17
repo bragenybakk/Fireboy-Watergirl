@@ -80,9 +80,7 @@ public class Enemy implements IEnemy {
     public void whenContact(IMovable movableEntity) {
         if (movableEntity instanceof IPlayer) {
             IPlayer player = (IPlayer) movableEntity;
-            player.setPos(player.getStartPos());
-            player.setVelocityX(0);
-            player.setVelocityY(0);
+            player.kill();
         }
     }
 }

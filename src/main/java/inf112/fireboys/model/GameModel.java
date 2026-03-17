@@ -27,7 +27,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
+    private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
+    private String currentLevelFileName = null;
     // Filnavn for nivåer
     private List<String> levelNames = null;
     // Konstruktør for kun meny (uten brett)
@@ -88,6 +90,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);
                 }
+            }
+            if (!player.isAlive()) {
+                setGameState(GameState.GAME_OVER);
+                return;
             }
         }
     }
@@ -179,6 +185,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (gameState == GameState.PAUSED) {
             return pauseMenuOptions;
         }
+        if (gameState == GameState.GAME_OVER) {
+            return gameOverMenuOptions;
+        }
         return mainMenuOptions;
     }
 
@@ -215,6 +224,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             maxIndex = Math.max(0, levelNames.size() - 1);
         } else if (gameState == GameState.PAUSED) {
             maxIndex = pauseMenuOptions.length - 1;
+        } else if (gameState == GameState.GAME_OVER) {
+            maxIndex = gameOverMenuOptions.length - 1;
         }
         if (selectedMenuOption < maxIndex) {
             selectedMenuOption++;
@@ -232,6 +243,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 break;
             case PAUSED:
                 handlePauseMenuSelection();
+                break;
+            case GAME_OVER:
+                handleGameOverMenuSelection();
                 break;
             default:
                 break;
@@ -277,6 +291,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     public void loadLevel(String levelFileName) {
         try {
+            this.currentLevelFileName = levelFileName;
             String path = "src/main/resources/" + levelFileName;
             this.board = GameReader.loadLevel(path);
             List<Player> allPlayers = board.players();
@@ -326,6 +341,23 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             case 1: // Main Menu
                 setGameState(GameState.MAIN_MENU);
                 break;
+        }
+    }
+
+    private void handleGameOverMenuSelection() {
+        switch (selectedMenuOption) {
+            case 0: // Respawn
+                resetLevel();
+                break;
+            case 1: // Main Menu
+                setGameState(GameState.MAIN_MENU);
+                break;
+        }
+    }
+
+    public void resetLevel() {
+        if (currentLevelFileName != null) {
+            loadLevel(currentLevelFileName);
         }
     }
 

@@ -130,8 +130,18 @@ public class GameController implements KeyListener {
     }
 
     private void handleGameOverInput(int keyCode) {
-        if (keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_ESCAPE) {
-            gameModel.setGameState(GameState.MAIN_MENU);
+        switch (keyCode) {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
+                gameModel.menuUp();
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
+                gameModel.menuDown();
+                break;
+            case KeyEvent.VK_ENTER:
+                gameModel.menuSelect();
+                break;
         }
     }
 

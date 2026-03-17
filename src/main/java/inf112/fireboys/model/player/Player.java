@@ -18,6 +18,7 @@ public class Player implements IPlayer {
     private double width;
     private double weight;
     private boolean isOnGround;
+    private boolean alive;
     /**
      * Constructs a Player with the given position and element state.
      * 
@@ -36,6 +37,7 @@ public class Player implements IPlayer {
         this.width = 4.0;
         this.weight = 1.0;
         this.isOnGround = true;
+        this.alive = true;
     }
 
     public ElementState getElementState() {
@@ -107,6 +109,14 @@ public class Player implements IPlayer {
      */
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void kill() {
+        this.alive = false;
     }
 
     @Override
