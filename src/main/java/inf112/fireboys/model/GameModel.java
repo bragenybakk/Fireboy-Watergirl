@@ -27,7 +27,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
+    private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
+    private String currentLevelFileName = null;
     // Filnavn for nivåer
     private List<String> levelNames = null;
     // Konstruktør for kun meny (uten brett)
@@ -90,14 +92,45 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     enemy.whenContact(player);
                 }
             }
+            if (!player.isAlive()) {
+                setGameState(GameState.GAME_OVER);
+                return;
+            }
         }
     }
 
     private void handleEntityCollisions() {
+        // Pass 1: resolve movable entities against walls/floors
+        resolveWallCollisions();
+        // Pass 2: resolve box-box collisions, reverting if pushed into a wall
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
-                    if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                    if (entity != otherEntity && otherEntity instanceof IMovable
+                            && checkCollision(otherEntity, movable)) {
+                        if (entity instanceof Box && otherEntity instanceof Box) {
+                            transferBoxPush((Box) entity, (Box) otherEntity);
+                        }
+                        Position prevPos = movable.getPos();
+                        otherEntity.whenContact(movable);
+                        if (isInsideWall(movable, entity, otherEntity)) {
+                            movable.setPos(prevPos);
+                            movable.setVelocityX(0);
+                        }
+                    }
+                }
+            }
+        }
+        // Pass 3: re-resolve walls in case box-box left overlaps
+        resolveWallCollisions();
+    }
+
+    private void resolveWallCollisions() {
+        for (StaticEntity entity : entities) {
+            if (entity instanceof IMovable movable) {
+                for (StaticEntity otherEntity : entities) {
+                    if (entity != otherEntity && !(otherEntity instanceof IMovable)
+                            && checkCollision(otherEntity, movable)) {
                         otherEntity.whenContact(movable);
                     }
                 }
@@ -105,8 +138,27 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    private boolean isInsideWall(IMovable movable, StaticEntity self, StaticEntity other) {
+        for (StaticEntity wall : entities) {
+            if (wall != self && wall != other && !(wall instanceof IMovable)
+                    && checkCollision(wall, movable)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void transferBoxPush(Box pusher, Box target) {
+        double pusherVx = pusher.getVelocityX();
+        if (pusherVx != 0) {
+            double pushForce = pusherVx / target.getWeight();
+            target.setVelocityX(target.getVelocityX() + pushForce);
+        }
+    }
+
     private void handleEnemyCollisions() {
-        if (enemies == null) return;
+        if (enemies == null)
+            return;
         for (IEnemy enemy : enemies) {
             for (StaticEntity entity : entities) {
                 if (checkCollision(entity, enemy)) {
@@ -146,6 +198,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (gameState == GameState.PAUSED) {
             return pauseMenuOptions;
         }
+        if (gameState == GameState.GAME_OVER) {
+            return gameOverMenuOptions;
+        }
         return mainMenuOptions;
     }
 
@@ -182,6 +237,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             maxIndex = Math.max(0, levelNames.size() - 1);
         } else if (gameState == GameState.PAUSED) {
             maxIndex = pauseMenuOptions.length - 1;
+        } else if (gameState == GameState.GAME_OVER) {
+            maxIndex = gameOverMenuOptions.length - 1;
         }
         if (selectedMenuOption < maxIndex) {
             selectedMenuOption++;
@@ -199,6 +256,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 break;
             case PAUSED:
                 handlePauseMenuSelection();
+                break;
+            case GAME_OVER:
+                handleGameOverMenuSelection();
                 break;
             default:
                 break;
@@ -240,30 +300,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         setGameState(GameState.LEVEL_SELECT);
     }
-
     // =============== LEVEL READER / LOADER ===============
-    private void initializeTestLevel() {
-        // Laster et testbrett med en spiller
-        try {
-            this.board = GameReader.loadLevel("src/main/resources/level2.txt");
-            this.players = board.players();
-            this.entities = board.entities();
-        } catch (Exception e) {
-            // Hvis fil ikke finnes, lag et enkelt testbrett
-            createSimpleTestBoard();
-        }
-    }
-
-    private void createSimpleTestBoard() {
-        // Lag et enkelt testbrett med 20x15 og en spiller
-        this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>(),
-                new ArrayList<>());
-        this.players = board.players();
-        this.entities = board.entities();
-    }
 
     public void loadLevel(String levelFileName) {
         try {
+            this.currentLevelFileName = levelFileName;
             String path = "src/main/resources/" + levelFileName;
             this.board = GameReader.loadLevel(path);
             List<Player> allPlayers = board.players();
@@ -316,6 +357,23 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    private void handleGameOverMenuSelection() {
+        switch (selectedMenuOption) {
+            case 0: // Respawn
+                resetLevel();
+                break;
+            case 1: // Main Menu
+                setGameState(GameState.MAIN_MENU);
+                break;
+        }
+    }
+
+    public void resetLevel() {
+        if (currentLevelFileName != null) {
+            loadLevel(currentLevelFileName);
+        }
+    }
+
     // ============ Spiller-kontroll ============
     public void movePlayerLeft() {
         if (players != null && !players.isEmpty()) {
@@ -352,14 +410,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         double playerTop = player.getPos().y();
         double boxTop = movable.getPos().y();
         double boxBottom = movable.getPos().y() + movable.getHeight();
-        double margin = 1; // Can imagine this need change as we change sizes of players and so on...
+        double margin = 1; // Can imagine this need change as we change sizes of players and so on (Remove)
         boolean isAbove = playerBottom < boxTop + margin;
         boolean isBelow = playerTop > boxBottom - margin;
         if (!isAbove && !isBelow) {
             if (movable instanceof Box) {
                 double weight = ((Box) movable).getWeight();
-                double pushForce = (player.getVelocityX() * 1) / weight;
-                movable.setVelocityX(movable.getVelocityX() + pushForce);
+                double pushForce = player.getVelocityX() / weight;
+                movable.setVelocityX(pushForce);
             }
         }
     }

@@ -31,4 +31,14 @@ public interface IPlayer extends IMovable {
      * Sets the player's onGround status to false.
      */
     void setOnGroundFALSE();
+
+    /**
+     * @return true if the player is alive, false otherwise
+     */
+    boolean isAlive();
+
+    /**
+     * Kills the player, setting their alive status to false.
+     */
+    void kill();
 }

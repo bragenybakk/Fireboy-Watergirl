@@ -110,10 +110,11 @@ public class GameModelTest {
         Board board = readGameEasy();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        Position initialPosition = model.getPlayers().get(0).getPos();
         model.getPlayers().get(0).setPos(new Position(0, 0));
         model.clockTick();
-        assertEquals(initialPosition, model.getPlayers().get(0).getPos(),
-                "Player should have been reset to initial position after meeting enemy");
+        assertEquals(GameState.GAME_OVER, model.getGameState(),
+                "Game state should be GAME_OVER after player meets enemy");
+        assertFalse(model.getPlayers().get(0).isAlive(),
+                "Player should not be alive after meeting enemy");
     }
 }

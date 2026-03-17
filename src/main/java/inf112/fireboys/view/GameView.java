@@ -289,13 +289,42 @@ public class GameView extends JPanel {
     }
 
     private void drawGameOver(Graphics2D g2) {
-        g2.setColor(Color.decode("#1a1a2e"));
+        g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, windowWidth, windowHeight);
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
         String text = "GAME OVER";
         FontMetrics fm = g2.getFontMetrics();
         int x = (windowWidth - fm.stringWidth(text)) / 2;
-        g2.drawString(text, x, windowHeight / 2);
+        g2.drawString(text, x, windowHeight / 3);
+        // Menu options
+        String[] options = viewableGameModel.getMenuOptions();
+        int selectedOption = viewableGameModel.getSelectedMenuOption();
+        int startY = windowHeight / 3 + 80;
+        int spacing = 60;
+        for (int i = 0; i < options.length; i++) {
+            if (i == selectedOption) {
+                g2.setFont(selectedMenuFont);
+                g2.setColor(Color.decode("#f5a623"));
+                String marker = "► ";
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(marker + options[i]);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(marker + options[i], tx, startY + i * spacing);
+            } else {
+                g2.setFont(menuFont);
+                g2.setColor(Color.WHITE);
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(options[i]);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(options[i], tx, startY + i * spacing);
+            }
+        }
+        g2.setFont(font);
+        g2.setColor(Color.GRAY);
+        String hint = "Use ↑↓ to navigate, ENTER to select";
+        fm = g2.getFontMetrics();
+        x = (windowWidth - fm.stringWidth(hint)) / 2;
+        g2.drawString(hint, x, windowHeight - 50);
     }
 }
