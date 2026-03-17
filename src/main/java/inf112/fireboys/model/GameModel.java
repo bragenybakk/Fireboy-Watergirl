@@ -55,6 +55,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         updateAllPositions();
         handlePlayerCollisions();
         handleEntityCollisions();
+        handleEnemyCollisions();
     }
 
     private void applyGravityAll() {
@@ -152,6 +153,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (pusherVx != 0) {
             double pushForce = pusherVx / target.getWeight();
             target.setVelocityX(target.getVelocityX() + pushForce);
+        }
+    }
+
+    private void handleEnemyCollisions() {
+        if (enemies == null)
+            return;
+        for (IEnemy enemy : enemies) {
+            for (StaticEntity entity : entities) {
+                if (checkCollision(entity, enemy)) {
+                    entity.whenContact(enemy);
+                }
+            }
         }
     }
 
@@ -422,6 +435,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     moveObj(movable);
                     keepInsideBounds(movable);
                 }
+            }
+        }
+        if (enemies != null) {
+            for (IEnemy enemy : enemies) {
+                moveObj(enemy);
+                keepInsideBounds(enemy);
             }
         }
     }

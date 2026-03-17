@@ -63,7 +63,7 @@ public class GameReader {
                             sc.nextDouble(), elementType));
                     break;
                 case "ENEMY":
-                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble())));
+                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
                     break;
                 default:
                     if (sc.hasNextLine())

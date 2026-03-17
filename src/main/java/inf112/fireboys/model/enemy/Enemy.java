@@ -11,24 +11,60 @@ public class Enemy implements IEnemy {
     private double height;
     private double width;
     private boolean alive;
-    public Enemy(Position position) {
+    private boolean isOnGround = false;
+    private double patrolSpeed = 0.3;
+    private boolean movingRight = true;
+    private int jumpCooldown = 0;
+    public Enemy(Position position, double width, double height) {
         this.position = position;
-        this.velocityX = 0;
+        this.velocityX = patrolSpeed;
         this.velocityY = 0;
         this.weight = 1.0;
-        this.height = 4.0;
-        this.width = 4.0;
+        this.height = height;
+        this.width = width;
         this.alive = true;
     }
 
     @Override
     public void update() {
-        // Implement AI behavior here
+        boolean wasOnGround = isOnGround;
+        isOnGround = false;
+        if (jumpCooldown > 0)
+            jumpCooldown--;
+        boolean blocked = Math.abs(velocityX) < patrolSpeed * 0.5;
+        if (blocked && wasOnGround) {
+            if (jumpCooldown == 0) {
+                velocityY = -3.0; // hopp
+                jumpCooldown = 45;
+            } else {
+                movingRight = !movingRight; // snu etterpå
+            }
+        }
+        if (movingRight) {
+            velocityX = patrolSpeed;
+        } else {
+            velocityX = -patrolSpeed;
+        }
     }
 
     @Override
     public boolean isAlive() {
         return alive;
+    }
+
+    @Override
+    public boolean isOnGround() {
+        return isOnGround;
+    }
+
+    @Override
+    public void setOnGroundTRUE() {
+        this.isOnGround = true;
+    }
+
+    @Override
+    public void setOnGroundFALSE() {
+        this.isOnGround = false;
     }
 
     @Override

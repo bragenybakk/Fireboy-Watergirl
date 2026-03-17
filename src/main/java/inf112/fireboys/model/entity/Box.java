@@ -1,6 +1,7 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
+import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.player.IPlayer;
 
 public class Box extends StaticEntity implements IMovable {
@@ -34,6 +35,9 @@ public class Box extends StaticEntity implements IMovable {
                 if (movableEntity instanceof IPlayer) {
                     IPlayer player = (IPlayer) movableEntity;
                     player.setOnGroundTRUE();
+                } else if (movableEntity instanceof IEnemy) {
+                    IEnemy enemy = (IEnemy) movableEntity;
+                    enemy.setOnGroundTRUE();
                 }
                 break;
             case BOTTOM:

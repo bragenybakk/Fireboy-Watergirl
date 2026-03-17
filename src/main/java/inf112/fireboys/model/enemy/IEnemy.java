@@ -6,4 +6,10 @@ public interface IEnemy extends IMovable {
     void update(); // * AI */
 
     boolean isAlive();
+
+    boolean isOnGround();
+
+    void setOnGroundTRUE();
+
+    void setOnGroundFALSE();
 }
