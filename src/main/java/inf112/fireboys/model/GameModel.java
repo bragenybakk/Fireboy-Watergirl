@@ -93,14 +93,59 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handleEntityCollisions() {
+        // Pass 1: resolve movable entities against walls/floors
+        resolveWallCollisions();
+        // Pass 2: resolve box-box collisions, reverting if pushed into a wall
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
-                    if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                    if (entity != otherEntity && otherEntity instanceof IMovable
+                            && checkCollision(otherEntity, movable)) {
+                        if (entity instanceof Box && otherEntity instanceof Box) {
+                            transferBoxPush((Box) entity, (Box) otherEntity);
+                        }
+                        Position prevPos = movable.getPos();
+                        otherEntity.whenContact(movable);
+                        if (isInsideWall(movable, entity, otherEntity)) {
+                            movable.setPos(prevPos);
+                            movable.setVelocityX(0);
+                        }
+                    }
+                }
+            }
+        }
+        // Pass 3: re-resolve walls in case box-box left overlaps
+        resolveWallCollisions();
+    }
+
+    private void resolveWallCollisions() {
+        for (StaticEntity entity : entities) {
+            if (entity instanceof IMovable movable) {
+                for (StaticEntity otherEntity : entities) {
+                    if (entity != otherEntity && !(otherEntity instanceof IMovable)
+                            && checkCollision(otherEntity, movable)) {
                         otherEntity.whenContact(movable);
                     }
                 }
             }
+        }
+    }
+
+    private boolean isInsideWall(IMovable movable, StaticEntity self, StaticEntity other) {
+        for (StaticEntity wall : entities) {
+            if (wall != self && wall != other && !(wall instanceof IMovable)
+                    && checkCollision(wall, movable)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void transferBoxPush(Box pusher, Box target) {
+        double pusherVx = pusher.getVelocityX();
+        if (pusherVx != 0) {
+            double pushForce = pusherVx / target.getWeight();
+            target.setVelocityX(target.getVelocityX() + pushForce);
         }
     }
 
@@ -228,27 +273,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         setGameState(GameState.LEVEL_SELECT);
     }
-
     // =============== LEVEL READER / LOADER ===============
-    private void initializeTestLevel() {
-        // Laster et testbrett med en spiller
-        try {
-            this.board = GameReader.loadLevel("src/main/resources/level2.txt");
-            this.players = board.players();
-            this.entities = board.entities();
-        } catch (Exception e) {
-            // Hvis fil ikke finnes, lag et enkelt testbrett
-            createSimpleTestBoard();
-        }
-    }
-
-    private void createSimpleTestBoard() {
-        // Lag et enkelt testbrett med 20x15 og en spiller
-        this.board = new Board(20, 15, List.of(new Player(new Position(2, 5), ElementState.FIRE)), new ArrayList<>(),
-                new ArrayList<>());
-        this.players = board.players();
-        this.entities = board.entities();
-    }
 
     public void loadLevel(String levelFileName) {
         try {
@@ -340,14 +365,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         double playerTop = player.getPos().y();
         double boxTop = movable.getPos().y();
         double boxBottom = movable.getPos().y() + movable.getHeight();
-        double margin = 1; // Can imagine this need change as we change sizes of players and so on...
+        double margin = 1; // Can imagine this need change as we change sizes of players and so on (Remove)
         boolean isAbove = playerBottom < boxTop + margin;
         boolean isBelow = playerTop > boxBottom - margin;
         if (!isAbove && !isBelow) {
             if (movable instanceof Box) {
                 double weight = ((Box) movable).getWeight();
-                double pushForce = (player.getVelocityX() * 1) / weight;
-                movable.setVelocityX(movable.getVelocityX() + pushForce);
+                double pushForce = player.getVelocityX() / weight;
+                movable.setVelocityX(pushForce);
             }
         }
     }
