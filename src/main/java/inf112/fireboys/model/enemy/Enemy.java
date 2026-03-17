@@ -15,7 +15,6 @@ public class Enemy implements IEnemy {
     private double patrolSpeed = 0.3;
     private boolean movingRight = true;
     private int jumpCooldown = 0;
-
     public Enemy(Position position, double width, double height) {
         this.position = position;
         this.velocityX = patrolSpeed;
@@ -30,20 +29,22 @@ public class Enemy implements IEnemy {
     public void update() {
         boolean wasOnGround = isOnGround;
         isOnGround = false;
-
-        if (jumpCooldown > 0) jumpCooldown--;
-
+        if (jumpCooldown > 0)
+            jumpCooldown--;
         boolean blocked = Math.abs(velocityX) < patrolSpeed * 0.5;
-        if (blocked) {
-            if (wasOnGround && jumpCooldown == 0) {
-                velocityY = -3.0;
-                jumpCooldown = 60;
-            } else if (jumpCooldown == 0) {
-                movingRight = !movingRight;
+        if (blocked && wasOnGround) {
+            if (jumpCooldown == 0) {
+                velocityY = -3.0; // hopp
+                jumpCooldown = 45;
+            } else {
+                movingRight = !movingRight; // snu etterpå
             }
         }
-
-        velocityX = movingRight ? patrolSpeed : -patrolSpeed;
+        if (movingRight) {
+            velocityX = patrolSpeed;
+        } else {
+            velocityX = -patrolSpeed;
+        }
     }
 
     @Override
