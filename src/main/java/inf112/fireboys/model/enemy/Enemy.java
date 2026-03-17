@@ -14,14 +14,11 @@ public class Enemy implements IEnemy {
     private boolean isOnGround = false;
     private double patrolSpeed = 0.3;
     private boolean movingRight = true;
-    private boolean patrolStarted = false;
-    private int blockedCount = 0;
     private int jumpCooldown = 0;
-    private static final int MAX_BLOCKED_FRAMES = 30;
-    private static final int JUMP_COOLDOWN_FRAMES = 60;
+
     public Enemy(Position position, double width, double height) {
         this.position = position;
-        this.velocityX = 0;
+        this.velocityX = patrolSpeed;
         this.velocityY = 0;
         this.weight = 1.0;
         this.height = height;
@@ -31,23 +28,21 @@ public class Enemy implements IEnemy {
 
     @Override
     public void update() {
-        if (jumpCooldown > 0)
-            jumpCooldown--;
-        boolean blocked = patrolStarted && Math.abs(velocityX) < patrolSpeed * 0.5;
+        boolean wasOnGround = isOnGround;
+        isOnGround = false;
+
+        if (jumpCooldown > 0) jumpCooldown--;
+
+        boolean blocked = Math.abs(velocityX) < patrolSpeed * 0.5;
         if (blocked) {
-            blockedCount++;
-            if (blockedCount >= MAX_BLOCKED_FRAMES) {
-                movingRight = !movingRight;
-                blockedCount = 0;
-            } else if (isOnGround && jumpCooldown == 0) {
+            if (wasOnGround && jumpCooldown == 0) {
                 velocityY = -3.0;
-                isOnGround = false;
-                jumpCooldown = JUMP_COOLDOWN_FRAMES;
+                jumpCooldown = 60;
+            } else if (jumpCooldown == 0) {
+                movingRight = !movingRight;
             }
-        } else {
-            blockedCount = 0;
         }
-        patrolStarted = true;
+
         velocityX = movingRight ? patrolSpeed : -patrolSpeed;
     }
 
