@@ -242,6 +242,8 @@
 						<!-- ignore Java module system while testing -->
 						<useModulePath>false</useModulePath>
 						<argLine></argLine>
+						<!-- use same Java version as compiler target -->
+						<jvm>/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java</jvm>
 					</configuration>
 				</plugin>
 				<plugin>
