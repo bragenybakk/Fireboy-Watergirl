@@ -4,6 +4,10 @@ import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.entity.IMovable;
 import inf112.fireboys.model.player.IPlayer;
 
+/**
+ * Represents a enemy in the game.
+ * Implements IEnemy to support movement, velocity, and physics interactions.
+ */
 public class Enemy implements IEnemy {
     private Position position;
     private double velocityX, velocityY;
@@ -15,6 +19,16 @@ public class Enemy implements IEnemy {
     private double patrolSpeed = 0.3;
     private boolean movingRight = true;
     private int jumpCooldown = 0;
+    /**
+     * Constructs a Enemy with the given position and element state.
+     * 
+     * @param position
+     *            the initial position of the enemy
+     * @param width
+     *            the width of the enemy
+     * @param height
+     *            the height of the enemy
+     */
     public Enemy(Position position, double width, double height) {
         this.position = position;
         this.velocityX = patrolSpeed;
@@ -34,10 +48,10 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < patrolSpeed * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -3.0; // hopp
+                velocityY = -3.0;
                 jumpCooldown = 45;
             } else {
-                movingRight = !movingRight; // snu etterpå
+                movingRight = !movingRight;
             }
         }
         if (movingRight) {
@@ -50,6 +64,11 @@ public class Enemy implements IEnemy {
     @Override
     public boolean isAlive() {
         return alive;
+    }
+
+    @Override
+    public void kill() {
+        this.alive = false;
     }
 
     @Override
