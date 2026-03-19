@@ -62,6 +62,9 @@ public class GameView extends JPanel {
             case GAME_OVER:
                 drawGameOver(g2);
                 break;
+            case HOW_TO_PLAY:
+                drawHowToPlay(g2);
+                break;
         }
     }
 
@@ -323,6 +326,47 @@ public class GameView extends JPanel {
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String hint = "Use ↑↓ to navigate, ENTER to select";
+        fm = g2.getFontMetrics();
+        x = (windowWidth - fm.stringWidth(hint)) / 2;
+        g2.drawString(hint, x, windowHeight - 50);
+    }
+    private void drawHowToPlay(Graphics2D g2) {
+        // Mørk bakgrunn, samme som de andre menyene
+        g2.setColor(Color.decode("#1a1a2e"));
+        g2.fillRect(0, 0, windowWidth, windowHeight);
+
+        // Tittel øverst
+        g2.setFont(titleFont);
+        g2.setColor(Color.decode("#e94560"));
+        String title = "HOW TO PLAY";
+        FontMetrics fm = g2.getFontMetrics();
+        int x = (windowWidth - fm.stringWidth(title)) / 2;
+        g2.drawString(title, x, 100);
+
+        // Instruksjoner som en liste
+        g2.setFont(menuFont);
+        g2.setColor(Color.WHITE);
+        String[] lines = {
+            "Fireboy:  Move with A / D,  Jump with W",
+            "Watergirl:  Move with ← →,  Jump with ↑",
+            "",
+            "Reach the doors to complete the level",
+            "Avoid enemies and hazards",
+            "Fireboy dies in water, Watergirl dies in fire"
+        };
+
+        int startY = 200;
+        int spacing = 55;
+        for (int i = 0; i < lines.length; i++) {
+            fm = g2.getFontMetrics();
+            int lineX = (windowWidth - fm.stringWidth(lines[i])) / 2;
+            g2.drawString(lines[i], lineX, startY + i * spacing);
+        }
+
+        // Hint nederst om å gå tilbake
+        g2.setFont(font);
+        g2.setColor(Color.GRAY);
+        String hint = "Press ESC to go back";
         fm = g2.getFontMetrics();
         x = (windowWidth - fm.stringWidth(hint)) / 2;
         g2.drawString(hint, x, windowHeight - 50);

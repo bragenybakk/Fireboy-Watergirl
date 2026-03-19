@@ -25,7 +25,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // Meny-relaterte felt
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
-    private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
+    private String[] mainMenuOptions = { "START GAME", "How to Play", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
@@ -270,10 +270,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             case 0: // Level Select
                 setGameState(GameState.LEVEL_SELECT);
                 break;
-            case 1: // Settings
+            case 1: // How to Play
+                setGameState(GameState.HOW_TO_PLAY);
+                break;
+            case 2: // Settings
                 setGameState(GameState.SETTINGS);
                 break;
-            case 2: // Exit
+            case 3: // Exit
                 System.exit(0);
                 break;
         }

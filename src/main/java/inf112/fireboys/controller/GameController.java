@@ -54,6 +54,7 @@ public class GameController implements KeyListener {
             case MAIN_MENU:
             case LEVEL_SELECT:
             case SETTINGS:
+            case HOW_TO_PLAY:
                 handleMenuInput(keyCode);
                 break;
             case PLAYING:
@@ -106,6 +107,7 @@ public class GameController implements KeyListener {
                 rightPressed = true;
                 break;
             case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
                 gameModel.playerJump();
         }
     }
