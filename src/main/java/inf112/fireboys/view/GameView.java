@@ -5,13 +5,11 @@ import javax.swing.JPanel;
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
-import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,6 +17,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
@@ -28,6 +27,10 @@ public class GameView extends JPanel {
     private Font titleFont = new Font("Arial", Font.BOLD, 48);
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
+
+    private BufferedImage fireboySprite;
+    private BufferedImage watergirlSprite;
+
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -35,6 +38,10 @@ public class GameView extends JPanel {
         this.setBackground(Color.decode("#35654d"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
+
+        SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
+        fireboySprite   = spriteSheet.getFireboyHead();
+        watergirlSprite = spriteSheet.getWatergirlHead();
     }
 
     @Override
@@ -69,6 +76,20 @@ public class GameView extends JPanel {
         // Bakgrunn
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
+
+        // Karakterer i menyen
+        int charSize = 120;
+        int charY = 200;
+        int fireboyX = 80;
+        int watergirlX = windowWidth - 80 - charSize;
+
+        if (fireboySprite != null) {
+            g2.drawImage(fireboySprite, fireboyX, charY, charSize, charSize, null);
+        }
+        if (watergirlSprite != null) {
+            g2.drawImage(watergirlSprite, watergirlX, charY, charSize, charSize, null);
+        }
+
         // Tittel
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
@@ -177,15 +198,13 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (player.getPos().y() * scale));
         int w = (int) (player.getWidth() * scale);
         int h = (int) (player.getHeight() * scale);
-        if (player.getElementState() == ElementState.FIRE) {
-            g2.setColor(Color.RED);
+        BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
+        if (sprite != null) {
+            g2.drawImage(sprite, x, y, w, h, null);
         } else {
-            g2.setColor(Color.BLUE);
+            g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
+            g2.fillRect(x, y, w, h);
         }
-        g2.fillRect(x, y, w, h);
-        g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(1));
-        g2.drawRect(x, y, w, h);
     }
 
     private void drawPauseMenu(Graphics2D g2) {
