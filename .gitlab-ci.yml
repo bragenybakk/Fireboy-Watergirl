@@ -1,6 +1,3 @@
-variables:
-  GIT_STRATEGY: clone
-
 test:
   script:
     - echo "Pipeline is working!"
