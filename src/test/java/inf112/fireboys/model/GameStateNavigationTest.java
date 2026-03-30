@@ -8,7 +8,6 @@ import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Position;
 
 public class GameStateNavigationTest {
-
     private Board readGameEasy() {
         try {
             return GameReader.loadLevel("src/test/resources/easy.txt");
@@ -17,7 +16,6 @@ public class GameStateNavigationTest {
         }
         return null;
     }
-
     // ============ Main Menu Tests ============
 
     @Test
@@ -31,6 +29,7 @@ public class GameStateNavigationTest {
     @Test
     void testMainMenuSelectSettings() {
         GameModel model = new GameModel();
+        model.menuDown();
         model.menuDown();
         model.menuSelect();
         assertEquals(GameState.SETTINGS, model.getGameState(),
@@ -46,10 +45,10 @@ public class GameStateNavigationTest {
         model.menuDown();
         model.menuDown();
         model.menuDown();
-        assertEquals(2, model.getSelectedMenuOption(),
+        model.menuDown();
+        assertEquals(3, model.getSelectedMenuOption(),
                 "Selection should not exceed max index");
     }
-
     // ============ Pause Screen Tests ============
 
     @Test
@@ -86,7 +85,6 @@ public class GameStateNavigationTest {
         assertEquals(posBeforePause, model.getPlayers().get(0).getPos(),
                 "Player position should not change while paused");
     }
-
     // ============ Death / Game Over Screen Tests ============
 
     @Test
@@ -143,7 +141,6 @@ public class GameStateNavigationTest {
         assertEquals(posAfterDeath, model.getPlayers().get(0).getPos(),
                 "Player position should not change during GAME_OVER");
     }
-
     // ============ Level Select Tests ============
 
     @Test
