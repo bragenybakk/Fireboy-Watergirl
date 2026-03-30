@@ -15,6 +15,10 @@ import inf112.fireboys.model.entity.*;
 import inf112.fireboys.model.player.Player;
 import inf112.fireboys.view.ViewableGameModel;
 
+/**
+ * The game model. Manages game state, physics, collisions, and level loading.
+ * Implements both ControllableGameModel (for controller) and ViewableGameModel (for view).
+ */
 public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
     private List<Player> players;
@@ -22,7 +26,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private List<IEnemy> enemies;
     private final double GRAVITY = 0.1;
     private final double FRICTION = 0.9;
-    // Meny-relaterte felt
+    // Menu fields
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
     private String[] mainMenuOptions = { "START GAME", "How to Play", "Settings", "Exit" };
@@ -30,9 +34,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
     private String currentLevelFileName = null;
-    // Filnavn for nivåer
+    // Level file names
     private List<String> levelNames = null;
-    // Konstruktør for kun meny (uten brett)
+    // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
         this.players = null;
@@ -168,7 +172,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // ============ Meny-metoder ============
+    // ============ Menu methods ============
     @Override
     public GameState getGameState() {
         return gameState;
@@ -177,7 +181,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public void setGameState(GameState state) {
         this.gameState = state;
-        this.selectedMenuOption = 0; // Reset valg når tilstand endres
+        this.selectedMenuOption = 0; // Reset selection when state changes
         if (state == GameState.LEVEL_SELECT) {
             // Load available level files when entering level select
             try {
@@ -377,7 +381,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // ============ Spiller-kontroll ============
+    // ============ Player controls ============
     public void movePlayerLeft() {
         if (players != null && !players.isEmpty()) {
             players.get(0).setVelocityX(-0.5);

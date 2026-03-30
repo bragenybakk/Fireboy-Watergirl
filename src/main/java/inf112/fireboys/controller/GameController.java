@@ -8,6 +8,10 @@ import inf112.fireboys.view.GameView;
 import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
+/**
+ * Handles keyboard input and runs the game loop at 60 FPS.
+ * Routes input to the model based on the current game state.
+ */
 public class GameController implements KeyListener {
     private ControllableGameModel gameModel;
     private GameView gameView;
@@ -85,7 +89,7 @@ public class GameController implements KeyListener {
                 gameModel.menuSelect();
                 break;
             case KeyEvent.VK_ESCAPE:
-                // Gå tilbake til hovedmeny fra undermeny
+                // Go back to main menu from submenu
                 if (gameModel.getGameState() != GameState.MAIN_MENU) {
                     gameModel.setGameState(GameState.MAIN_MENU);
                 }

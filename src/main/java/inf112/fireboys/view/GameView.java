@@ -19,6 +19,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+/**
+ * Renders the game using Swing Graphics2D.
+ * Draws menus, game entities, players, and enemies based on the current game state.
+ */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
     private int windowWidth = 1000;
@@ -76,11 +80,11 @@ public class GameView extends JPanel {
     }
 
     private void drawMainMenu(Graphics2D g2) {
-        // Bakgrunn
+        // Background
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
 
-        // Karakterer i menyen
+        // Menu characters
         int charSize = 120;
         int charY = 200;
         int fireboyX = 80;
@@ -93,31 +97,31 @@ public class GameView extends JPanel {
             g2.drawImage(watergirlSprite, watergirlX, charY, charSize, charSize, null);
         }
 
-        // Tittel
+        // Title
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
         String title = "FIREBOY & WATERGIRL";
         FontMetrics fm = g2.getFontMetrics();
         int titleX = (windowWidth - fm.stringWidth(title)) / 2;
         g2.drawString(title, titleX, 120);
-        // Meny-valg
+        // Menu options
         String[] options = viewableGameModel.getMenuOptions();
         int selectedOption = viewableGameModel.getSelectedMenuOption();
         int startY = 250;
         int spacing = 60;
         for (int i = 0; i < options.length; i++) {
             if (i == selectedOption) {
-                // Valgt element
+                // Selected item
                 g2.setFont(selectedMenuFont);
                 g2.setColor(Color.decode("#f5a623"));
-                // Tegn markør
+                // Draw cursor
                 String marker = "► ";
                 fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(marker + options[i]);
                 int x = (windowWidth - textWidth) / 2;
                 g2.drawString(marker + options[i], x, startY + i * spacing);
             } else {
-                // Ikke-valgt element
+                // Unselected item
                 g2.setFont(menuFont);
                 g2.setColor(Color.WHITE);
                 fm = g2.getFontMetrics();
@@ -126,7 +130,7 @@ public class GameView extends JPanel {
                 g2.drawString(options[i], x, startY + i * spacing);
             }
         }
-        // Instruksjoner
+        // Instructions
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String instructions = "Use ↑↓ to navigate, ENTER to select";
@@ -146,7 +150,7 @@ public class GameView extends JPanel {
         int diff_X = (int) (viewWidth - (board.boardWidth() * screenRelation)) / 2;
         int diff_Y = (int) (viewHeight - (board.boardHeight() * screenRelation)) / 2;
         double scale = screenRelation;
-        // --- TEGNING ---
+        // --- DRAWING ---
         drawBackground(g2);
         g2.setColor(Color.decode("#2d5440"));
         g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
@@ -350,11 +354,11 @@ public class GameView extends JPanel {
         g2.drawString(hint, x, windowHeight - 50);
     }
     private void drawHowToPlay(Graphics2D g2) {
-        // Mørk bakgrunn, samme som de andre menyene
+        // Dark background, same as the other menus
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
 
-        // Tittel øverst
+        // Title at top
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
         String title = "HOW TO PLAY";
@@ -362,7 +366,7 @@ public class GameView extends JPanel {
         int x = (windowWidth - fm.stringWidth(title)) / 2;
         g2.drawString(title, x, 100);
 
-        // Instruksjoner som en liste
+        // Instructions as a list
         g2.setFont(menuFont);
         g2.setColor(Color.WHITE);
         String[] lines = {
@@ -382,7 +386,7 @@ public class GameView extends JPanel {
             g2.drawString(lines[i], lineX, startY + i * spacing);
         }
 
-        // Hint nederst om å gå tilbake
+        // Hint at bottom to go back
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String hint = "Press ESC to go back";
