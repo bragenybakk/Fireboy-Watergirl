@@ -7,6 +7,7 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
@@ -16,6 +17,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -186,6 +188,10 @@ public class GameView extends JPanel {
     }
 
     private void drawEntity(Graphics2D g2, StaticEntity entity, double scale, int diff_X, int diff_Y) {
+        if (entity instanceof Pool) {
+            drawPool(g2, (Pool) entity, scale, diff_X, diff_Y);
+            return;
+        }
         int x = (int) (diff_X + (entity.getPos().x() * scale));
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
@@ -198,6 +204,33 @@ public class GameView extends JPanel {
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
+    }
+
+    private void drawPool(Graphics2D g2, Pool pool, double scale, int diff_X, int diff_Y) {
+        int x = (int) (diff_X + (pool.getPos().x() * scale));
+        int y = (int) (diff_Y + (pool.getPos().y() * scale));
+        int w = (int) (pool.getWidth() * scale);
+        int h = (int) (pool.getHeight() * scale);
+        int inset = w / 5;
+
+        // Trapezoid: wide at top, narrow at bottom
+        Polygon trap = new Polygon(
+            new int[]{x, x + w, x + w - inset, x + inset},
+            new int[]{y, y, y + h, y + h},
+            4
+        );
+
+        // Fill based on element type
+        if (pool.getElement() == ElementState.FIRE) {
+            g2.setColor(Color.decode("#e25822"));
+        } else {
+            g2.setColor(Color.decode("#1e90ff"));
+        }
+        g2.fill(trap);
+
+        // Outline
+        g2.setColor(Color.BLACK);
+        g2.draw(trap);
     }
 
     private void drawPlayer(Graphics2D g2, Player player, double scale, int diff_X, int diff_Y) {
