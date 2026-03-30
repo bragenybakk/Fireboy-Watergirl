@@ -20,7 +20,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private List<Player> players;
     private List<StaticEntity> entities;
     private List<IEnemy> enemies;
-    private final double GRAVITY = 0.2;
+    private final double GRAVITY = 0.1;
     private final double FRICTION = 0.9;
     // Meny-relaterte felt
     private GameState gameState = GameState.MAIN_MENU;
@@ -393,7 +393,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public void playerJump() {
         if (players != null && !players.isEmpty() && players.get(0).isOnGround()) {
-            players.get(0).setVelocityY(-2.5);
+            players.get(0).setVelocityY(-1.8);
             players.get(0).setOnGroundFALSE();
         }
     }
