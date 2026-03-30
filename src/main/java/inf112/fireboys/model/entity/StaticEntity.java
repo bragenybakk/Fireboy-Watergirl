@@ -1,7 +1,6 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.player.IPlayer;
 
 /**
  * Abstract base class for static entities (buttons, doors, levers, pools,

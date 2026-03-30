@@ -1,7 +1,6 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.entity.IMovable;
 
 /**
  * Interface for static (non-moving) game objects.

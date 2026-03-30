@@ -3,17 +3,14 @@ package inf112.fireboys.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Position;
 
 public class GameModelTest {
     private Board readGameEasy() {
-        GameReader reader = new GameReader();
         try {
-            Board board = reader.loadLevel("src/test/resources/easy.txt");
+            Board board = GameReader.loadLevel("src/test/resources/easy.txt");
             return board;
         } catch (Exception e) {
             e.printStackTrace();
@@ -22,9 +19,8 @@ public class GameModelTest {
     }
 
     private Board readGameFalling() {
-        GameReader reader = new GameReader();
         try {
-            Board board = reader.loadLevel("src/test/resources/falling.txt");
+            Board board = GameReader.loadLevel("src/test/resources/falling.txt");
             return board;
         } catch (Exception e) {
             e.printStackTrace();

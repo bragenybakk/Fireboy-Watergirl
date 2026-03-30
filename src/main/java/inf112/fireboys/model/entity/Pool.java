@@ -2,7 +2,6 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
-import inf112.fireboys.model.player.IPlayer;
 
 public class Pool extends StaticEntity {
     private ElementState element;

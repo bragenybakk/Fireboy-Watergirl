@@ -49,10 +49,6 @@ public class Player implements IPlayer {
         return startPos;
     }
 
-    public void setElementState(ElementState elementState) {
-        this.elementState = elementState;
-    }
-
     public double getVelocityX() {
         return velocityX;
     }
@@ -99,16 +95,6 @@ public class Player implements IPlayer {
 
     public void setOnGroundFALSE() {
         this.isOnGround = false;
-    }
-
-    /**
-     * Sets the weight of the player, affecting physics calculations.
-     * 
-     * @param weight
-     *            the new weight
-     */
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     public boolean isAlive() {

@@ -5,12 +5,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import org.lwjgl.system.Configuration;
-
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.utils.Os;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import inf112.fireboys.controller.GameController;
 import inf112.fireboys.model.GameModel;
