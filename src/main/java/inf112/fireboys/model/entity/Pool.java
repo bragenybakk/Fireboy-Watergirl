@@ -2,6 +2,7 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
+import inf112.fireboys.model.player.IPlayer;
 
 public class Pool extends StaticEntity {
     private ElementState element;
@@ -18,9 +19,36 @@ public class Pool extends StaticEntity {
         this.element = element;
     }
 
+    /**
+     * Returns how deep the pool is at the given x position, following the trapezoid shape.
+     * Returns 0 if x is outside the pool.
+     */
+    public double getDepthAt(double x) {
+        double poolLeft = getPos().x();
+        double poolRight = poolLeft + getWidth();
+        double inset = getWidth() / 5.0;
+
+        if (x < poolLeft || x > poolRight) {
+            return 0;
+        }
+        // Left slope
+        if (x < poolLeft + inset) {
+            return height * (x - poolLeft) / inset;
+        }
+        // Right slope
+        if (x > poolRight - inset) {
+            return height * (poolRight - x) / inset;
+        }
+        // Center: full depth
+        return height;
+    }
+
     @Override
     protected void contactAction(IMovable movableEntity, CollisionSide side) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contactAction'");
+        if (movableEntity instanceof IPlayer player) {
+            if (player.getElementState() != this.element) {
+                player.kill();
+            }
+        }
     }
 }
