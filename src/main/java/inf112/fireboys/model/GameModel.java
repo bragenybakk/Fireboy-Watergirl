@@ -77,8 +77,33 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    // After wall collision, adjust player position down into any overlapping pool
+    private void applyPoolDepth(Player player) {
+        // Don't pull player into pool while jumping
+        if (player.getVelocityY() < 0) return;
+
+        double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
+        double playerBottom = player.getPos().y() + player.getHeight();
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof Pool pool) {
+                double depth = pool.getDepthAt(playerCenterX);
+                if (depth <= 0) continue;
+                double poolSurface = pool.getPos().y();
+                // Only apply if player is near the floor surface, not jumping above
+                if (Math.abs(playerBottom - poolSurface) < 1.0) {
+                    double newY = poolSurface + depth - player.getHeight();
+                    player.setPos(new Position(player.getPos().x(), newY));
+                    player.setVelocityY(0);
+                    player.setOnGroundTRUE();
+                    pool.whenContact(player);
+                }
+            }
+        }
+    }
+
     private void handlePlayerCollisions() {
         for (Player player : players) {
+            double savedVelocityY = player.getVelocityY();
             for (IStaticEntity entity : entities) {
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
@@ -91,6 +116,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                 }
             }
+            // If player was jumping from a pool, restore velocity so wall doesn't cancel the jump
+            if (savedVelocityY < 0) {
+                player.setVelocityY(savedVelocityY);
+                player.setOnGroundFALSE();
+            }
+            applyPoolDepth(player);
             for (IEnemy enemy : enemies) {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);
