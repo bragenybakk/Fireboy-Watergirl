@@ -20,10 +20,13 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 
 /**
  * Renders the game using Swing Graphics2D.
- * Draws menus, game entities, players, and enemies based on the current game state.
+ * Draws menus, game entities, players, and enemies based on the current game
+ * state.
  */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
@@ -33,10 +36,10 @@ public class GameView extends JPanel {
     private Font titleFont = new Font("Arial", Font.BOLD, 48);
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
-
     private BufferedImage fireboySprite;
     private BufferedImage watergirlSprite;
-
+    private BufferedImage adLeft;
+    private BufferedImage adRight;
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -44,10 +47,16 @@ public class GameView extends JPanel {
         this.setBackground(Color.decode("#35654d"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-
         SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
-        fireboySprite   = spriteSheet.getFireboyHead();
+        fireboySprite = spriteSheet.getFireboyHead();
         watergirlSprite = spriteSheet.getWatergirlHead();
+        try {
+            adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
+            adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
+        } catch (IOException e) {
+            adLeft = null;
+            adRight = null;
+        }
     }
 
     @Override
@@ -85,20 +94,17 @@ public class GameView extends JPanel {
         // Background
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-
         // Menu characters
         int charSize = 120;
         int charY = 200;
         int fireboyX = 80;
         int watergirlX = windowWidth - 80 - charSize;
-
         if (fireboySprite != null) {
             g2.drawImage(fireboySprite, fireboyX, charY, charSize, charSize, null);
         }
         if (watergirlSprite != null) {
             g2.drawImage(watergirlSprite, watergirlX, charY, charSize, charSize, null);
         }
-
         // Title
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
@@ -169,6 +175,7 @@ public class GameView extends JPanel {
                 drawEnemy(g2, enemy, scale, diff_X, diff_Y);
             }
         }
+        drawAds(g2, diff_X, viewWidth, viewHeight);
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -180,6 +187,20 @@ public class GameView extends JPanel {
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
+    }
+
+    private void drawAds(Graphics2D g2, int sideMargin, int viewWidth, int viewHeight) {
+        if (sideMargin < 10)
+            return; // no room for ads
+        int adWidth = sideMargin * 3 / 4;
+        int adHeight = viewHeight * 4 / 5;
+        int adY = (viewHeight - adHeight) / 2 + viewHeight / 40;
+        if (adLeft != null) {
+            g2.drawImage(adLeft, (sideMargin - adWidth) / 2, adY, adWidth, adHeight, null);
+        }
+        if (adRight != null) {
+            g2.drawImage(adRight, viewWidth - sideMargin + (sideMargin - adWidth) / 2, adY, adWidth, adHeight, null);
+        }
     }
 
     private void drawBackground(Graphics2D g2) {
@@ -212,14 +233,11 @@ public class GameView extends JPanel {
         int w = (int) (pool.getWidth() * scale);
         int h = (int) (pool.getHeight() * scale);
         int inset = w / 5;
-
         // Trapezoid: wide at top, narrow at bottom
         Polygon trap = new Polygon(
-            new int[]{x, x + w, x + w - inset, x + inset},
-            new int[]{y, y, y + h, y + h},
-            4
-        );
-
+                new int[] { x, x + w, x + w - inset, x + inset },
+                new int[] { y, y, y + h, y + h },
+                4);
         // Fill based on element type
         if (pool.getElement() == ElementState.FIRE) {
             g2.setColor(Color.decode("#e25822"));
@@ -227,7 +245,6 @@ public class GameView extends JPanel {
             g2.setColor(Color.decode("#1e90ff"));
         }
         g2.fill(trap);
-
         // Outline
         g2.setColor(Color.BLACK);
         g2.draw(trap);
@@ -386,11 +403,11 @@ public class GameView extends JPanel {
         x = (windowWidth - fm.stringWidth(hint)) / 2;
         g2.drawString(hint, x, windowHeight - 50);
     }
+
     private void drawHowToPlay(Graphics2D g2) {
         // Dark background, same as the other menus
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-
         // Title at top
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
@@ -398,19 +415,17 @@ public class GameView extends JPanel {
         FontMetrics fm = g2.getFontMetrics();
         int x = (windowWidth - fm.stringWidth(title)) / 2;
         g2.drawString(title, x, 100);
-
         // Instructions as a list
         g2.setFont(menuFont);
         g2.setColor(Color.WHITE);
         String[] lines = {
-            "Fireboy:  Move with A / D,  Jump with W",
-            "Watergirl:  Move with ← →,  Jump with ↑",
-            "",
-            "Reach the doors to complete the level",
-            "Avoid enemies and hazards",
-            "Fireboy dies in water, Watergirl dies in fire"
+                "Fireboy:  Move with A / D,  Jump with W",
+                "Watergirl:  Move with ← →,  Jump with ↑",
+                "",
+                "Reach the doors to complete the level",
+                "Avoid enemies and hazards",
+                "Fireboy dies in water, Watergirl dies in fire"
         };
-
         int startY = 200;
         int spacing = 55;
         for (int i = 0; i < lines.length; i++) {
@@ -418,7 +433,6 @@ public class GameView extends JPanel {
             int lineX = (windowWidth - fm.stringWidth(lines[i])) / 2;
             g2.drawString(lines[i], lineX, startY + i * spacing);
         }
-
         // Hint at bottom to go back
         g2.setFont(font);
         g2.setColor(Color.GRAY);
