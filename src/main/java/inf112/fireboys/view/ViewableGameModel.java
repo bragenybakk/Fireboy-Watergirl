@@ -32,4 +32,7 @@ public interface ViewableGameModel {
 
     /** Returns the list of available level names. */
     List<String> getLevelNames();
+
+    /** Returns whether the ad blocker is currently enabled. */
+    boolean isAdsBlocked();
 }

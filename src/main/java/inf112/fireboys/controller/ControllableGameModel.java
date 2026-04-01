@@ -36,4 +36,7 @@ public interface ControllableGameModel {
 
     /** Makes the player jump if on the ground. */
     void playerJump();
+
+    /** Toggles the ad blocker on or off. */
+    void toggleAdsBlocked();
 }

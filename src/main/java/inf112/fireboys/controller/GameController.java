@@ -1,18 +1,20 @@
 package inf112.fireboys.controller;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.GameView;
 
-import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
 /**
- * Handles keyboard input and runs the game loop at 60 FPS.
+ * Handles keyboard and mouse input and runs the game loop at 60 FPS.
  * Routes input to the model based on the current game state.
  */
-public class GameController implements KeyListener {
+public class GameController implements KeyListener, MouseListener {
     private ControllableGameModel gameModel;
     private GameView gameView;
     private Timer gameLoopTimer;
@@ -24,6 +26,7 @@ public class GameController implements KeyListener {
         this.gameView = gameView;
         gameView.setFocusable(true);
         gameView.addKeyListener(this);
+        gameView.addMouseListener(this);
         gameView.requestFocusInWindow();
         // Start game loop timer (60 FPS = ~16ms per frame)
         gameLoopTimer = new Timer(16, e -> updateGame());
@@ -173,5 +176,30 @@ public class GameController implements KeyListener {
                     break;
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (gameModel.getGameState() == GameState.PLAYING
+                && gameView.isAdBlockToggleClicked(e.getPoint())) {
+            gameModel.toggleAdsBlocked();
+            gameView.repaint();
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }

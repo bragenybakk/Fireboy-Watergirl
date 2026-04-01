@@ -34,6 +34,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
     private String currentLevelFileName = null;
+    private boolean adsBlocked = false;
     // Level file names
     private List<String> levelNames = null;
     // Constructor for menu only (no board)
@@ -410,6 +411,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (currentLevelFileName != null) {
             loadLevel(currentLevelFileName);
         }
+    }
+
+    @Override
+    public boolean isAdsBlocked() {
+        return adsBlocked;
+    }
+
+    @Override
+    public void toggleAdsBlocked() {
+        adsBlocked = !adsBlocked;
     }
 
     // ============ Player controls ============
