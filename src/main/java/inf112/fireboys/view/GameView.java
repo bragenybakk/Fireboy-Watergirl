@@ -5,23 +5,33 @@ import javax.swing.JPanel;
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
-import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
+import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
 import java.awt.image.BufferedImage;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 
+/**
+ * Renders the game using Swing Graphics2D.
+ * Draws menus, game entities, players, and enemies based on the current game
+ * state.
+ */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
     private SpriteSheet spriteSheet = new SpriteSheet("/bildepakke.png");
@@ -31,6 +41,11 @@ public class GameView extends JPanel {
     private Font titleFont = new Font("Arial", Font.BOLD, 48);
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
+    private BufferedImage fireboySprite;
+    private BufferedImage watergirlSprite;
+    private BufferedImage adLeft;
+    private BufferedImage adRight;
+    private Rectangle adBlockToggleBounds = new Rectangle();
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -38,6 +53,24 @@ public class GameView extends JPanel {
         this.setBackground(Color.decode("#35654d"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
+        SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
+        fireboySprite = spriteSheet.getFireboyHead();
+        watergirlSprite = spriteSheet.getWatergirlHead();
+        try {
+            adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
+            adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
+        } catch (IOException e) {
+            adLeft = null;
+            adRight = null;
+        }
+    }
+
+    /**
+     * Returns whether the given point is inside the ad blocker toggle button.
+     * Used by the controller to detect clicks on the toggle.
+     */
+    public boolean isAdBlockToggleClicked(Point point) {
+        return adBlockToggleBounds.contains(point);
     }
 
     @Override
@@ -65,38 +98,52 @@ public class GameView extends JPanel {
             case GAME_OVER:
                 drawGameOver(g2);
                 break;
+            case HOW_TO_PLAY:
+                drawHowToPlay(g2);
+                break;
         }
     }
 
     private void drawMainMenu(Graphics2D g2) {
-        // Bakgrunn
+        // Background
         g2.setColor(Color.decode("#1a1a2e"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-        // Tittel
+        // Menu characters
+        int charSize = 120;
+        int charY = 200;
+        int fireboyX = 80;
+        int watergirlX = windowWidth - 80 - charSize;
+        if (fireboySprite != null) {
+            g2.drawImage(fireboySprite, fireboyX, charY, charSize, charSize, null);
+        }
+        if (watergirlSprite != null) {
+            g2.drawImage(watergirlSprite, watergirlX, charY, charSize, charSize, null);
+        }
+        // Title
         g2.setFont(titleFont);
         g2.setColor(Color.decode("#e94560"));
         String title = "FIREBOY & WATERGIRL";
         FontMetrics fm = g2.getFontMetrics();
         int titleX = (windowWidth - fm.stringWidth(title)) / 2;
         g2.drawString(title, titleX, 120);
-        // Meny-valg
+        // Menu options
         String[] options = viewableGameModel.getMenuOptions();
         int selectedOption = viewableGameModel.getSelectedMenuOption();
         int startY = 250;
         int spacing = 60;
         for (int i = 0; i < options.length; i++) {
             if (i == selectedOption) {
-                // Valgt element
+                // Selected item
                 g2.setFont(selectedMenuFont);
                 g2.setColor(Color.decode("#f5a623"));
-                // Tegn markør
+                // Draw cursor
                 String marker = "► ";
                 fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(marker + options[i]);
                 int x = (windowWidth - textWidth) / 2;
                 g2.drawString(marker + options[i], x, startY + i * spacing);
             } else {
-                // Ikke-valgt element
+                // Unselected item
                 g2.setFont(menuFont);
                 g2.setColor(Color.WHITE);
                 fm = g2.getFontMetrics();
@@ -105,7 +152,7 @@ public class GameView extends JPanel {
                 g2.drawString(options[i], x, startY + i * spacing);
             }
         }
-        // Instruksjoner
+        // Instructions
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String instructions = "Use ↑↓ to navigate, ENTER to select";
@@ -125,7 +172,7 @@ public class GameView extends JPanel {
         int diff_X = (int) (viewWidth - (board.boardWidth() * screenRelation)) / 2;
         int diff_Y = (int) (viewHeight - (board.boardHeight() * screenRelation)) / 2;
         double scale = screenRelation;
-        // --- TEGNING ---
+        // --- DRAWING ---
         drawBackground(g2);
         g2.setColor(Color.decode("#2d5440"));
         g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
@@ -142,6 +189,10 @@ public class GameView extends JPanel {
                 drawEnemy(g2, enemy, scale, diff_X, diff_Y);
             }
         }
+        if (!viewableGameModel.isAdsBlocked()) {
+            drawAds(g2, diff_X, viewWidth, viewHeight);
+        }
+        drawAdBlockToggle(g2);
         drawHUD(g2);
     }
 
@@ -162,12 +213,57 @@ public class GameView extends JPanel {
         g2.drawRect(x, y, w, h);
     }
 
+    private void drawAds(Graphics2D g2, int sideMargin, int viewWidth, int viewHeight) {
+        if (sideMargin < 10)
+            return; // no room for ads
+        int adWidth = sideMargin * 3 / 4;
+        int adHeight = viewHeight * 4 / 5;
+        int adY = (viewHeight - adHeight) / 2 + viewHeight / 40;
+        if (adLeft != null) {
+            g2.drawImage(adLeft, (sideMargin - adWidth) / 2, adY, adWidth, adHeight, null);
+        }
+        if (adRight != null) {
+            g2.drawImage(adRight, viewWidth - sideMargin + (sideMargin - adWidth) / 2, adY, adWidth, adHeight, null);
+        }
+    }
+
+    /**
+     * Draws the ad blocker toggle button in the top-right corner.
+     * Shows "ADS ON" or "ADS OFF" as a simple text label.
+     */
+    private void drawAdBlockToggle(Graphics2D g2) {
+        boolean blocked = viewableGameModel.isAdsBlocked();
+        String label;
+        if (blocked) {
+            label = "ADBLOCK ENABLED";
+        } else {
+            label = "ADBLOCK DISABLED";
+        }
+        g2.setFont(font);
+        FontMetrics fm = g2.getFontMetrics();
+        int padding = 10;
+        int maxLabelWidth = Math.max(fm.stringWidth("ADBLOCK ENABLED"), fm.stringWidth("ADBLOCK DISABLED"));
+        int w = maxLabelWidth + padding * 2;
+        int h = fm.getHeight() + padding;
+        int x = getWidth() - w - padding;
+        int y = padding;
+        adBlockToggleBounds.setBounds(x, y, w, h);
+        g2.setColor(Color.RED);
+        g2.fillRect(x, y, w, h);
+        g2.setColor(Color.WHITE);
+        g2.drawString(label, x + padding, y + padding / 2 + fm.getAscent());
+    }
+
     private void drawBackground(Graphics2D g2) {
         g2.setColor(Color.decode("#35654d"));
         g2.fillRect(0, 0, getWidth(), getHeight());
     }
 
     private void drawEntity(Graphics2D g2, StaticEntity entity, double scale, int diff_X, int diff_Y) {
+        if (entity instanceof Pool) {
+            drawPool(g2, (Pool) entity, scale, diff_X, diff_Y);
+            return;
+        }
         if (entity instanceof Gem gem && gem.isCollected())
             return;
         int x = (int) (diff_X + (entity.getPos().x() * scale));
@@ -194,20 +290,41 @@ public class GameView extends JPanel {
         g2.drawRect(x, y, w, h);
     }
 
+    private void drawPool(Graphics2D g2, Pool pool, double scale, int diff_X, int diff_Y) {
+        int x = (int) (diff_X + (pool.getPos().x() * scale));
+        int y = (int) (diff_Y + (pool.getPos().y() * scale));
+        int w = (int) (pool.getWidth() * scale);
+        int h = (int) (pool.getHeight() * scale);
+        int inset = w / 5;
+        // Trapezoid: wide at top, narrow at bottom
+        Polygon trap = new Polygon(
+                new int[] { x, x + w, x + w - inset, x + inset },
+                new int[] { y, y, y + h, y + h },
+                4);
+        // Fill based on element type
+        if (pool.getElement() == ElementState.FIRE) {
+            g2.setColor(Color.decode("#e25822"));
+        } else {
+            g2.setColor(Color.decode("#1e90ff"));
+        }
+        g2.fill(trap);
+        // Outline
+        g2.setColor(Color.BLACK);
+        g2.draw(trap);
+    }
+
     private void drawPlayer(Graphics2D g2, Player player, double scale, int diff_X, int diff_Y) {
         int x = (int) (diff_X + (player.getPos().x() * scale));
         int y = (int) (diff_Y + (player.getPos().y() * scale));
         int w = (int) (player.getWidth() * scale);
         int h = (int) (player.getHeight() * scale);
-        if (player.getElementState() == ElementState.FIRE) {
-            g2.setColor(Color.RED);
+        BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
+        if (sprite != null) {
+            g2.drawImage(sprite, x, y, w, h, null);
         } else {
-            g2.setColor(Color.BLUE);
+            g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
+            g2.fillRect(x, y, w, h);
         }
-        g2.fillRect(x, y, w, h);
-        g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(1));
-        g2.drawRect(x, y, w, h);
     }
 
     private void drawPauseMenu(Graphics2D g2) {
@@ -345,6 +462,44 @@ public class GameView extends JPanel {
         g2.setFont(font);
         g2.setColor(Color.GRAY);
         String hint = "Use ↑↓ to navigate, ENTER to select";
+        fm = g2.getFontMetrics();
+        x = (windowWidth - fm.stringWidth(hint)) / 2;
+        g2.drawString(hint, x, windowHeight - 50);
+    }
+
+    private void drawHowToPlay(Graphics2D g2) {
+        // Dark background, same as the other menus
+        g2.setColor(Color.decode("#1a1a2e"));
+        g2.fillRect(0, 0, windowWidth, windowHeight);
+        // Title at top
+        g2.setFont(titleFont);
+        g2.setColor(Color.decode("#e94560"));
+        String title = "HOW TO PLAY";
+        FontMetrics fm = g2.getFontMetrics();
+        int x = (windowWidth - fm.stringWidth(title)) / 2;
+        g2.drawString(title, x, 100);
+        // Instructions as a list
+        g2.setFont(menuFont);
+        g2.setColor(Color.WHITE);
+        String[] lines = {
+                "Fireboy:  Move with A / D,  Jump with W",
+                "Watergirl:  Move with ← →,  Jump with ↑",
+                "",
+                "Reach the doors to complete the level",
+                "Avoid enemies and hazards",
+                "Fireboy dies in water, Watergirl dies in fire"
+        };
+        int startY = 200;
+        int spacing = 55;
+        for (int i = 0; i < lines.length; i++) {
+            fm = g2.getFontMetrics();
+            int lineX = (windowWidth - fm.stringWidth(lines[i])) / 2;
+            g2.drawString(lines[i], lineX, startY + i * spacing);
+        }
+        // Hint at bottom to go back
+        g2.setFont(font);
+        g2.setColor(Color.GRAY);
+        String hint = "Press ESC to go back";
         fm = g2.getFontMetrics();
         x = (windowWidth - fm.stringWidth(hint)) / 2;
         g2.drawString(hint, x, windowHeight - 50);

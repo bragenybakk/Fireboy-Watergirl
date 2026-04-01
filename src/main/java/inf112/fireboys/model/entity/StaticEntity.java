@@ -1,7 +1,6 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.player.IPlayer;
 
 /**
  * Abstract base class for static entities (buttons, doors, levers, pools,
@@ -69,6 +68,22 @@ public abstract class StaticEntity implements IStaticEntity {
         double overlapTop = (pY + pH) - eY;
         double overlapBottom = (eY + eH) - pY;
         double min = Math.min(Math.min(overlapLeft, overlapRight), Math.min(overlapTop, overlapBottom));
+
+        // If the player is jumping upward and barely clipping the top edge of a platform,
+        // treat it as a side collision instead of landing on top
+        boolean movingUp = movableEntity.getVelocityY() < 0;
+        boolean topIsSmallest = (min == overlapTop);
+        double horizontalOverlap = Math.min(overlapLeft, overlapRight);
+        boolean edgeClip = Math.abs(horizontalOverlap - overlapTop) < 1.5;
+
+        if (movingUp && topIsSmallest && edgeClip) {
+            if (overlapLeft < overlapRight) {
+                return CollisionSide.LEFT;
+            } else {
+                return CollisionSide.RIGHT;
+            }
+        }
+
         if (min == overlapLeft)
             return CollisionSide.LEFT;
         if (min == overlapRight)

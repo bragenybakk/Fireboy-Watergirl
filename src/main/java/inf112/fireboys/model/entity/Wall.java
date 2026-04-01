@@ -34,6 +34,8 @@ public class Wall extends StaticEntity {
                 movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
                 movableEntity.setVelocityY(0);
                 break;
+            default:
+                break;
         }
     }
 }

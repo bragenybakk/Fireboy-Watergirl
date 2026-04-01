@@ -48,7 +48,7 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < patrolSpeed * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -3.0;
+                velocityY = -2.0;
                 jumpCooldown = 45;
             } else {
                 movingRight = !movingRight;

@@ -15,24 +15,30 @@ import inf112.fireboys.model.entity.*;
 import inf112.fireboys.model.player.Player;
 import inf112.fireboys.view.ViewableGameModel;
 
+/**
+ * The game model. Manages game state, physics, collisions, and level loading.
+ * Implements both ControllableGameModel (for controller) and ViewableGameModel
+ * (for view).
+ */
 public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
     private List<Player> players;
     private List<StaticEntity> entities;
     private List<IEnemy> enemies;
-    private final double GRAVITY = 0.2;
+    private final double GRAVITY = 0.1;
     private final double FRICTION = 0.9;
-    // Meny-relaterte felt
+    // Menu fields
     private GameState gameState = GameState.MAIN_MENU;
     private int selectedMenuOption = 0;
-    private String[] mainMenuOptions = { "START GAME", "Settings", "Exit" };
+    private String[] mainMenuOptions = { "START GAME", "How to Play", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
     private boolean testModeSinglePlayer = true;
     private String currentLevelFileName = null;
-    // Filnavn for nivåer
+    private boolean adsBlocked = false;
+    // Level file names
     private List<String> levelNames = null;
-    // Konstruktør for kun meny (uten brett)
+    // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
         this.players = null;
@@ -73,16 +79,44 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    // After wall collision, adjust player position down into any overlapping pool
+    private void applyPoolDepth(Player player) {
+        // Don't pull player into pool while jumping
+        if (player.getVelocityY() < 0)
+            return;
+        double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
+        double playerBottom = player.getPos().y() + player.getHeight();
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof Pool pool) {
+                double depth = pool.getDepthAt(playerCenterX);
+                if (depth <= 0)
+                    continue;
+                double poolSurface = pool.getPos().y();
+                // Only apply if player is near the floor surface, not jumping above
+                if (Math.abs(playerBottom - poolSurface) < 1.0) {
+                    double newY = poolSurface + depth - player.getHeight();
+                    player.setPos(new Position(player.getPos().x(), newY));
+                    player.setVelocityY(0);
+                    player.setOnGroundTRUE();
+                    pool.whenContact(player);
+                }
+            }
+        }
+    }
+
     @Override
     public int getScore() {
-        if (players == null || players.isEmpty()) return 0;
+        if (players == null || players.isEmpty())
+            return 0;
         return players.stream().mapToInt(p -> p.getScore()).sum();
     }
 
     private void handlePlayerCollisions() {
         for (Player player : players) {
+            double savedVelocityY = player.getVelocityY();
             for (IStaticEntity entity : entities) {
-                if (entity instanceof Gem gem && gem.isCollected()) continue;
+                if (entity instanceof Gem gem && gem.isCollected())
+                    continue;
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
                         handlePush(player, movable);
@@ -94,6 +128,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                 }
             }
+            // If player was jumping from a pool, restore velocity so wall doesn't cancel
+            // the jump
+            if (savedVelocityY < 0) {
+                player.setVelocityY(savedVelocityY);
+                player.setOnGroundFALSE();
+            }
+            applyPoolDepth(player);
             for (IEnemy enemy : enemies) {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);
@@ -175,7 +216,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // ============ Meny-metoder ============
+    // ============ Menu methods ============
     @Override
     public GameState getGameState() {
         return gameState;
@@ -184,7 +225,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public void setGameState(GameState state) {
         this.gameState = state;
-        this.selectedMenuOption = 0; // Reset valg når tilstand endres
+        this.selectedMenuOption = 0; // Reset selection when state changes
         if (state == GameState.LEVEL_SELECT) {
             // Load available level files when entering level select
             try {
@@ -277,10 +318,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             case 0: // Level Select
                 setGameState(GameState.LEVEL_SELECT);
                 break;
-            case 1: // Settings
+            case 1: // How to Play
+                setGameState(GameState.HOW_TO_PLAY);
+                break;
+            case 2: // Settings
                 setGameState(GameState.SETTINGS);
                 break;
-            case 2: // Exit
+            case 3: // Exit
                 System.exit(0);
                 break;
         }
@@ -381,7 +425,17 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // ============ Spiller-kontroll ============
+    @Override
+    public boolean isAdsBlocked() {
+        return adsBlocked;
+    }
+
+    @Override
+    public void toggleAdsBlocked() {
+        adsBlocked = !adsBlocked;
+    }
+
+    // ============ Player controls ============
     public void movePlayerLeft() {
         if (players != null && !players.isEmpty()) {
             players.get(0).setVelocityX(-0.5);
@@ -397,7 +451,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public void playerJump() {
         if (players != null && !players.isEmpty() && players.get(0).isOnGround()) {
-            players.get(0).setVelocityY(-2.5);
+            players.get(0).setVelocityY(-1.8);
             players.get(0).setOnGroundFALSE();
         }
     }

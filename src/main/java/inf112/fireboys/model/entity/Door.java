@@ -1,8 +1,6 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.GameModel;
-import inf112.fireboys.model.player.IPlayer;
 
 public class Door extends StaticEntity {
     private boolean isOpen;

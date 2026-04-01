@@ -44,6 +44,8 @@ public class Box extends StaticEntity implements IMovable {
                 movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
                 movableEntity.setVelocityY(0);
                 break;
+            default:
+                break;
         }
     }
 
