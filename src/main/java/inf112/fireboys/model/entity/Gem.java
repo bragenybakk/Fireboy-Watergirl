@@ -24,7 +24,7 @@ public class Gem extends StaticEntity {
 
     @Override
     protected void contactAction(IMovable movableEntity, CollisionSide side) {
-        if (movableEntity instanceof IPlayer player && player.getElementState() == element) {
+        if (!collected && movableEntity instanceof IPlayer player && player.getElementState() == element) {
             player.addScore(1);
             this.collected = true;
         }
