@@ -35,4 +35,6 @@ public interface ViewableGameModel {
 
     /** Returns whether the ad blocker is currently enabled. */
     boolean isAdsBlocked();
+
+    int getScore();
 }

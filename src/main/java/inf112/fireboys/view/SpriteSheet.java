@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 
 public class SpriteSheet {
     private BufferedImage sheet;
-
     public SpriteSheet(String path) {
         try {
             sheet = ImageIO.read(getClass().getResourceAsStream(path));
@@ -16,18 +15,26 @@ public class SpriteSheet {
     }
 
     public BufferedImage getFireboyHead() {
-        return getSprite(1900, 1000, 70,70);
+        return getSprite(1900, 1000, 70, 70);
     }
 
     public BufferedImage getWatergirlHead() {
         return getSprite(1900, 500, 70, 70);
     }
 
-    private BufferedImage getSprite(int x, int y, int width, int height) {
-        if (sheet == null) return null;
-        if (x + width > sheet.getWidth() || y + height > sheet.getHeight()) return null;
-        return sheet.getSubimage(x, y, width, height);
+    public BufferedImage getBlueGem() {
+        return getSprite(980, 1375, 70, 70);
     }
 
+    public BufferedImage getFireGem() {
+        return getSprite(1095, 1375, 70, 70);
+    }
 
+    private BufferedImage getSprite(int x, int y, int width, int height) {
+        if (sheet == null)
+            return null;
+        if (x + width > sheet.getWidth() || y + height > sheet.getHeight())
+            return null;
+        return sheet.getSubimage(x, y, width, height);
+    }
 }

@@ -7,10 +7,12 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
+import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,6 +42,8 @@ public class GameView extends JPanel {
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
     private BufferedImage fireboySprite;
     private BufferedImage watergirlSprite;
+    private BufferedImage blueGemSprite;
+    private BufferedImage fireGemSprite;
     private BufferedImage adLeft;
     private BufferedImage adRight;
     private Rectangle adBlockToggleBounds = new Rectangle();
@@ -53,6 +57,8 @@ public class GameView extends JPanel {
         SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
         fireboySprite = spriteSheet.getFireboyHead();
         watergirlSprite = spriteSheet.getWatergirlHead();
+        blueGemSprite = spriteSheet.getBlueGem();
+        fireGemSprite = spriteSheet.getFireGem();
         try {
             adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
             adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
@@ -190,6 +196,13 @@ public class GameView extends JPanel {
             drawAds(g2, diff_X, viewWidth, viewHeight);
         }
         drawAdBlockToggle(g2);
+        drawHUD(g2);
+    }
+
+    private void drawHUD(Graphics2D g2) {
+        g2.setFont(new Font("Arial", Font.BOLD, 30));
+        g2.setColor(Color.WHITE);
+        g2.drawString("Score: " + viewableGameModel.getScore(), 20, 30);
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -252,6 +265,22 @@ public class GameView extends JPanel {
     private void drawEntity(Graphics2D g2, StaticEntity entity, double scale, int diff_X, int diff_Y) {
         if (entity instanceof Pool) {
             drawPool(g2, (Pool) entity, scale, diff_X, diff_Y);
+            return;
+        }
+        if (entity instanceof Gem gem) {
+            if (gem.isCollected()) return;
+            int x = (int) (diff_X + (gem.getPos().x() * scale));
+            int y = (int) (diff_Y + (gem.getPos().y() * scale));
+            int w = (int) (gem.getWidth() * scale);
+            int h = (int) (gem.getHeight() * scale);
+            boolean isFire = gem.getElement() == ElementState.FIRE;
+            BufferedImage sprite = isFire ? fireGemSprite : blueGemSprite;
+            if (sprite != null) {
+                g2.drawImage(sprite, x, y, w, h, null);
+            } else {
+                g2.setColor(isFire ? Color.RED : Color.CYAN);
+                g2.fillRect(x, y, w, h);
+            }
             return;
         }
         int x = (int) (diff_X + (entity.getPos().x() * scale));

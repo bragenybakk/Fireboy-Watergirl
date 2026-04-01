@@ -17,7 +17,8 @@ import inf112.fireboys.view.ViewableGameModel;
 
 /**
  * The game model. Manages game state, physics, collisions, and level loading.
- * Implements both ControllableGameModel (for controller) and ViewableGameModel (for view).
+ * Implements both ControllableGameModel (for controller) and ViewableGameModel
+ * (for view).
  */
 public class GameModel implements ControllableGameModel, ViewableGameModel {
     private Board board;
@@ -81,14 +82,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // After wall collision, adjust player position down into any overlapping pool
     private void applyPoolDepth(Player player) {
         // Don't pull player into pool while jumping
-        if (player.getVelocityY() < 0) return;
-
+        if (player.getVelocityY() < 0)
+            return;
         double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
         double playerBottom = player.getPos().y() + player.getHeight();
         for (IStaticEntity entity : entities) {
             if (entity instanceof Pool pool) {
                 double depth = pool.getDepthAt(playerCenterX);
-                if (depth <= 0) continue;
+                if (depth <= 0)
+                    continue;
                 double poolSurface = pool.getPos().y();
                 // Only apply if player is near the floor surface, not jumping above
                 if (Math.abs(playerBottom - poolSurface) < 1.0) {
@@ -102,10 +104,19 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    @Override
+    public int getScore() {
+        if (players == null || players.isEmpty())
+            return 0;
+        return players.stream().mapToInt(p -> p.getScore()).sum();
+    }
+
     private void handlePlayerCollisions() {
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
             for (IStaticEntity entity : entities) {
+                if (entity instanceof Gem gem && gem.isCollected())
+                    continue;
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
                         handlePush(player, movable);
@@ -117,7 +128,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                 }
             }
-            // If player was jumping from a pool, restore velocity so wall doesn't cancel the jump
+            // If player was jumping from a pool, restore velocity so wall doesn't cancel
+            // the jump
             if (savedVelocityY < 0) {
                 player.setVelocityY(savedVelocityY);
                 player.setOnGroundFALSE();

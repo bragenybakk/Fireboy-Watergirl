@@ -19,6 +19,7 @@ public class Player implements IPlayer {
     private double weight;
     private boolean isOnGround;
     private boolean alive;
+    private int score = 0;
     /**
      * Constructs a Player with the given position and element state.
      * 
@@ -103,6 +104,14 @@ public class Player implements IPlayer {
 
     public void kill() {
         this.alive = false;
+    }
+
+    public void addScore(int points) {
+        this.score += points;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override

@@ -41,4 +41,16 @@ public interface IPlayer extends IMovable {
      * Kills the player, setting their alive status to false.
      */
     void kill();
+
+    /**
+     * @return the player's current score
+     */
+    int getScore();
+
+    /**
+     * Adds the specified number of points to the player's score.
+     * 
+     * @param i
+     */
+    void addScore(int i);
 }
