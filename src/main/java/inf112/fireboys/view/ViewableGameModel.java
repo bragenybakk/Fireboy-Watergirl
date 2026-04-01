@@ -21,4 +21,6 @@ public interface ViewableGameModel {
     Board getBoard();
 
     java.util.List<String> getLevelNames();
+
+    int getScore();
 }

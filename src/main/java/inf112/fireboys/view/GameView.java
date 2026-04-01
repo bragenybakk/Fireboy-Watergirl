@@ -8,9 +8,11 @@ import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
+import java.awt.image.BufferedImage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,6 +24,7 @@ import java.awt.RenderingHints;
 
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
+    private SpriteSheet spriteSheet = new SpriteSheet("/bildepakke.png");
     private int windowWidth = 1000;
     private int windowHeight = 600;
     private Font font = new Font("Arial", Font.PLAIN, 12);
@@ -139,6 +142,13 @@ public class GameView extends JPanel {
                 drawEnemy(g2, enemy, scale, diff_X, diff_Y);
             }
         }
+        drawHUD(g2);
+    }
+
+    private void drawHUD(Graphics2D g2) {
+        g2.setFont(new Font("Arial", Font.BOLD, 30));
+        g2.setColor(Color.WHITE);
+        g2.drawString("Score: " + viewableGameModel.getScore(), 20, 30);
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -158,10 +168,22 @@ public class GameView extends JPanel {
     }
 
     private void drawEntity(Graphics2D g2, StaticEntity entity, double scale, int diff_X, int diff_Y) {
+        if (entity instanceof Gem gem && gem.isCollected())
+            return;
         int x = (int) (diff_X + (entity.getPos().x() * scale));
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
         int h = (int) (entity.getHeight() * scale);
+        if (entity instanceof Gem) {
+            BufferedImage diamond = spriteSheet.getFrame("diamond", 0);
+            if (diamond != null) {
+                g2.drawImage(diamond, x, y, w, h, null);
+            } else {
+                g2.setColor(Color.CYAN);
+                g2.fillRect(x, y, w, h);
+            }
+            return;
+        }
         if (entity instanceof Door) {
             g2.setColor(Color.decode("#8B4513"));
         } else {

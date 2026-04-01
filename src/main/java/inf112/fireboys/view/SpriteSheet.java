@@ -96,10 +96,8 @@ public class SpriteSheet {
      * Objekter (diamanter, steiner etc.) fra bunnen av bildet
      */
     private void loadObjectSprites() {
-        // Diamanter (y≈1340-1520, ~36×30 px)
-        animations.put("diamond_white", extractSpritesFromRow(0, 1340, 1, 36, 30));
-        animations.put("diamond_blue", extractSpritesFromRow(40, 1340, 1, 36, 30));
-        animations.put("diamond_red", extractSpritesFromRow(80, 1340, 1, 36, 30));
+        // Diamant (x=5, y=1385, ~65×65 px)
+        animations.put("diamond", extractSpritesFromRow(1000, 1380, 1, 65, 65));
         // Steiner/plattformer
         animations.put("stones", extractSpritesFromRow(0, 1400, 5, 50, 50));
     }

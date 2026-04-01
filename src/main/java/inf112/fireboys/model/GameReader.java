@@ -6,6 +6,7 @@ import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
@@ -61,6 +62,9 @@ public class GameReader {
                     ElementState elementType = ElementState.valueOf(type);
                     entities.add(new Pool(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
                             sc.nextDouble(), elementType));
+                    break;
+                case "GEM":
+                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
                     break;
                 case "ENEMY":
                     enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));

@@ -73,9 +73,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    @Override
+    public int getScore() {
+        if (players == null || players.isEmpty()) return 0;
+        return players.stream().mapToInt(p -> p.getScore()).sum();
+    }
+
     private void handlePlayerCollisions() {
         for (Player player : players) {
             for (IStaticEntity entity : entities) {
+                if (entity instanceof Gem gem && gem.isCollected()) continue;
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
                         handlePush(player, movable);
