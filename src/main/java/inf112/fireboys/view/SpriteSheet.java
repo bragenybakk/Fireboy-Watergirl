@@ -22,6 +22,14 @@ public class SpriteSheet {
         return getSprite(1900, 500, 70, 70);
     }
 
+    public BufferedImage getBlueGem() {
+        return getSprite(980, 1375, 70, 70);
+    }
+
+    public BufferedImage getFireGem() {
+        return getSprite(1095, 1375, 70, 70);
+    }
+
     private BufferedImage getSprite(int x, int y, int width, int height) {
         if (sheet == null)
             return null;

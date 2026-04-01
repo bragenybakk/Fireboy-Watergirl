@@ -34,7 +34,6 @@ import java.io.IOException;
  */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
-    private SpriteSheet spriteSheet = new SpriteSheet("/bildepakke.png");
     private int windowWidth = 1000;
     private int windowHeight = 600;
     private Font font = new Font("Arial", Font.PLAIN, 12);
@@ -43,6 +42,8 @@ public class GameView extends JPanel {
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
     private BufferedImage fireboySprite;
     private BufferedImage watergirlSprite;
+    private BufferedImage blueGemSprite;
+    private BufferedImage fireGemSprite;
     private BufferedImage adLeft;
     private BufferedImage adRight;
     private Rectangle adBlockToggleBounds = new Rectangle();
@@ -56,6 +57,8 @@ public class GameView extends JPanel {
         SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
         fireboySprite = spriteSheet.getFireboyHead();
         watergirlSprite = spriteSheet.getWatergirlHead();
+        blueGemSprite = spriteSheet.getBlueGem();
+        fireGemSprite = spriteSheet.getFireGem();
         try {
             adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
             adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
@@ -264,22 +267,26 @@ public class GameView extends JPanel {
             drawPool(g2, (Pool) entity, scale, diff_X, diff_Y);
             return;
         }
-        if (entity instanceof Gem gem && gem.isCollected())
-            return;
-        int x = (int) (diff_X + (entity.getPos().x() * scale));
-        int y = (int) (diff_Y + (entity.getPos().y() * scale));
-        int w = (int) (entity.getWidth() * scale);
-        int h = (int) (entity.getHeight() * scale);
-        if (entity instanceof Gem) {
-            BufferedImage diamond = spriteSheet.getFrame("diamond", 0);
-            if (diamond != null) {
-                g2.drawImage(diamond, x, y, w, h, null);
+        if (entity instanceof Gem gem) {
+            if (gem.isCollected()) return;
+            int x = (int) (diff_X + (gem.getPos().x() * scale));
+            int y = (int) (diff_Y + (gem.getPos().y() * scale));
+            int w = (int) (gem.getWidth() * scale);
+            int h = (int) (gem.getHeight() * scale);
+            boolean isFire = gem.getElement() == ElementState.FIRE;
+            BufferedImage sprite = isFire ? fireGemSprite : blueGemSprite;
+            if (sprite != null) {
+                g2.drawImage(sprite, x, y, w, h, null);
             } else {
-                g2.setColor(Color.CYAN);
+                g2.setColor(isFire ? Color.RED : Color.CYAN);
                 g2.fillRect(x, y, w, h);
             }
             return;
         }
+        int x = (int) (diff_X + (entity.getPos().x() * scale));
+        int y = (int) (diff_Y + (entity.getPos().y() * scale));
+        int w = (int) (entity.getWidth() * scale);
+        int h = (int) (entity.getHeight() * scale);
         if (entity instanceof Door) {
             g2.setColor(Color.decode("#8B4513"));
         } else {

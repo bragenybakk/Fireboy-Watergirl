@@ -64,7 +64,9 @@ public class GameReader {
                             sc.nextDouble(), elementType));
                     break;
                 case "GEM":
-                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
+                    String gemType = sc.next();
+                    ElementState gemElement = ElementState.valueOf(gemType);
+                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble(), gemElement));
                     break;
                 case "ENEMY":
                     enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
