@@ -18,6 +18,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -40,6 +42,7 @@ public class GameView extends JPanel {
     private BufferedImage watergirlSprite;
     private BufferedImage adLeft;
     private BufferedImage adRight;
+    private Rectangle adBlockToggleBounds = new Rectangle();
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -57,6 +60,14 @@ public class GameView extends JPanel {
             adLeft = null;
             adRight = null;
         }
+    }
+
+    /**
+     * Returns whether the given point is inside the ad blocker toggle button.
+     * Used by the controller to detect clicks on the toggle.
+     */
+    public boolean isAdBlockToggleClicked(Point point) {
+        return adBlockToggleBounds.contains(point);
     }
 
     @Override
@@ -175,7 +186,10 @@ public class GameView extends JPanel {
                 drawEnemy(g2, enemy, scale, diff_X, diff_Y);
             }
         }
-        drawAds(g2, diff_X, viewWidth, viewHeight);
+        if (!viewableGameModel.isAdsBlocked()) {
+            drawAds(g2, diff_X, viewWidth, viewHeight);
+        }
+        drawAdBlockToggle(g2);
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -201,6 +215,33 @@ public class GameView extends JPanel {
         if (adRight != null) {
             g2.drawImage(adRight, viewWidth - sideMargin + (sideMargin - adWidth) / 2, adY, adWidth, adHeight, null);
         }
+    }
+
+    /**
+     * Draws the ad blocker toggle button in the top-right corner.
+     * Shows "ADS ON" or "ADS OFF" as a simple text label.
+     */
+    private void drawAdBlockToggle(Graphics2D g2) {
+        boolean blocked = viewableGameModel.isAdsBlocked();
+        String label;
+        if (blocked) {
+            label = "ADBLOCK ENABLED";
+        } else {
+            label = "ADBLOCK DISABLED";
+        }
+        g2.setFont(font);
+        FontMetrics fm = g2.getFontMetrics();
+        int padding = 10;
+        int maxLabelWidth = Math.max(fm.stringWidth("ADBLOCK ENABLED"), fm.stringWidth("ADBLOCK DISABLED"));
+        int w = maxLabelWidth + padding * 2;
+        int h = fm.getHeight() + padding;
+        int x = getWidth() - w - padding;
+        int y = padding;
+        adBlockToggleBounds.setBounds(x, y, w, h);
+        g2.setColor(Color.RED);
+        g2.fillRect(x, y, w, h);
+        g2.setColor(Color.WHITE);
+        g2.drawString(label, x + padding, y + padding / 2 + fm.getAscent());
     }
 
     private void drawBackground(Graphics2D g2) {
