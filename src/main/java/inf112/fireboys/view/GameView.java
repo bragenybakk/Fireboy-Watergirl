@@ -12,7 +12,6 @@ import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
-import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,6 +23,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
@@ -47,6 +48,10 @@ public class GameView extends JPanel {
     private BufferedImage adLeft;
     private BufferedImage adRight;
     private Rectangle adBlockToggleBounds = new Rectangle();
+    private final SpriteSheet spriteSheet;
+    // Remembers last horizontal direction per player so sprite keeps facing
+    // that way after they stop moving.
+    private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -54,7 +59,7 @@ public class GameView extends JPanel {
         this.setBackground(Color.decode("#35654d"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-        SpriteSheet spriteSheet = new SpriteSheet("/spritesheet.png");
+        this.spriteSheet = new SpriteSheet("/spritesheet.png");
         fireboySprite = spriteSheet.getFireboyHead();
         watergirlSprite = spriteSheet.getWatergirlHead();
         blueGemSprite = spriteSheet.getBlueGem();
@@ -335,9 +340,22 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (player.getPos().y() * scale));
         int w = (int) (player.getWidth() * scale);
         int h = (int) (player.getHeight() * scale);
+        // Update facing direction from velocity; keep previous when standing still
+        double vx = player.getVelocityX();
+        if (vx < -0.05) {
+            playerFacingLeft.put(player, true);
+        } else if (vx > 0.05) {
+            playerFacingLeft.put(player, false);
+        }
+        boolean facingLeft = playerFacingLeft.getOrDefault(player, false);
         BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
         if (sprite != null) {
-            g2.drawImage(sprite, x, y, w, h, null);
+            // Flip horizontally by passing negative width and offsetting x
+            if (facingLeft) {
+                g2.drawImage(sprite, x + w, y, -w, h, null);
+            } else {
+                g2.drawImage(sprite, x, y, w, h, null);
+            }
         } else {
             g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
             g2.fillRect(x, y, w, h);

@@ -30,6 +30,9 @@ public class SpriteSheet {
         return getSprite(1095, 1375, 70, 70);
     }
 
+    /**
+     * Extract a sprite region from the sheet.
+     */
     private BufferedImage getSprite(int x, int y, int width, int height) {
         if (sheet == null)
             return null;
