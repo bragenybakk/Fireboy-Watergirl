@@ -34,8 +34,8 @@ import java.io.IOException;
  */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
-    private int windowWidth = 1000;
-    private int windowHeight = 600;
+    private int windowWidth = 700;
+    private int windowHeight = 900;
     private Font font = new Font("Arial", Font.PLAIN, 12);
     private Font titleFont = new Font("Arial", Font.BOLD, 48);
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
@@ -180,7 +180,14 @@ public class GameView extends JPanel {
         g2.setColor(Color.decode("#2d5440"));
         g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
         for (StaticEntity entity : board.entities()) {
-            drawEntity(g2, entity, scale, diff_X, diff_Y);
+            if (!(entity instanceof Pool)) {
+                drawEntity(g2, entity, scale, diff_X, diff_Y);
+            }
+        }
+        for (StaticEntity entity : board.entities()) {
+            if (entity instanceof Pool) {
+                drawEntity(g2, entity, scale, diff_X, diff_Y);
+            }
         }
         if (viewableGameModel.getPlayers() != null) {
             for (Player player : viewableGameModel.getPlayers()) {
@@ -202,7 +209,9 @@ public class GameView extends JPanel {
     private void drawHUD(Graphics2D g2) {
         g2.setFont(new Font("Arial", Font.BOLD, 30));
         g2.setColor(Color.WHITE);
-        g2.drawString("Score: " + viewableGameModel.getScore(), 20, 30);
+        int collected = viewableGameModel.getCollectedGems();
+        int total = viewableGameModel.getTotalGems();
+        g2.drawString("Gems: " + collected + "/" + total, 20, 30);
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -268,7 +277,8 @@ public class GameView extends JPanel {
             return;
         }
         if (entity instanceof Gem gem) {
-            if (gem.isCollected()) return;
+            if (gem.isCollected())
+                return;
             int x = (int) (diff_X + (gem.getPos().x() * scale));
             int y = (int) (diff_Y + (gem.getPos().y() * scale));
             int w = (int) (gem.getWidth() * scale);
@@ -387,12 +397,22 @@ public class GameView extends JPanel {
         // Draw available levels
         java.util.List<String> levels = viewableGameModel.getLevelNames();
         int selected = viewableGameModel.getSelectedMenuOption();
+        int unlockedLevelCount = viewableGameModel.getUnlockedLevelCount();
         g2.setFont(menuFont);
         int startY = 220;
         int spacing = 48;
         for (int i = 0; i < levels.size(); i++) {
             String name = levels.get(i);
-            if (i == selected) {
+            boolean isUnlocked = i < unlockedLevelCount;
+            if (!isUnlocked) {
+                g2.setFont(menuFont);
+                g2.setColor(Color.GRAY);
+                fm = g2.getFontMetrics();
+                String lockedName = "[LOCKED] " + name;
+                int textWidth = fm.stringWidth(lockedName);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(lockedName, tx, startY + i * spacing);
+            } else if (i == selected) {
                 g2.setFont(selectedMenuFont);
                 g2.setColor(Color.decode("#f5a623"));
                 String marker = "► ";
@@ -411,7 +431,7 @@ public class GameView extends JPanel {
         }
         g2.setFont(font);
         g2.setColor(Color.GRAY);
-        String hint = "Press ESC to go back";
+        String hint = "Fullfør nivåer i rekkefølge for å låse opp neste";
         fm = g2.getFontMetrics();
         x = (windowWidth - fm.stringWidth(hint)) / 2;
         g2.drawString(hint, x, windowHeight - 50);

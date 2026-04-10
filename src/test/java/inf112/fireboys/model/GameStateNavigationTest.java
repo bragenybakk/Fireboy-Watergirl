@@ -16,6 +16,15 @@ public class GameStateNavigationTest {
         }
         return null;
     }
+
+    private Board readGemGateLevel() {
+        try {
+            return GameReader.loadLevel("src/test/resources/gem_gate.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     // ============ Main Menu Tests ============
 
     @Test
@@ -149,5 +158,39 @@ public class GameStateNavigationTest {
         model.setGameState(GameState.LEVEL_SELECT);
         assertNotNull(model.getLevelNames(),
                 "Level names should not be null after entering LEVEL_SELECT");
+    }
+
+    @Test
+    void testLevelsUnlockInOrder() {
+        GameModel model = new GameModel();
+        model.setGameState(GameState.LEVEL_SELECT);
+        model.menuDown();
+        assertEquals(0, model.getSelectedMenuOption(),
+                "Only first level should be selectable at start");
+        model.loadLevel("level1.txt");
+        model.getPlayers().get(0).setPos(new Position(85, 78));
+        model.clockTick();
+        assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
+                "Completing level 1 should return to LEVEL_SELECT");
+        model.menuDown();
+        assertEquals(1, model.getSelectedMenuOption(),
+                "Level 2 should be unlocked after finishing level 1");
+    }
+
+    @Test
+    void testDoorRequiresAllGemsCollected() {
+        Board board = readGemGateLevel();
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        model.getPlayers().get(0).setPos(new Position(80, 78));
+        model.clockTick();
+        assertEquals(GameState.PLAYING, model.getGameState(),
+                "Door should stay locked until all gems are collected");
+        model.getPlayers().get(0).setPos(new Position(40, 84));
+        model.clockTick();
+        model.getPlayers().get(0).setPos(new Position(80, 78));
+        model.clockTick();
+        assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
+                "After collecting all gems, door should complete the level");
     }
 }

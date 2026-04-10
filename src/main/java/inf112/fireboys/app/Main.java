@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-
 import inf112.fireboys.controller.GameController;
 import inf112.fireboys.model.GameModel;
 import inf112.fireboys.view.GameView;

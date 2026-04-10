@@ -33,8 +33,15 @@ public interface ViewableGameModel {
     /** Returns the list of available level names. */
     List<String> getLevelNames();
 
+    /** Returns how many levels are currently unlocked in order from level 1. */
+    int getUnlockedLevelCount();
+
     /** Returns whether the ad blocker is currently enabled. */
     boolean isAdsBlocked();
 
     int getScore();
+
+    int getTotalGems();
+
+    int getCollectedGems();
 }

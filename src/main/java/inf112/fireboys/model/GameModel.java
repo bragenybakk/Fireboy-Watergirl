@@ -38,6 +38,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private boolean adsBlocked = false;
     // Level file names
     private List<String> levelNames = null;
+    private int unlockedLevelCount = 99;
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -123,7 +124,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                     entity.whenContact(player);
                     if (entity instanceof Door) {
-                        ((Door) entity).setOpen(true);
+                        ((Door) entity).setOpen(areAllGemsCollected());
                         checkWinConditions();
                     }
                 }
@@ -230,6 +231,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             // Load available level files when entering level select
             try {
                 this.levelNames = loadLevelNamesFromDisk();
+                clampUnlockedLevelCount();
             } catch (Exception e) {
                 this.levelNames = new ArrayList<>();
             }
@@ -282,7 +284,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void menuDown() {
         int maxIndex = mainMenuOptions.length - 1;
         if (gameState == GameState.LEVEL_SELECT && levelNames != null) {
-            maxIndex = Math.max(0, levelNames.size() - 1);
+            int unlocked = Math.min(levelNames.size(), unlockedLevelCount);
+            maxIndex = Math.max(0, unlocked - 1);
         } else if (gameState == GameState.PAUSED) {
             maxIndex = pauseMenuOptions.length - 1;
         } else if (gameState == GameState.GAME_OVER) {
@@ -335,20 +338,27 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             // nothing to load
             return;
         }
-        int idx = Math.max(0, Math.min(selectedMenuOption, levelNames.size() - 1));
+        int maxUnlockedIndex = Math.min(levelNames.size(), unlockedLevelCount) - 1;
+        int idx = Math.max(0, Math.min(selectedMenuOption, maxUnlockedIndex));
+        if (idx > maxUnlockedIndex) {
+            return;
+        }
         String chosen = levelNames.get(idx);
         loadLevel(chosen + ".txt");
     }
 
     private void checkWinConditions() {
+        if (!areAllGemsCollected()) {
+            return;
+        }
         for (StaticEntity e : entities)
             if (e instanceof Door) {
                 Door door = (Door) e;
                 if (!door.isOpen()) {
                     return;
                 }
-                door.setOpen(false);
             }
+        unlockNextLevel();
         setGameState(GameState.LEVEL_SELECT);
     }
     // =============== LEVEL READER / LOADER ===============
@@ -356,8 +366,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
-            String path = "src/main/resources/" + levelFileName;
-            this.board = GameReader.loadLevel(path);
+            this.board = GameReader.loadLevel(levelFileName);
             List<Player> allPlayers = board.players();
             if (testModeSinglePlayer && !allPlayers.isEmpty()) {
                 this.players = new ArrayList<>();
@@ -378,6 +387,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (levelNames == null) {
             try {
                 levelNames = loadLevelNamesFromDisk();
+                clampUnlockedLevelCount();
             } catch (Exception e) {
                 levelNames = new ArrayList<>();
             }
@@ -385,8 +395,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return levelNames;
     }
 
+    @Override
+    public int getUnlockedLevelCount() {
+        return unlockedLevelCount;
+    }
+
     private List<String> loadLevelNamesFromDisk() throws Exception {
-        Path dir = Paths.get("src/main/resources");
+        java.net.URL url = getClass().getClassLoader().getResource(".");
+        if (url == null)
+            return new ArrayList<>();
+        Path dir = Paths.get(url.toURI());
         if (!Files.exists(dir) || !Files.isDirectory(dir))
             return new ArrayList<>();
         return Files.list(dir)
@@ -395,6 +413,68 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 .map(p -> p.getFileName().toString().replaceAll("\\.txt$", ""))
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    private boolean areAllGemsCollected() {
+        if (entities == null)
+            return true;
+        for (StaticEntity entity : entities) {
+            if (entity instanceof Gem gem && !gem.isCollected()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int getTotalGems() {
+        if (entities == null)
+            return 0;
+        int count = 0;
+        for (StaticEntity entity : entities) {
+            if (entity instanceof Gem) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getCollectedGems() {
+        if (entities == null)
+            return 0;
+        int count = 0;
+        for (StaticEntity entity : entities) {
+            if (entity instanceof Gem gem && gem.isCollected()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void unlockNextLevel() {
+        try {
+            if (levelNames == null) {
+                levelNames = loadLevelNamesFromDisk();
+            }
+        } catch (Exception e) {
+            return;
+        }
+        if (levelNames == null || levelNames.isEmpty() || currentLevelFileName == null) {
+            return;
+        }
+        String current = currentLevelFileName.replaceAll("\\.txt$", "");
+        int currentIndex = levelNames.indexOf(current);
+        if (currentIndex >= 0) {
+            unlockedLevelCount = Math.max(unlockedLevelCount, currentIndex + 2);
+            clampUnlockedLevelCount();
+        }
+    }
+
+    private void clampUnlockedLevelCount() {
+        if (levelNames == null || levelNames.isEmpty()) {
+            unlockedLevelCount = Math.max(1, unlockedLevelCount);
+            return;
+        }
+        unlockedLevelCount = Math.max(1, Math.min(unlockedLevelCount, levelNames.size()));
     }
 
     private void handlePauseMenuSelection() {
