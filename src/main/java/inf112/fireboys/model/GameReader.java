@@ -12,26 +12,29 @@ import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class GameReader {
     /**
-     * Reads a level file and returns a Board.
-     * 
-     * @throws FileNotFoundException
+     * Reads a level file from the classpath and returns a Board.
+     * The fileName should be just the filename, e.g. "level1.txt".
      */
-    public static Board loadLevel(String filePath) throws FileNotFoundException {
+    public static Board loadLevel(String fileName) throws IOException {
         List<StaticEntity> entities = new ArrayList<>();
         List<Player> players = new ArrayList<>();
         List<IEnemy> enemies = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
-        File file = new File(filePath);
-        Scanner sc = new Scanner(file);
+
+        InputStream is = GameReader.class.getClassLoader().getResourceAsStream(fileName);
+        if (is == null) {
+            throw new IOException("Level file not found on classpath: " + fileName);
+        }
+        Scanner sc = new Scanner(is);
         while (sc.hasNext()) {
             String entityId = sc.next().toUpperCase();
             switch (entityId) {
