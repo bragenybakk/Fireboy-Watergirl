@@ -25,7 +25,7 @@ public class CollisionOrderTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        Board board = GameReader.loadLevel("src/test/resources/twoboxes_walled.txt");
+        Board board = GameReader.loadLevel("twoboxes_walled.txt");
         model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         int boxCount = 0;

@@ -16,7 +16,7 @@ public class BoxChainPushTest {
     private Box boxB;
     @BeforeEach
     void setUp() throws Exception {
-        Board board = GameReader.loadLevel("src/test/resources/twoboxes.txt");
+        Board board = GameReader.loadLevel("twoboxes.txt");
         model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         // Find the two boxes from entities

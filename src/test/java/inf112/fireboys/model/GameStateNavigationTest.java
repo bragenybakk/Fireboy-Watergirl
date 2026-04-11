@@ -10,7 +10,7 @@ import inf112.fireboys.coordinateSystem.Position;
 public class GameStateNavigationTest {
     private Board readGameEasy() {
         try {
-            return GameReader.loadLevel("src/test/resources/easy.txt");
+            return GameReader.loadLevel("easy.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -19,7 +19,7 @@ public class GameStateNavigationTest {
 
     private Board readGemGateLevel() {
         try {
-            return GameReader.loadLevel("src/test/resources/gem_gate.txt");
+            return GameReader.loadLevel("gem_gate.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }

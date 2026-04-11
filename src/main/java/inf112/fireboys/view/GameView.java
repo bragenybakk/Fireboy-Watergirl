@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class GameView extends JPanel {
     private ViewableGameModel viewableGameModel;
-    private int windowWidth = 700;
+    private int windowWidth = 1100;
     private int windowHeight = 900;
     private Font font = new Font("Arial", Font.PLAIN, 12);
     private Font titleFont = new Font("Arial", Font.BOLD, 48);

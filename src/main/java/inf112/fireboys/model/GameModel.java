@@ -115,6 +115,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private void handlePlayerCollisions() {
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
+            double yBeforeCollisions = player.getPos().y();
             for (IStaticEntity entity : entities) {
                 if (entity instanceof Gem gem && gem.isCollected())
                     continue;
@@ -130,8 +131,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 }
             }
             // If player was jumping from a pool, restore velocity so wall doesn't cancel
-            // the jump
-            if (savedVelocityY < 0) {
+            // the jump — but not if the player hit a ceiling (which pushes Y downward)
+            if (savedVelocityY < 0 && player.getPos().y() <= yBeforeCollisions) {
                 player.setVelocityY(savedVelocityY);
                 player.setOnGroundFALSE();
             }

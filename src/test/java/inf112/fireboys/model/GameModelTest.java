@@ -10,7 +10,7 @@ import inf112.fireboys.coordinateSystem.Position;
 public class GameModelTest {
     private Board readGameEasy() {
         try {
-            Board board = GameReader.loadLevel("src/test/resources/easy.txt");
+            Board board = GameReader.loadLevel("easy.txt");
             return board;
         } catch (Exception e) {
             e.printStackTrace();
@@ -20,7 +20,7 @@ public class GameModelTest {
 
     private Board readGameFalling() {
         try {
-            Board board = GameReader.loadLevel("src/test/resources/falling.txt");
+            Board board = GameReader.loadLevel("falling.txt");
             return board;
         } catch (Exception e) {
             e.printStackTrace();
