@@ -4,8 +4,13 @@ import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.player.IPlayer;
 
-public class Wall extends StaticEntity {
-    public Wall(Position position, double width, double height) {
+/**
+ * Pressure plate: wall-like collision. First jump on the plate only charges
+ * (purple glow); the next jump elsewhere uses boost (see GameModel.playerJump).
+ */
+public class BoostPlatform extends StaticEntity {
+
+    public BoostPlatform(Position position, double width, double height) {
         super(position, width, height);
     }
 

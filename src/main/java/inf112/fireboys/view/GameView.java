@@ -8,11 +8,14 @@ import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
+import inf112.fireboys.model.entity.BoostPlatform;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -217,6 +220,14 @@ public class GameView extends JPanel {
         int collected = viewableGameModel.getCollectedGems();
         int total = viewableGameModel.getTotalGems();
         g2.drawString("Gems: " + collected + "/" + total, 20, 30);
+        if (viewableGameModel.isPlayerOnBoostPlateWithoutCharge()) {
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.setColor(Color.WHITE);
+            String hint = "Hopp for å lade boost";
+            FontMetrics hfm = g2.getFontMetrics();
+            int hx = (getWidth() - hfm.stringWidth(hint)) / 2;
+            g2.drawString(hint, hx, getHeight() - 48);
+        }
     }
 
     private void drawEnemy(Graphics2D g2, IEnemy enemy, double scale, int diff_X, int diff_Y) {
@@ -298,6 +309,35 @@ public class GameView extends JPanel {
             }
             return;
         }
+        if (entity instanceof BoostPlatform pad) {
+            int px = (int) (diff_X + (pad.getPos().x() * scale));
+            int py = (int) (diff_Y + (pad.getPos().y() * scale));
+            int pw = (int) (pad.getWidth() * scale);
+            int ph = (int) (pad.getHeight() * scale);
+            int arc = Math.max(2, Math.min(ph / 2 + 1, 6));
+            g2.setColor(new Color(48, 50, 58));
+            g2.fillRoundRect(px, py, Math.max(1, pw), Math.max(1, ph), arc, arc);
+            int inset = Math.max(1, (int) Math.ceil(ph / 4.0));
+            g2.setColor(new Color(108, 112, 124));
+            g2.fillRoundRect(px + inset, py + inset, Math.max(1, pw - 2 * inset), Math.max(1, ph - 2 * inset),
+                    Math.max(1, arc - inset), Math.max(1, arc - inset));
+            g2.setColor(new Color(72, 145, 82));
+            int stripeH = Math.max(1, ph / 2);
+            g2.fillRoundRect(px + inset + 1, py + inset, Math.max(1, pw - 2 * inset - 2), stripeH,
+                    1, 1);
+            g2.setColor(new Color(210, 215, 225, 140));
+            g2.fillRect(px + inset + 1, py + inset + 1, Math.max(1, pw - 2 * inset - 2), Math.max(1, stripeH / 2));
+
+            g2.setColor(Color.BLACK);
+            g2.drawRoundRect(px, py, Math.max(1, pw), Math.max(1, ph), arc, arc);
+            if (pw > 10) {
+                int rivet = Math.max(2, Math.min(5, ph));
+                g2.setColor(new Color(65, 68, 76));
+                g2.fillOval(px + 2, py + ph / 2 - rivet / 2, rivet, rivet);
+                g2.fillOval(px + pw - 2 - rivet, py + ph / 2 - rivet / 2, rivet, rivet);
+            }
+            return;
+        }
         int x = (int) (diff_X + (entity.getPos().x() * scale));
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
@@ -359,6 +399,13 @@ public class GameView extends JPanel {
         } else {
             g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
             g2.fillRect(x, y, w, h);
+        }
+        if (player.hasJumpBoost()) {
+            Composite original = g2.getComposite();
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.45f));
+            g2.setColor(new Color(160, 32, 240));
+            g2.fillRect(x, y, w, h);
+            g2.setComposite(original);
         }
     }
 
