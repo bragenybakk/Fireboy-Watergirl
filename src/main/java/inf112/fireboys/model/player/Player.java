@@ -20,6 +20,9 @@ public class Player implements IPlayer {
     private boolean isOnGround;
     private boolean alive;
     private int score = 0;
+    private boolean jumpBoostCharged = false;
+    private static final double JUMP_IMPULSE_NORMAL = -1.8;
+    private static final double JUMP_IMPULSE_BOOSTED = JUMP_IMPULSE_NORMAL * 1.5;
     /**
      * Constructs a Player with the given position and element state.
      * 
@@ -112,6 +115,26 @@ public class Player implements IPlayer {
 
     public int getScore() {
         return score;
+    }
+
+    @Override
+    public void grantJumpBoost() {
+        jumpBoostCharged = true;
+    }
+
+    @Override
+    public boolean hasJumpBoost() {
+        return jumpBoostCharged;
+    }
+
+    @Override
+    public double getJumpImpulse() {
+        return jumpBoostCharged ? JUMP_IMPULSE_BOOSTED : JUMP_IMPULSE_NORMAL;
+    }
+
+    @Override
+    public void consumeJumpBoost() {
+        jumpBoostCharged = false;
     }
 
     @Override

@@ -7,6 +7,7 @@ import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
+import inf112.fireboys.model.entity.BoostPlatform;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class GameReader {
@@ -34,7 +36,7 @@ public class GameReader {
         if (is == null) {
             throw new IOException("Level file not found on classpath: " + fileName);
         }
-        Scanner sc = new Scanner(is);
+        Scanner sc = new Scanner(is).useLocale(Locale.US);
         while (sc.hasNext()) {
             String entityId = sc.next().toUpperCase();
             switch (entityId) {
@@ -70,6 +72,13 @@ public class GameReader {
                     String gemType = sc.next();
                     ElementState gemElement = ElementState.valueOf(gemType);
                     entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble(), gemElement));
+                    break;
+                case "BOOST_PLATFORM":
+                case "GRAVITY_POTION":
+                case "JUMP_PAD":
+                    entities.add(new BoostPlatform(
+                            new Position(sc.nextDouble(), sc.nextDouble()),
+                            sc.nextDouble(), sc.nextDouble()));
                     break;
                 case "ENEMY":
                     enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));

@@ -53,4 +53,12 @@ public interface IPlayer extends IMovable {
      * @param i
      */
     void addScore(int i);
+
+    void grantJumpBoost();
+
+    boolean hasJumpBoost();
+
+    double getJumpImpulse();
+
+    void consumeJumpBoost();
 }

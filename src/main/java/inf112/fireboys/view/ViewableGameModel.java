@@ -44,4 +44,9 @@ public interface ViewableGameModel {
     int getTotalGems();
 
     int getCollectedGems();
+
+    /**
+     * True when the first player stands on a boost plate without a charged jump.
+     */
+    boolean isPlayerOnBoostPlateWithoutCharge();
 }

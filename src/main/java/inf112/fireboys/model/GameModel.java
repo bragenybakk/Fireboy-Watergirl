@@ -190,6 +190,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private boolean isInsideWall(IMovable movable, StaticEntity self, StaticEntity other) {
         for (StaticEntity wall : entities) {
+            if (wall instanceof Gem gem && gem.isCollected())
+                continue;
             if (wall != self && wall != other && !(wall instanceof IMovable)
                     && checkCollision(wall, movable)) {
                 return true;
@@ -211,6 +213,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             return;
         for (IEnemy enemy : enemies) {
             for (StaticEntity entity : entities) {
+                if (entity instanceof Gem gem && gem.isCollected())
+                    continue;
                 if (checkCollision(entity, enemy)) {
                     entity.whenContact(enemy);
                 }
@@ -451,6 +455,45 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return count;
     }
 
+    @Override
+    public boolean isPlayerOnBoostPlateWithoutCharge() {
+        if (players == null || players.isEmpty() || entities == null) {
+            return false;
+        }
+        Player p = players.get(0);
+        if (!p.isOnGround() || p.hasJumpBoost()) {
+            return false;
+        }
+        return isStandingOnBoostPlatform(p);
+    }
+
+    private boolean isStandingOnBoostPlatform(Player p) {
+        for (StaticEntity e : entities) {
+            if (!(e instanceof BoostPlatform bp)) {
+                continue;
+            }
+            double px = p.getPos().x();
+            double pw = p.getWidth();
+            double bx = bp.getPos().x();
+            double bw = bp.getWidth();
+            if (px + pw <= bx || px >= bx + bw) {
+                continue;
+            }
+            double playerBottom = p.getPos().y() + p.getHeight();
+            double platTop = bp.getPos().y();
+            double platBottom = platTop + bp.getHeight();
+            double platH = bp.getHeight();
+            // Thin plates (e.g. h=1) on a floor: feet often sit on the floor just under the
+            // AABB bottom, so allow more slack below; keep tighter for thick platforms.
+            double slackBelow = Math.max(1.0, 6.0 - platH);
+            double slackAbove = Math.max(0.2, 2.5 - platH * 0.3);
+            if (playerBottom >= platTop - slackAbove && playerBottom <= platBottom + slackBelow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void unlockNextLevel() {
         try {
             if (levelNames == null) {
@@ -531,10 +574,17 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     @Override
     public void playerJump() {
-        if (players != null && !players.isEmpty() && players.get(0).isOnGround()) {
-            players.get(0).setVelocityY(-1.8);
-            players.get(0).setOnGroundFALSE();
+        if (players == null || players.isEmpty() || !players.get(0).isOnGround()) {
+            return;
         }
+        Player p = players.get(0);
+        if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
+            p.grantJumpBoost();
+            return;
+        }
+        p.setVelocityY(p.getJumpImpulse());
+        p.consumeJumpBoost();
+        p.setOnGroundFALSE();
     }
 
     public void stopPlayer() {
