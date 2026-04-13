@@ -160,37 +160,30 @@ public class GameStateNavigationTest {
                 "Level names should not be null after entering LEVEL_SELECT");
     }
 
-    /**
-     * TODO: Uncomment when project is finished.
-     * Disabled because {@code unlockedLevelCount} defaults to 99 during development
-     * so all levels are accessible while working on the project. Re-enable (and set
-     * the default back to 1 in {@link GameModel}) once level progression should be
-     * enforced for end users.
-     */
-    // @Test
-    // void testLevelsUnlockInOrder() {
-    //     GameModel model = new GameModel();
-    //     model.setGameState(GameState.LEVEL_SELECT);
-    //     model.menuDown();
-    //     assertEquals(0, model.getSelectedMenuOption(),
-    //             "Only first level should be selectable at start");
-    //     model.loadLevel("level1.txt");
-    //     model.getPlayers().get(0).setPos(new Position(15, 105));
-    //     model.clockTick();
-    //     model.getPlayers().get(0).setPos(new Position(78, 80));
-    //     model.clockTick();
-    //     model.getPlayers().get(0).setPos(new Position(35, 70));
-    //     model.clockTick();
-    //     model.getPlayers().get(0).setPos(new Position(48, 90));
-    //     model.clockTick();
-    //     model.getPlayers().get(0).setPos(new Position(44, 65));
-    //     model.clockTick();
-    //     assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
-    //             "Completing level 1 should return to LEVEL_SELECT");
-    //     model.menuDown();
-    //     assertEquals(1, model.getSelectedMenuOption(),
-    //             "Level 2 should be unlocked after finishing level 1");
-    // }
+    @Test
+    void testLevelsUnlockInOrder() {
+        GameModel model = new GameModel();
+        model.setGameState(GameState.LEVEL_SELECT);
+        model.menuDown();
+        assertEquals(0, model.getSelectedMenuOption(),
+                "Only first level should be selectable at start");
+        model.loadLevel("level1.txt");
+        model.getPlayers().get(0).setPos(new Position(15, 105));
+        model.clockTick();
+        model.getPlayers().get(0).setPos(new Position(78, 80));
+        model.clockTick();
+        model.getPlayers().get(0).setPos(new Position(35, 70));
+        model.clockTick();
+        model.getPlayers().get(0).setPos(new Position(48, 90));
+        model.clockTick();
+        model.getPlayers().get(0).setPos(new Position(44, 65));
+        model.clockTick();
+        assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
+                "Completing level 1 should return to LEVEL_SELECT");
+        model.menuDown();
+        assertEquals(1, model.getSelectedMenuOption(),
+                "Level 2 should be unlocked after finishing level 1");
+    }
 
     @Test
     void testDoorRequiresAllGemsCollected() {

@@ -2,9 +2,10 @@ package inf112.fireboys.model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import inf112.fireboys.controller.ControllableGameModel;
@@ -38,7 +39,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private boolean adsBlocked = false;
     // Level file names
     private List<String> levelNames = null;
-    private int unlockedLevelCount = 99;
+    private int unlockedLevelCount = 1;
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -402,18 +403,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private List<String> loadLevelNamesFromDisk() throws Exception {
-        java.net.URL url = getClass().getClassLoader().getResource(".");
-        if (url == null)
-            return new ArrayList<>();
-        Path dir = Paths.get(url.toURI());
-        if (!Files.exists(dir) || !Files.isDirectory(dir))
-            return new ArrayList<>();
-        return Files.list(dir)
-                .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().toLowerCase().startsWith("level")
-                        && p.getFileName().toString().toLowerCase().endsWith(".txt"))
-                .map(p -> p.getFileName().toString().replaceAll("\\.txt$", ""))
-                .sorted()
-                .collect(Collectors.toList());
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("levels.txt")) {
+            if (is == null)
+                return new ArrayList<>();
+            return new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+                    .lines()
+                    .map(String::trim)
+                    .filter(line -> !line.isEmpty() && !line.startsWith("#"))
+                    .collect(Collectors.toList());
+        }
     }
 
     private boolean areAllGemsCollected() {
