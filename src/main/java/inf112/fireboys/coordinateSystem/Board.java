@@ -7,13 +7,9 @@ import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.player.Player;
 
 public record Board(double boardWidth, double boardHeight, List<Player> players, List<StaticEntity> entities,
-        List<IEnemy> enemies) {
+        List<IEnemy> enemies, List<Decoration> decorations) {
     public Board(double boardWidth, double boardHeight, List<Player> players, List<StaticEntity> entities,
             List<IEnemy> enemies) {
-        this.boardWidth = boardWidth;
-        this.boardHeight = boardHeight;
-        this.players = players;
-        this.entities = entities;
-        this.enemies = enemies;
+        this(boardWidth, boardHeight, players, entities, enemies, List.of());
     }
 }
