@@ -7,14 +7,17 @@ import javax.swing.JFrame;
 
 import inf112.fireboys.controller.GameController;
 import inf112.fireboys.model.GameModel;
+import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.GameView;
 
 public class Main {
 	public static final String GAME_TITLE = "Fireboy and Watergirl";
 	public static void main(String[] args) {
+		AudioManager audio = new AudioManager();
+		audio.playMusic("/Dentaneosuchus Hunt.mp3");
 		GameModel model = new GameModel();
 		GameView view = new GameView(model);
-		new GameController(model, view);
+		new GameController(model, view, audio);
 		JFrame frame = new JFrame(GAME_TITLE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setContentPane(view);
