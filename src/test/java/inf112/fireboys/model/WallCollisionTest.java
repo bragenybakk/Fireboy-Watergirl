@@ -12,8 +12,8 @@ import inf112.fireboys.model.player.Player;
 // Players and walls are set up directly so we control which side gets hit.
 public class WallCollisionTest {
 
-    private static final double P_W = 4.0;
-    private static final double P_H = 4.0;
+    private static final double P_W = 8.0;
+    private static final double P_H = 8.0;
 
     // --- landing on top of wall ---
 

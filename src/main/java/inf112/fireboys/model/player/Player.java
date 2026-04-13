@@ -37,8 +37,8 @@ public class Player implements IPlayer {
         this.velocityY = 0;
         this.position = position;
         this.startPos = position;
-        this.height = 4.0;
-        this.width = 4.0;
+        this.height = 8.0;
+        this.width = 8.0;
         this.weight = 1.0;
         this.isOnGround = true;
         this.alive = true;

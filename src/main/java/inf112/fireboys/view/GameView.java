@@ -11,6 +11,7 @@ import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
+import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 
 import java.awt.AlphaComposite;
@@ -25,6 +26,7 @@ import java.awt.Polygon;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +54,9 @@ public class GameView extends JPanel {
     private BufferedImage adRight;
     private Rectangle adBlockToggleBounds = new Rectangle();
     private final SpriteSheet spriteSheet;
+    private final CastleTileSheet castleTiles;
+    private BufferedImage wallTile;
+    private BufferedImage doorSprite;
     // Remembers last horizontal direction per player so sprite keeps facing
     // that way after they stop moving.
     private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
@@ -59,7 +64,7 @@ public class GameView extends JPanel {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
         this.setFont(font);
-        this.setBackground(Color.decode("#35654d"));
+        this.setBackground(Color.decode("#161624"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
         this.spriteSheet = new SpriteSheet("/spritesheet.png");
@@ -67,6 +72,9 @@ public class GameView extends JPanel {
         watergirlSprite = spriteSheet.getWatergirlHead();
         blueGemSprite = spriteSheet.getBlueGem();
         fireGemSprite = spriteSheet.getFireGem();
+        this.castleTiles = new CastleTileSheet("/oppcastle-mod-tiles.png");
+        wallTile = castleTiles.getWallTile();
+        doorSprite = castleTiles.getDoor();
         try {
             adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
             adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
@@ -185,7 +193,7 @@ public class GameView extends JPanel {
         double scale = screenRelation;
         // --- DRAWING ---
         drawBackground(g2);
-        g2.setColor(Color.decode("#2d5440"));
+        g2.setColor(Color.decode("#222034"));
         g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
         for (StaticEntity entity : board.entities()) {
             if (!(entity instanceof Pool)) {
@@ -283,7 +291,7 @@ public class GameView extends JPanel {
     }
 
     private void drawBackground(Graphics2D g2) {
-        g2.setColor(Color.decode("#35654d"));
+        g2.setColor(Color.decode("#161624"));
         g2.fillRect(0, 0, getWidth(), getHeight());
     }
 
@@ -342,6 +350,18 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
         int h = (int) (entity.getHeight() * scale);
+        if (entity instanceof Door && doorSprite != null) {
+            g2.drawImage(doorSprite, x, y, w, h, null);
+            return;
+        }
+        if (entity instanceof Wall && wallTile != null) {
+            int tileSize = Math.max(8, (int) (4 * scale));
+            TexturePaint tile = new TexturePaint(wallTile,
+                    new Rectangle(x, y, tileSize, tileSize));
+            g2.setPaint(tile);
+            g2.fillRect(x, y, w, h);
+            return;
+        }
         if (entity instanceof Door) {
             g2.setColor(Color.decode("#8B4513"));
         } else {
