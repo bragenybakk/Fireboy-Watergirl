@@ -1,6 +1,7 @@
 package inf112.fireboys.model;
 
 import inf112.fireboys.coordinateSystem.Board;
+import inf112.fireboys.coordinateSystem.Decoration;
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.enemy.Enemy;
@@ -29,6 +30,7 @@ public class GameReader {
         List<StaticEntity> entities = new ArrayList<>();
         List<Player> players = new ArrayList<>();
         List<IEnemy> enemies = new ArrayList<>();
+        List<Decoration> decorations = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
 
@@ -83,6 +85,14 @@ public class GameReader {
                 case "ENEMY":
                     enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
                     break;
+                case "DECOR_TORCH":
+                    decorations.add(new Decoration(new Position(sc.nextDouble(), sc.nextDouble()),
+                            sc.nextDouble(), sc.nextDouble(), 96, 288, 32, 32));
+                    break;
+                case "DECOR_WINDOW":
+                    decorations.add(new Decoration(new Position(sc.nextDouble(), sc.nextDouble()),
+                            sc.nextDouble(), sc.nextDouble(), 96, 256, 32, 32));
+                    break;
                 default:
                     if (sc.hasNextLine())
                         sc.nextLine();
@@ -90,6 +100,6 @@ public class GameReader {
             }
         }
         sc.close();
-        return new Board(boardWidth, boardHeight, players, entities, enemies);
+        return new Board(boardWidth, boardHeight, players, entities, enemies, decorations);
     }
 }

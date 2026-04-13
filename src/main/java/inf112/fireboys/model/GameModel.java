@@ -560,13 +560,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // ============ Player controls ============
     public void movePlayerLeft() {
         if (players != null && !players.isEmpty()) {
-            players.get(0).setVelocityX(-0.5);
+            players.get(0).setVelocityX(-0.7);
         }
     }
 
     public void movePlayerRight() {
         if (players != null && !players.isEmpty()) {
-            players.get(0).setVelocityX(0.5);
+            players.get(0).setVelocityX(0.7);
         }
     }
 

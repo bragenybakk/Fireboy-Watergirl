@@ -3,6 +3,7 @@ package inf112.fireboys.view;
 import javax.swing.JPanel;
 
 import inf112.fireboys.coordinateSystem.Board;
+import inf112.fireboys.coordinateSystem.Decoration;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.IEnemy;
@@ -195,6 +196,9 @@ public class GameView extends JPanel {
         drawBackground(g2);
         g2.setColor(Color.decode("#222034"));
         g2.fillRect(diff_X, diff_Y, (int) (board.boardWidth() * scale), (int) (board.boardHeight() * scale));
+        for (Decoration decor : board.decorations()) {
+            drawDecoration(g2, decor, scale, diff_X, diff_Y);
+        }
         for (StaticEntity entity : board.entities()) {
             if (!(entity instanceof Pool)) {
                 drawEntity(g2, entity, scale, diff_X, diff_Y);
@@ -355,7 +359,7 @@ public class GameView extends JPanel {
             return;
         }
         if (entity instanceof Wall && wallTile != null) {
-            int tileSize = Math.max(8, (int) (4 * scale));
+            int tileSize = Math.max(8, (int) (8 * scale));
             TexturePaint tile = new TexturePaint(wallTile,
                     new Rectangle(x, y, tileSize, tileSize));
             g2.setPaint(tile);
@@ -370,6 +374,17 @@ public class GameView extends JPanel {
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
+    }
+
+    private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
+        BufferedImage sprite = castleTiles.getSprite(decor.sheetX(), decor.sheetY(), decor.sheetW(), decor.sheetH());
+        if (sprite == null)
+            return;
+        int x = (int) (diff_X + (decor.pos().x() * scale));
+        int y = (int) (diff_Y + (decor.pos().y() * scale));
+        int w = (int) (decor.width() * scale);
+        int h = (int) (decor.height() * scale);
+        g2.drawImage(sprite, x, y, w, h, null);
     }
 
     private void drawPool(Graphics2D g2, Pool pool, double scale, int diff_X, int diff_Y) {
