@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>no.uib.ii.inf112</groupId>
+	<groupId>FireBoys</groupId>
 	<artifactId>fireboys</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -34,6 +34,24 @@
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx-backend-lwjgl3</artifactId>
 			<version>${libgdx.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.badlogicgames.jlayer</groupId>
+					<artifactId>jlayer</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<!-- MP3 playback -->
+			<groupId>javazoom</groupId>
+			<artifactId>jlayer</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<!-- OGG/Vorbis playback via javax.sound.sampled SPI -->
+			<groupId>com.googlecode.soundlibs</groupId>
+			<artifactId>vorbisspi</artifactId>
+			<version>1.0.3.3</version>
 		</dependency>
 		<dependency>
 			<!-- run libgdx without graphics (for testing)-->
@@ -75,7 +93,7 @@
 			<version>5.15.2</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+<dependency>
 			<!-- SLF4J logging framework: https://slf4j.org/-->
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import inf112.fireboys.model.GameState;
+import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.GameView;
 
 import javax.swing.Timer;
@@ -17,13 +18,16 @@ import javax.swing.Timer;
 public class GameController implements KeyListener, MouseListener {
     private ControllableGameModel gameModel;
     private GameView gameView;
+    private AudioManager audioManager;
     private Timer gameLoopTimer;
+    private GameState previousState = null;
     // Track which keys are currently pressed
     private boolean leftPressed = false;
     private boolean rightPressed = false;
-    public GameController(ControllableGameModel gameModel, GameView gameView) {
+    public GameController(ControllableGameModel gameModel, GameView gameView, AudioManager audioManager) {
         this.gameModel = gameModel;
         this.gameView = gameView;
+        this.audioManager = audioManager;
         gameView.setFocusable(true);
         gameView.addKeyListener(this);
         gameView.addMouseListener(this);
@@ -34,7 +38,12 @@ public class GameController implements KeyListener, MouseListener {
     }
 
     private void updateGame() {
-        if (gameModel.getGameState() == GameState.PLAYING) {
+        GameState currentState = gameModel.getGameState();
+        if (previousState == GameState.PLAYING && currentState == GameState.GAME_OVER) {
+            audioManager.playSound("/blipp.ogg");
+        }
+        previousState = currentState;
+        if (currentState == GameState.PLAYING) {
             if (leftPressed) {
                 gameModel.movePlayerLeft();
             }
@@ -55,9 +64,9 @@ public class GameController implements KeyListener, MouseListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        GameState currentState = gameModel.getGameState();
+        GameState keyState = gameModel.getGameState();
         int keyCode = e.getKeyCode();
-        switch (currentState) {
+        switch (keyState) {
             case MAIN_MENU:
             case LEVEL_SELECT:
             case SETTINGS:
