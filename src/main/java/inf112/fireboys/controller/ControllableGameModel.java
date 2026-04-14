@@ -51,4 +51,16 @@ public interface ControllableGameModel {
 
     /** Returns whether sound effects are currently enabled. */
     boolean isSoundEnabled();
+
+    /** Moves player 2 (Fireboy) to the right. */
+    void movePlayer2Right();
+
+    /** Moves player 2 (Fireboy) to the left. */
+    void movePlayer2Left();
+
+    /** Stops player 2's (Fireboy) horizontal movement. */
+    void stopPlayer2();
+
+    /** Makes player 2 (Fireboy) jump if on the ground. */
+    void player2Jump();
 }
