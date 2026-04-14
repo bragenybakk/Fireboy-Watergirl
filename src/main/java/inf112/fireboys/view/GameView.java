@@ -546,9 +546,31 @@ public class GameView extends JPanel {
         FontMetrics fm = g2.getFontMetrics();
         int x = (windowWidth - fm.stringWidth(text)) / 2;
         g2.drawString(text, x, 120);
+        String[] options = viewableGameModel.getMenuOptions();
+        int selectedOption = viewableGameModel.getSelectedMenuOption();
+        int startY = 250;
+        int spacing = 70;
+        for (int i = 0; i < options.length; i++) {
+            if (i == selectedOption) {
+                g2.setFont(selectedMenuFont);
+                g2.setColor(Color.decode("#f5a623"));
+                String marker = "► ";
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(marker + options[i]);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(marker + options[i], tx, startY + i * spacing);
+            } else {
+                g2.setFont(menuFont);
+                g2.setColor(Color.WHITE);
+                fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(options[i]);
+                int tx = (windowWidth - textWidth) / 2;
+                g2.drawString(options[i], tx, startY + i * spacing);
+            }
+        }
         g2.setFont(font);
         g2.setColor(Color.GRAY);
-        String hint = "Press ESC to go back";
+        String hint = "Use ↑↓ to navigate, ENTER to toggle, ESC to go back";
         fm = g2.getFontMetrics();
         x = (windowWidth - fm.stringWidth(hint)) / 2;
         g2.drawString(hint, x, windowHeight - 50);

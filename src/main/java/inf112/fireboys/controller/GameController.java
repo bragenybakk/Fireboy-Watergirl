@@ -99,6 +99,7 @@ public class GameController implements KeyListener, MouseListener {
             case KeyEvent.VK_ENTER:
             case KeyEvent.VK_SPACE:
                 gameModel.menuSelect();
+                syncAudioWithModel();
                 break;
             case KeyEvent.VK_ESCAPE:
                 // Go back to main menu from submenu
@@ -106,6 +107,16 @@ public class GameController implements KeyListener, MouseListener {
                     gameModel.setGameState(GameState.MAIN_MENU);
                 }
                 break;
+        }
+    }
+
+    private void syncAudioWithModel() {
+        audioManager.setSoundEnabled(gameModel.isSoundEnabled());
+        boolean musicShouldPlay = gameModel.isMusicEnabled();
+        if (musicShouldPlay && !audioManager.isMusicEnabled()) {
+            audioManager.restartMusic();
+        } else if (!musicShouldPlay && audioManager.isMusicEnabled()) {
+            audioManager.stop();
         }
     }
 

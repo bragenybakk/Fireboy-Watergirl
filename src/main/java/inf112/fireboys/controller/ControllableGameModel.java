@@ -39,4 +39,16 @@ public interface ControllableGameModel {
 
     /** Toggles the ad blocker on or off. */
     void toggleAdsBlocked();
+
+    /** Toggles music on or off. */
+    void toggleMusicEnabled();
+
+    /** Toggles sound effects on or off. */
+    void toggleSoundEnabled();
+
+    /** Returns whether music is currently enabled. */
+    boolean isMusicEnabled();
+
+    /** Returns whether sound effects are currently enabled. */
+    boolean isSoundEnabled();
 }

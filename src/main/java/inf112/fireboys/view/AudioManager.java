@@ -12,8 +12,23 @@ import java.io.InputStream;
 public class AudioManager {
     private Thread musicThread;
     private volatile boolean playing = false;
+    private volatile boolean soundEnabled = true;
+    private String currentMusicPath = null;
+
+    public boolean isMusicEnabled() {
+        return playing;
+    }
+
+    public boolean isSoundEnabled() {
+        return soundEnabled;
+    }
+
+    public void setSoundEnabled(boolean enabled) {
+        this.soundEnabled = enabled;
+    }
 
     public void playMusic(String resourcePath) {
+        currentMusicPath = resourcePath;
         playing = true;
         musicThread = new Thread(() -> {
             while (playing) {
@@ -31,7 +46,15 @@ public class AudioManager {
         musicThread.start();
     }
 
+    public void restartMusic() {
+        if (currentMusicPath != null) {
+            stop();
+            playMusic(currentMusicPath);
+        }
+    }
+
     public void playSound(String resourcePath) {
+        if (!soundEnabled) return;
         new Thread(() -> {
             try (InputStream is = getClass().getResourceAsStream(resourcePath);
                  BufferedInputStream bis = new BufferedInputStream(is);
