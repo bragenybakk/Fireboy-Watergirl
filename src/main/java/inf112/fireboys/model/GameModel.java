@@ -34,7 +34,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private String[] mainMenuOptions = { "START GAME", "How to Play", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
-    private boolean testModeSinglePlayer = true;
+    private boolean testModeSinglePlayer = false;
     private String currentLevelFileName = null;
     private boolean adsBlocked = false;
     // Level file names
@@ -458,11 +458,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (players == null || players.isEmpty() || entities == null) {
             return false;
         }
-        Player p = players.get(0);
-        if (!p.isOnGround() || p.hasJumpBoost()) {
-            return false;
+        for (Player p : players) {
+            if (p.isOnGround() && !p.hasJumpBoost() && isStandingOnBoostPlatform(p)) {
+                return true;
+            }
         }
-        return isStandingOnBoostPlatform(p);
+        return false;
     }
 
     private boolean isStandingOnBoostPlatform(Player p) {
@@ -558,24 +559,34 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     // ============ Player controls ============
+    private Player getWatergirl() {
+        if (players == null) return null;
+        return players.stream()
+                .filter(p -> p.getElementState() == ElementState.WATER)
+                .findFirst().orElse(null);
+    }
+
+    private Player getFireboy() {
+        if (players == null) return null;
+        return players.stream()
+                .filter(p -> p.getElementState() == ElementState.FIRE)
+                .findFirst().orElse(null);
+    }
+
     public void movePlayerLeft() {
-        if (players != null && !players.isEmpty()) {
-            players.get(0).setVelocityX(-0.7);
-        }
+        Player p = getWatergirl();
+        if (p != null) p.setVelocityX(-0.7);
     }
 
     public void movePlayerRight() {
-        if (players != null && !players.isEmpty()) {
-            players.get(0).setVelocityX(0.7);
-        }
+        Player p = getWatergirl();
+        if (p != null) p.setVelocityX(0.7);
     }
 
     @Override
     public void playerJump() {
-        if (players == null || players.isEmpty() || !players.get(0).isOnGround()) {
-            return;
-        }
-        Player p = players.get(0);
+        Player p = getWatergirl();
+        if (p == null || !p.isOnGround()) return;
         if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
             p.grantJumpBoost();
             return;
@@ -586,9 +597,39 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     public void stopPlayer() {
-        if (players != null && !players.isEmpty()) {
-            players.get(0).setVelocityX(0);
+        Player p = getWatergirl();
+        if (p != null) p.setVelocityX(0);
+    }
+
+    @Override
+    public void movePlayer2Left() {
+        Player p = getFireboy();
+        if (p != null) p.setVelocityX(-0.7);
+    }
+
+    @Override
+    public void movePlayer2Right() {
+        Player p = getFireboy();
+        if (p != null) p.setVelocityX(0.7);
+    }
+
+    @Override
+    public void stopPlayer2() {
+        Player p = getFireboy();
+        if (p != null) p.setVelocityX(0);
+    }
+
+    @Override
+    public void player2Jump() {
+        Player p = getFireboy();
+        if (p == null || !p.isOnGround()) return;
+        if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
+            p.grantJumpBoost();
+            return;
         }
+        p.setVelocityY(p.getJumpImpulse());
+        p.consumeJumpBoost();
+        p.setOnGroundFALSE();
     }
 
     private void applyGravity(IMovable obj) {
