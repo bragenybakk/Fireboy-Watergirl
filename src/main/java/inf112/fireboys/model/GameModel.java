@@ -37,6 +37,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private boolean testModeSinglePlayer = false;
     private String currentLevelFileName = null;
     private boolean adsBlocked = false;
+    private boolean musicEnabled = true;
+    private boolean soundEnabled = true;
     // Level file names
     private List<String> levelNames = null;
     private int unlockedLevelCount = 1;
@@ -257,6 +259,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (gameState == GameState.GAME_OVER) {
             return gameOverMenuOptions;
         }
+        if (gameState == GameState.SETTINGS) {
+            return new String[] {
+                "Music: " + (musicEnabled ? "ON" : "OFF"),
+                "Sound Effects: " + (soundEnabled ? "ON" : "OFF"),
+                "Ad Blocker: " + (adsBlocked ? "ON" : "OFF"),
+                "Back"
+            };
+        }
         return mainMenuOptions;
     }
 
@@ -296,6 +306,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             maxIndex = pauseMenuOptions.length - 1;
         } else if (gameState == GameState.GAME_OVER) {
             maxIndex = gameOverMenuOptions.length - 1;
+        } else if (gameState == GameState.SETTINGS) {
+            maxIndex = 3; // Music, Sound Effects, Ad Blocker, Back
         }
         if (selectedMenuOption < maxIndex) {
             selectedMenuOption++;
@@ -317,8 +329,20 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             case GAME_OVER:
                 handleGameOverMenuSelection();
                 break;
+            case SETTINGS:
+                handleSettingsMenuSelection();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void handleSettingsMenuSelection() {
+        switch (selectedMenuOption) {
+            case 0: musicEnabled = !musicEnabled; break;
+            case 1: soundEnabled = !soundEnabled; break;
+            case 2: adsBlocked = !adsBlocked; break;
+            case 3: setGameState(GameState.MAIN_MENU); break;
         }
     }
 
@@ -556,6 +580,26 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     @Override
     public void toggleAdsBlocked() {
         adsBlocked = !adsBlocked;
+    }
+
+    @Override
+    public boolean isMusicEnabled() {
+        return musicEnabled;
+    }
+
+    @Override
+    public boolean isSoundEnabled() {
+        return soundEnabled;
+    }
+
+    @Override
+    public void toggleMusicEnabled() {
+        musicEnabled = !musicEnabled;
+    }
+
+    @Override
+    public void toggleSoundEnabled() {
+        soundEnabled = !soundEnabled;
     }
 
     // ============ Player controls ============

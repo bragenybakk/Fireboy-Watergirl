@@ -39,6 +39,12 @@ public interface ViewableGameModel {
     /** Returns whether the ad blocker is currently enabled. */
     boolean isAdsBlocked();
 
+    /** Returns whether music is currently enabled. */
+    boolean isMusicEnabled();
+
+    /** Returns whether sound effects are currently enabled. */
+    boolean isSoundEnabled();
+
     int getScore();
 
     int getTotalGems();
