@@ -39,4 +39,16 @@ public interface ControllableGameModel {
 
     /** Toggles the ad blocker on or off. */
     void toggleAdsBlocked();
+
+    /** Moves player 2 (Fireboy) to the right. */
+    void movePlayer2Right();
+
+    /** Moves player 2 (Fireboy) to the left. */
+    void movePlayer2Left();
+
+    /** Stops player 2's (Fireboy) horizontal movement. */
+    void stopPlayer2();
+
+    /** Makes player 2 (Fireboy) jump if on the ground. */
+    void player2Jump();
 }

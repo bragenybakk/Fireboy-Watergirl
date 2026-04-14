@@ -22,8 +22,11 @@ public class GameController implements KeyListener, MouseListener {
     private Timer gameLoopTimer;
     private GameState previousState = null;
     // Track which keys are currently pressed
+    // Watergirl: arrow keys, Fireboy: WASD
     private boolean leftPressed = false;
     private boolean rightPressed = false;
+    private boolean p2LeftPressed = false;
+    private boolean p2RightPressed = false;
     public GameController(ControllableGameModel gameModel, GameView gameView, AudioManager audioManager) {
         this.gameModel = gameModel;
         this.gameView = gameView;
@@ -44,16 +47,16 @@ public class GameController implements KeyListener, MouseListener {
         }
         previousState = currentState;
         if (currentState == GameState.PLAYING) {
-            if (leftPressed) {
-                gameModel.movePlayerLeft();
-            }
-            if (rightPressed) {
-                gameModel.movePlayerRight();
-            }
+            if (leftPressed) gameModel.movePlayerLeft();
+            if (rightPressed) gameModel.movePlayerRight();
+            if (p2LeftPressed) gameModel.movePlayer2Left();
+            if (p2RightPressed) gameModel.movePlayer2Right();
             gameModel.clockTick();
         } else {
             leftPressed = false;
             rightPressed = false;
+            p2LeftPressed = false;
+            p2RightPressed = false;
         }
         gameView.repaint();
     }
@@ -114,17 +117,26 @@ public class GameController implements KeyListener, MouseListener {
             case KeyEvent.VK_ESCAPE:
                 gameModel.setGameState(GameState.PAUSED);
                 break;
+            // Watergirl: arrow keys
             case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
                 leftPressed = true;
                 break;
             case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
                 rightPressed = true;
                 break;
             case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
                 gameModel.playerJump();
+                break;
+            // Fireboy: WASD
+            case KeyEvent.VK_A:
+                p2LeftPressed = true;
+                break;
+            case KeyEvent.VK_D:
+                p2RightPressed = true;
+                break;
+            case KeyEvent.VK_W:
+                gameModel.player2Jump();
+                break;
         }
     }
 
@@ -170,18 +182,20 @@ public class GameController implements KeyListener, MouseListener {
         if (currentState == GameState.PLAYING) {
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
                     leftPressed = false;
-                    if (!leftPressed && !rightPressed) {
-                        gameModel.stopPlayer();
-                    }
+                    if (!leftPressed && !rightPressed) gameModel.stopPlayer();
                     break;
                 case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
                     rightPressed = false;
-                    if (!leftPressed && !rightPressed) {
-                        gameModel.stopPlayer();
-                    }
+                    if (!leftPressed && !rightPressed) gameModel.stopPlayer();
+                    break;
+                case KeyEvent.VK_A:
+                    p2LeftPressed = false;
+                    if (!p2LeftPressed && !p2RightPressed) gameModel.stopPlayer2();
+                    break;
+                case KeyEvent.VK_D:
+                    p2RightPressed = false;
+                    if (!p2LeftPressed && !p2RightPressed) gameModel.stopPlayer2();
                     break;
             }
         }
