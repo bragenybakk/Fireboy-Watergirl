@@ -56,7 +56,8 @@ public class GameView extends JPanel {
     private final CastleTileSheet castleTiles;
     private BufferedImage wallTile;
     private BufferedImage doorSprite;
-    private BufferedImage flameSprite;
+    private BufferedImage redFlameSprite;
+    private BufferedImage blueFlameSprite;
     // Remembers last horizontal direction per player so sprite keeps facing
     // that way after they stop moving.
     private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
@@ -83,10 +84,16 @@ public class GameView extends JPanel {
             adRight = null;
         }
         try {
-            BufferedImage flameSheet = ImageIO.read(getClass().getResourceAsStream("/red_flame_spritesheet.png"));
-            flameSprite = flameSheet.getSubimage(255, 606, 157, 335);
+            BufferedImage redSheet = ImageIO.read(getClass().getResourceAsStream("/red_flame_spritesheet.png"));
+            redFlameSprite = redSheet.getSubimage(255, 606, 157, 335);
         } catch (IOException e) {
-            flameSprite = null;
+            redFlameSprite = null;
+        }
+        try {
+            BufferedImage blueSheet = ImageIO.read(getClass().getResourceAsStream("/blue_flame_spritesheet.png"));
+            blueFlameSprite = blueSheet.getSubimage(190, 400, 120, 255);
+        } catch (IOException e) {
+            blueFlameSprite = null;
         }
     }
 
@@ -428,13 +435,14 @@ public class GameView extends JPanel {
             playerFacingLeft.put(player, false);
         }
         boolean facingLeft = playerFacingLeft.getOrDefault(player, false);
-        if (player.hasJumpBoost() && flameSprite != null) {
-            double flameAspect = (double) flameSprite.getWidth() / flameSprite.getHeight();
+        BufferedImage flame = player.getElementState() == ElementState.FIRE ? redFlameSprite : blueFlameSprite;
+        if (player.hasJumpBoost() && flame != null) {
+            double flameAspect = (double) flame.getWidth() / flame.getHeight();
             int flameH = (int) (h * 1.6);
             int flameW = (int) (flameH * flameAspect);
             int flameX = x + w / 2 - flameW / 2;
             int flameY = y + h - flameH;
-            g2.drawImage(flameSprite, flameX, flameY, flameW, flameH, null);
+            g2.drawImage(flame, flameX, flameY, flameW, flameH, null);
         }
         BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
         if (sprite != null) {
