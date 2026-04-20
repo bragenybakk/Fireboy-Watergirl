@@ -15,9 +15,7 @@ import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -58,6 +56,8 @@ public class GameView extends JPanel {
     private final CastleTileSheet castleTiles;
     private BufferedImage wallTile;
     private BufferedImage doorSprite;
+    private BufferedImage redFlameSprite;
+    private BufferedImage blueFlameSprite;
     // Remembers last horizontal direction per player so sprite keeps facing
     // that way after they stop moving.
     private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
@@ -82,6 +82,18 @@ public class GameView extends JPanel {
         } catch (IOException e) {
             adLeft = null;
             adRight = null;
+        }
+        try {
+            BufferedImage redSheet = ImageIO.read(getClass().getResourceAsStream("/red_flame_spritesheet.png"));
+            redFlameSprite = redSheet.getSubimage(255, 606, 157, 335);
+        } catch (IOException e) {
+            redFlameSprite = null;
+        }
+        try {
+            BufferedImage blueSheet = ImageIO.read(getClass().getResourceAsStream("/blue_flame_spritesheet.png"));
+            blueFlameSprite = blueSheet.getSubimage(190, 400, 120, 255);
+        } catch (IOException e) {
+            blueFlameSprite = null;
         }
     }
 
@@ -423,6 +435,15 @@ public class GameView extends JPanel {
             playerFacingLeft.put(player, false);
         }
         boolean facingLeft = playerFacingLeft.getOrDefault(player, false);
+        BufferedImage flame = player.getElementState() == ElementState.FIRE ? redFlameSprite : blueFlameSprite;
+        if (player.hasJumpBoost() && flame != null) {
+            double flameAspect = (double) flame.getWidth() / flame.getHeight();
+            int flameH = (int) (h * 1.6);
+            int flameW = (int) (flameH * flameAspect);
+            int flameX = x + w / 2 - flameW / 2;
+            int flameY = y + h - flameH;
+            g2.drawImage(flame, flameX, flameY, flameW, flameH, null);
+        }
         BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
         if (sprite != null) {
             // Flip horizontally by passing negative width and offsetting x
@@ -434,13 +455,6 @@ public class GameView extends JPanel {
         } else {
             g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
             g2.fillRect(x, y, w, h);
-        }
-        if (player.hasJumpBoost()) {
-            Composite original = g2.getComposite();
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.45f));
-            g2.setColor(new Color(160, 32, 240));
-            g2.fillRect(x, y, w, h);
-            g2.setComposite(original);
         }
     }
 
