@@ -2,7 +2,6 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
-import inf112.fireboys.model.player.IPlayer;
 
 public class Pool extends StaticEntity {
     private ElementState element;
@@ -17,6 +16,33 @@ public class Pool extends StaticEntity {
 
     public void setElement(ElementState element) {
         this.element = element;
+    }
+
+    /**
+     * Returns the y-coordinate of the pool floor at the given x.
+     */
+    public double floorYAt(double x) {
+        return getPos().y() + getDepthAt(x);
+    }
+
+    /**
+     * True if the foot-point is inside the water (below surface, within x-range).
+     */
+    public boolean footIsInWater(double centerX, double bottomY) {
+        double poolLeft = getPos().x();
+        double poolRight = poolLeft + getWidth();
+        return centerX >= poolLeft && centerX <= poolRight
+                && bottomY >= getPos().y() && bottomY <= floorYAt(centerX);
+    }
+
+    /**
+     * True if the player straddles the pool floor (top above it, bottom at/below).
+     */
+    public boolean footOnFloor(double centerX, double topY, double bottomY) {
+        double poolLeft = getPos().x();
+        double poolRight = poolLeft + getWidth();
+        double floor = floorYAt(centerX);
+        return centerX >= poolLeft && centerX <= poolRight && topY < floor && bottomY >= floor;
     }
 
     /**
@@ -45,10 +71,6 @@ public class Pool extends StaticEntity {
 
     @Override
     protected void contactAction(IMovable movableEntity, CollisionSide side) {
-        if (movableEntity instanceof IPlayer player) {
-            if (player.getElementState() != this.element) {
-                player.kill();
-            }
-        }
+        // Handled in GameModel.handlePoolInteraction (foot-point based).
     }
 }
