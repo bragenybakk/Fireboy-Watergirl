@@ -2,6 +2,8 @@ package inf112.fireboys.model;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +44,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // Level file names
     private List<String> levelNames = null;
     private int unlockedLevelCount = 1;
+    private final Set<Player> playersAtDoor = new HashSet<>();
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -126,6 +129,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handlePlayerCollisions() {
+        playersAtDoor.clear();
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
@@ -142,7 +146,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                     entity.whenContact(player);
                     if (entity instanceof Door) {
-                        ((Door) entity).setOpen(areAllGemsCollected());
+                        playersAtDoor.add(player);
                         checkWinConditions();
                     }
                 }
@@ -402,13 +406,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (!areAllGemsCollected()) {
             return;
         }
-        for (StaticEntity e : entities)
-            if (e instanceof Door) {
-                Door door = (Door) e;
-                if (!door.isOpen()) {
-                    return;
-                }
-            }
+        if (!playersAtDoor.containsAll(players)) {
+            return;
+        }
         unlockNextLevel();
         setGameState(GameState.LEVEL_SELECT);
     }
