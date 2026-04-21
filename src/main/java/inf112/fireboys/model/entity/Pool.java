@@ -53,7 +53,6 @@ public class Pool extends StaticEntity {
         double poolLeft = getPos().x();
         double poolRight = poolLeft + getWidth();
         double inset = getWidth() / 5.0;
-
         if (x < poolLeft || x > poolRight) {
             return 0;
         }
@@ -71,6 +70,19 @@ public class Pool extends StaticEntity {
 
     @Override
     protected void contactAction(IMovable movableEntity, CollisionSide side) {
-        // Handled in GameModel.handlePoolInteraction (foot-point based).
+        if (movableEntity instanceof IPlayer player) {
+            // Vannoverflaten er helt flat og ligger på bassengets Y-posisjon
+            double poolSurfaceY = getPos().y();
+            double playerBottom = player.getPos().y() + player.getHeight();
+            // ER DE FAKTISK I VANNET?
+            // Hvis føttene er over overflaten (i luften), avbryt kollisjonen!
+            if (playerBottom < poolSurfaceY + 0.5) {
+                return;
+            }
+            // Standard drepe-logikk hvis de tok på feil vann
+            if (player.getElementState() != this.element) {
+                player.kill();
+            }
+        }
     }
 }
