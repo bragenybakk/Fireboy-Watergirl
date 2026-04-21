@@ -83,23 +83,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    private void applyPoolDepth(Player player) {
-        if (player.getVelocityY() < 0)
-            return;
-        double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
-        double playerBottom = player.getPos().y() + player.getHeight();
+    // Matching player sinks with gravity and lands on the pool floor; mismatching
+    // player dies in water.
+    private void handlePoolInteraction(Player player) {
+        double centerX = player.getPos().x() + player.getWidth() / 2.0;
+        double topY = player.getPos().y();
+        double bottomY = topY + player.getHeight();
         for (IStaticEntity entity : entities) {
-            if (entity instanceof Pool pool) {
-                double depth = pool.getDepthAt(playerCenterX);
-                if (depth <= 0)
-                    continue;
-                double poolSurface = pool.getPos().y();
-                if (Math.abs(playerBottom - poolSurface) < 1.0) {
-                    double newY = poolSurface + depth - player.getHeight();
-                    player.setPos(new Position(player.getPos().x(), newY));
-                    player.setVelocityY(0);
-                    player.setOnGroundTRUE();
-                    pool.whenContact(player);
+            if (!(entity instanceof Pool pool))
+                continue;
+            if (player.getElementState() != pool.getElement()) {
+                if (pool.footIsInWater(centerX, bottomY)) {
+                    player.kill();
                 }
             } else if (pool.footOnFloor(centerX, topY, bottomY) && player.getVelocityY() >= 0) {
                 double floorY = pool.floorYAt(centerX);
