@@ -83,29 +83,39 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // After wall collision, adjust player position down into any overlapping pool
-    private void applyPoolDepth(Player player) {
-        // Don't pull player into pool while jumping
-        if (player.getVelocityY() < 0)
-            return;
-        double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
-        double playerBottom = player.getPos().y() + player.getHeight();
+    // Matching player sinks with gravity and lands on the pool floor; mismatching
+    // player dies in water.
+    private void handlePoolInteraction(Player player) {
+        double centerX = player.getPos().x() + player.getWidth() / 2.0;
+        double topY = player.getPos().y();
+        double bottomY = topY + player.getHeight();
         for (IStaticEntity entity : entities) {
-            if (entity instanceof Pool pool) {
-                double depth = pool.getDepthAt(playerCenterX);
-                if (depth <= 0)
-                    continue;
-                double poolSurface = pool.getPos().y();
-                // Only apply if player is near the floor surface, not jumping above
-                if (Math.abs(playerBottom - poolSurface) < 1.0) {
-                    double newY = poolSurface + depth - player.getHeight();
-                    player.setPos(new Position(player.getPos().x(), newY));
-                    player.setVelocityY(0);
-                    player.setOnGroundTRUE();
-                    pool.whenContact(player);
+            if (!(entity instanceof Pool pool))
+                continue;
+            if (player.getElementState() != pool.getElement()) {
+                if (pool.footIsInWater(centerX, bottomY)) {
+                    player.kill();
                 }
+            } else if (pool.footOnFloor(centerX, topY, bottomY) && player.getVelocityY() >= 0) {
+                double floorY = pool.floorYAt(centerX);
+                player.setPos(new Position(player.getPos().x(), floorY - player.getHeight()));
+                player.setVelocityY(0);
+                player.setOnGroundTRUE();
             }
         }
+    }
+
+    private boolean isInMatchingPoolWater(Player player) {
+        double centerX = player.getPos().x() + player.getWidth() / 2.0;
+        double bottomY = player.getPos().y() + player.getHeight();
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof Pool pool
+                    && pool.getElement() == player.getElementState()
+                    && pool.footIsInWater(centerX, bottomY)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -119,8 +129,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
+            handlePoolInteraction(player);
+            boolean inMatchingPool = isInMatchingPoolWater(player);
             for (IStaticEntity entity : entities) {
                 if (entity instanceof Gem gem && gem.isCollected())
+                    continue;
+                if (entity instanceof Wall && inMatchingPool)
                     continue;
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
@@ -139,7 +153,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 player.setVelocityY(savedVelocityY);
                 player.setOnGroundFALSE();
             }
-            applyPoolDepth(player);
             for (IEnemy enemy : enemies) {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);
