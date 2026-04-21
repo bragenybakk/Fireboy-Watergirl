@@ -101,8 +101,26 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     player.setOnGroundTRUE();
                     pool.whenContact(player);
                 }
+            } else if (pool.footOnFloor(centerX, topY, bottomY) && player.getVelocityY() >= 0) {
+                double floorY = pool.floorYAt(centerX);
+                player.setPos(new Position(player.getPos().x(), floorY - player.getHeight()));
+                player.setVelocityY(0);
+                player.setOnGroundTRUE();
             }
         }
+    }
+
+    private boolean isInMatchingPoolWater(Player player) {
+        double centerX = player.getPos().x() + player.getWidth() / 2.0;
+        double bottomY = player.getPos().y() + player.getHeight();
+        for (IStaticEntity entity : entities) {
+            if (entity instanceof Pool pool
+                    && pool.getElement() == player.getElementState()
+                    && pool.footIsInWater(centerX, bottomY)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -116,8 +134,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
+            handlePoolInteraction(player);
+            boolean inMatchingPool = isInMatchingPoolWater(player);
             for (IStaticEntity entity : entities) {
                 if (entity instanceof Gem gem && gem.isCollected())
+                    continue;
+                if (entity instanceof Wall && inMatchingPool)
                     continue;
                 if (checkCollision(entity, player)) {
                     if (entity instanceof IMovable movable) {
@@ -136,7 +158,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 player.setVelocityY(savedVelocityY);
                 player.setOnGroundFALSE();
             }
-            applyPoolDepth(player);
             for (IEnemy enemy : enemies) {
                 if (checkCollision(enemy, player)) {
                     enemy.whenContact(player);

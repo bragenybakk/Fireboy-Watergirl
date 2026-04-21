@@ -2,7 +2,6 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
-import inf112.fireboys.model.player.IPlayer;
 
 public class Pool extends StaticEntity {
     private ElementState element;
@@ -20,8 +19,34 @@ public class Pool extends StaticEntity {
     }
 
     /**
-     * Returns how deep the pool is at the given x position, following the trapezoid
-     * shape.
+     * Returns the y-coordinate of the pool floor at the given x.
+     */
+    public double floorYAt(double x) {
+        return getPos().y() + getDepthAt(x);
+    }
+
+    /**
+     * True if the foot-point is inside the water (below surface, within x-range).
+     */
+    public boolean footIsInWater(double centerX, double bottomY) {
+        double poolLeft = getPos().x();
+        double poolRight = poolLeft + getWidth();
+        return centerX >= poolLeft && centerX <= poolRight
+                && bottomY >= getPos().y() && bottomY <= floorYAt(centerX);
+    }
+
+    /**
+     * True if the player straddles the pool floor (top above it, bottom at/below).
+     */
+    public boolean footOnFloor(double centerX, double topY, double bottomY) {
+        double poolLeft = getPos().x();
+        double poolRight = poolLeft + getWidth();
+        double floor = floorYAt(centerX);
+        return centerX >= poolLeft && centerX <= poolRight && topY < floor && bottomY >= floor;
+    }
+
+    /**
+     * Returns how deep the pool is at the given x position, following the trapezoid shape.
      * Returns 0 if x is outside the pool.
      */
     public double getDepthAt(double x) {

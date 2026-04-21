@@ -19,11 +19,9 @@ public class BoostPlatformTest {
     /** Player (8×8) with feet on platform top at y=20. */
     private static final Position PLAYER_ON_TOP = new Position(12, 12);
     private static final Position PLATFORM_POS = new Position(10, 20);
-
     private BoostPlatform platform;
     private Player fireboy;
     private Player watergirl;
-
     @BeforeEach
     void setUp() {
         platform = new BoostPlatform(PLATFORM_POS, 8, 2);
@@ -52,7 +50,8 @@ public class BoostPlatformTest {
 
     @Test
     void thinPlateOnFloor_detectsStandingWhenFeetAtFloorLevel() {
-        // Plate h=1 at y=109 (AABB 109–110); player 8×8 at y=102 → feet at 110, same as floor under plate.
+        // Plate h=1 at y=109 (AABB 109–110); player 8×8 at y=102 → feet at 110, same as
+        // floor under plate.
         List<Player> pl = new ArrayList<>();
         Player p = new Player(new Position(12, 102), ElementState.FIRE);
         p.setOnGroundTRUE();
@@ -77,7 +76,7 @@ public class BoostPlatformTest {
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         assertTrue(model.isPlayerOnBoostPlateWithoutCharge());
-        model.playerJump();
+        model.player2Jump();
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }
@@ -94,14 +93,12 @@ public class BoostPlatformTest {
         Board board = new Board(50, 50, pl, ents, new ArrayList<>());
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-
-        model.playerJump();
+        model.player2Jump();
         assertTrue(p.hasJumpBoost());
-
         p.setPos(new Position(5, 22));
         p.setOnGroundTRUE();
         double normalImpulse = new Player(new Position(0, 0), ElementState.FIRE).getJumpImpulse();
-        model.playerJump();
+        model.player2Jump();
         assertTrue(p.getVelocityY() < normalImpulse - 0.01);
         assertFalse(p.hasJumpBoost());
     }
@@ -118,19 +115,17 @@ public class BoostPlatformTest {
         Board board = new Board(50, 50, pl, ents, new ArrayList<>());
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-
-        model.playerJump();
+        model.player2Jump();
         assertTrue(p.hasJumpBoost());
         p.setPos(new Position(5, 22));
         p.setOnGroundTRUE();
-        model.playerJump();
+        model.player2Jump();
         assertFalse(p.hasJumpBoost());
-
         p.setVelocityY(0);
         p.setPos(new Position(12, 20));
         p.setOnGroundTRUE();
         assertTrue(model.isPlayerOnBoostPlateWithoutCharge());
-        model.playerJump();
+        model.player2Jump();
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }
