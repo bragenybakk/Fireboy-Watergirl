@@ -83,9 +83,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // After wall collision, adjust player position down into any overlapping pool
     private void applyPoolDepth(Player player) {
-        // Don't pull player into pool while jumping
         if (player.getVelocityY() < 0)
             return;
         double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
@@ -96,7 +94,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 if (depth <= 0)
                     continue;
                 double poolSurface = pool.getPos().y();
-                // Only apply if player is near the floor surface, not jumping above
                 if (Math.abs(playerBottom - poolSurface) < 1.0) {
                     double newY = poolSurface + depth - player.getHeight();
                     player.setPos(new Position(player.getPos().x(), newY));
@@ -261,10 +258,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
         if (gameState == GameState.SETTINGS) {
             return new String[] {
-                "Music: " + (musicEnabled ? "ON" : "OFF"),
-                "Sound Effects: " + (soundEnabled ? "ON" : "OFF"),
-                "Ad Blocker: " + (adsBlocked ? "ON" : "OFF"),
-                "Back"
+                    "Music: " + (musicEnabled ? "ON" : "OFF"),
+                    "Sound Effects: " + (soundEnabled ? "ON" : "OFF"),
+                    "Ad Blocker: " + (adsBlocked ? "ON" : "OFF"),
+                    "Back"
             };
         }
         return mainMenuOptions;
@@ -339,10 +336,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handleSettingsMenuSelection() {
         switch (selectedMenuOption) {
-            case 0: musicEnabled = !musicEnabled; break;
-            case 1: soundEnabled = !soundEnabled; break;
-            case 2: adsBlocked = !adsBlocked; break;
-            case 3: setGameState(GameState.MAIN_MENU); break;
+            case 0:
+                musicEnabled = !musicEnabled;
+                break;
+            case 1:
+                soundEnabled = !soundEnabled;
+                break;
+            case 2:
+                adsBlocked = !adsBlocked;
+                break;
+            case 3:
+                setGameState(GameState.MAIN_MENU);
+                break;
         }
     }
 
@@ -413,7 +418,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     @Override
-    public java.util.List<String> getLevelNames() {
+    public List<String> getLevelNames() {
         if (levelNames == null) {
             try {
                 levelNames = loadLevelNamesFromDisk();
@@ -604,14 +609,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     // ============ Player controls ============
     private Player getWatergirl() {
-        if (players == null) return null;
+        if (players == null)
+            return null;
         return players.stream()
                 .filter(p -> p.getElementState() == ElementState.WATER)
                 .findFirst().orElse(null);
     }
 
     private Player getFireboy() {
-        if (players == null) return null;
+        if (players == null)
+            return null;
         return players.stream()
                 .filter(p -> p.getElementState() == ElementState.FIRE)
                 .findFirst().orElse(null);
@@ -619,18 +626,21 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     public void movePlayerLeft() {
         Player p = getWatergirl();
-        if (p != null) p.setVelocityX(-0.7);
+        if (p != null)
+            p.setVelocityX(-0.7);
     }
 
     public void movePlayerRight() {
         Player p = getWatergirl();
-        if (p != null) p.setVelocityX(0.7);
+        if (p != null)
+            p.setVelocityX(0.7);
     }
 
     @Override
     public void playerJump() {
         Player p = getWatergirl();
-        if (p == null || !p.isOnGround()) return;
+        if (p == null || !p.isOnGround())
+            return;
         if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
             p.grantJumpBoost();
             return;
@@ -642,31 +652,36 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     public void stopPlayer() {
         Player p = getWatergirl();
-        if (p != null) p.setVelocityX(0);
+        if (p != null)
+            p.setVelocityX(0);
     }
 
     @Override
     public void movePlayer2Left() {
         Player p = getFireboy();
-        if (p != null) p.setVelocityX(-0.7);
+        if (p != null)
+            p.setVelocityX(-0.7);
     }
 
     @Override
     public void movePlayer2Right() {
         Player p = getFireboy();
-        if (p != null) p.setVelocityX(0.7);
+        if (p != null)
+            p.setVelocityX(0.7);
     }
 
     @Override
     public void stopPlayer2() {
         Player p = getFireboy();
-        if (p != null) p.setVelocityX(0);
+        if (p != null)
+            p.setVelocityX(0);
     }
 
     @Override
     public void player2Jump() {
         Player p = getFireboy();
-        if (p == null || !p.isOnGround()) return;
+        if (p == null || !p.isOnGround())
+            return;
         if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
             p.grantJumpBoost();
             return;
@@ -750,9 +765,31 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private boolean checkCollision(IStaticEntity entity, IMovable movableEntity) {
-        return movableEntity.getPos().x() < entity.getPos().x() + entity.getWidth() &&
-                movableEntity.getPos().x() + movableEntity.getWidth() > entity.getPos().x() &&
-                movableEntity.getPos().y() < entity.getPos().y() + entity.getHeight() &&
-                movableEntity.getPos().y() + movableEntity.getHeight() > entity.getPos().y();
+        double eX = entity.getPos().x();
+        double eY = entity.getPos().y();
+        double eW = entity.getWidth();
+        double eH = entity.getHeight();
+        if (entity instanceof Wall) {
+            for (StaticEntity poolEntity : board.entities()) {
+                if (poolEntity instanceof Pool pool) {
+                    double playerMidX = movableEntity.getPos().x() + movableEntity.getWidth() / 2;
+                    if (playerMidX >= pool.getPos().x() && playerMidX <= pool.getPos().x() + pool.getWidth()) {
+                        if (Math.abs(pool.getPos().y() - entity.getPos().y()) < 5) {
+                            double basinDepth = pool.getDepthAt(playerMidX);
+                            double newTop = pool.getPos().y() + basinDepth;
+                            if (newTop > eY) {
+                                double bottomY = eY + eH;
+                                eY = newTop;
+                                eH = Math.max(0, bottomY - newTop);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return movableEntity.getPos().x() < eX + eW &&
+                movableEntity.getPos().x() + movableEntity.getWidth() > eX &&
+                movableEntity.getPos().y() < eY + eH &&
+                movableEntity.getPos().y() + movableEntity.getHeight() > eY;
     }
 }
