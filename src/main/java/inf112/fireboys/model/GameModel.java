@@ -2,6 +2,8 @@ package inf112.fireboys.model;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +44,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // Level file names
     private List<String> levelNames = null;
     private int unlockedLevelCount = 1;
+    // Time tracking
+    private int levelTicks = 0;
+    private final Map<String, Integer> levelBestTicks = new HashMap<>();
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -61,6 +66,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
+        levelTicks++;
         applyGravityAll();
         updateAllPositions();
         handlePlayerCollisions();
@@ -409,6 +415,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     return;
                 }
             }
+        saveBestTime();
         unlockNextLevel();
         setGameState(GameState.LEVEL_SELECT);
     }
@@ -417,6 +424,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
+            this.levelTicks = 0;
             this.board = GameReader.loadLevel(levelFileName);
             List<Player> allPlayers = board.players();
             if (testModeSinglePlayer && !allPlayers.isEmpty()) {
@@ -536,6 +544,25 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         }
         return false;
+    }
+
+    private void saveBestTime() {
+        if (currentLevelFileName == null) return;
+        String key = currentLevelFileName.replaceAll("\\.txt$", "");
+        int prev = levelBestTicks.getOrDefault(key, Integer.MAX_VALUE);
+        if (levelTicks < prev) {
+            levelBestTicks.put(key, levelTicks);
+        }
+    }
+
+    @Override
+    public int getElapsedTicks() {
+        return levelTicks;
+    }
+
+    @Override
+    public Map<String, Integer> getLevelBestTicks() {
+        return levelBestTicks;
     }
 
     private void unlockNextLevel() {
