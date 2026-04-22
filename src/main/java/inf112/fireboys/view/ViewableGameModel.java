@@ -1,6 +1,7 @@
 package inf112.fireboys.view;
 
 import java.util.List;
+import java.util.Map;
 
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.IEnemy;
@@ -50,6 +51,12 @@ public interface ViewableGameModel {
     int getTotalGems();
 
     int getCollectedGems();
+
+    /** Returns ticks elapsed since the current level started. */
+    int getElapsedTicks();
+
+    /** Returns a map from level name (without .txt) to best tick count. */
+    Map<String, Integer> getLevelBestTicks();
 
     /**
      * True when the first player stands on a boost plate without a charged jump.
