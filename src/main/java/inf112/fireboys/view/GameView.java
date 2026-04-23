@@ -14,6 +14,8 @@ import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
+import inf112.fireboys.view.theme.CastleTheme;
+import inf112.fireboys.view.theme.Theme;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,59 +47,32 @@ public class GameView extends JPanel {
     private Font titleFont = new Font("Arial", Font.BOLD, 48);
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
-    private BufferedImage fireboySprite;
-    private BufferedImage fireboyBodySprite;
-    private BufferedImage watergirlSprite;
-    private BufferedImage watergirlBodySprite;
-    private BufferedImage blueGemSprite;
-    private BufferedImage fireGemSprite;
     private BufferedImage adLeft;
     private BufferedImage adRight;
     private Rectangle adBlockToggleBounds = new Rectangle();
-    private final SpriteSheet spriteSheet;
-    private final CastleTileSheet castleTiles;
-    private BufferedImage wallTile;
-    private BufferedImage doorSprite;
-    private BufferedImage redFlameSprite;
-    private BufferedImage blueFlameSprite;
+    private final Theme theme;
     // Remembers last horizontal direction per player so sprite keeps facing
     // that way after they stop moving.
     private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
+
     public GameView(ViewableGameModel viewableGameModel) {
+        this(viewableGameModel, new CastleTheme());
+    }
+
+    public GameView(ViewableGameModel viewableGameModel, Theme theme) {
         this.viewableGameModel = viewableGameModel;
+        this.theme = theme;
         this.setSize(windowWidth, windowHeight);
         this.setFont(font);
         this.setBackground(Color.decode("#161624"));
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-        this.spriteSheet = new SpriteSheet("/spritesheet.png");
-        fireboySprite = spriteSheet.getFireboyHead();
-        fireboyBodySprite = spriteSheet.getFireboyBody();
-        watergirlSprite = spriteSheet.getWatergirlHead();
-        watergirlBodySprite = spriteSheet.getWatergirlBody();
-        blueGemSprite = spriteSheet.getBlueGem();
-        fireGemSprite = spriteSheet.getFireGem();
-        this.castleTiles = new CastleTileSheet("/oppcastle-mod-tiles.png");
-        wallTile = castleTiles.getWallTile();
-        doorSprite = castleTiles.getDoor();
         try {
             adLeft = ImageIO.read(getClass().getResourceAsStream("/Advertisement_1.png"));
             adRight = ImageIO.read(getClass().getResourceAsStream("/Advertisement_2.png"));
         } catch (IOException e) {
             adLeft = null;
             adRight = null;
-        }
-        try {
-            BufferedImage redSheet = ImageIO.read(getClass().getResourceAsStream("/red_flame_spritesheet.png"));
-            redFlameSprite = redSheet.getSubimage(255, 606, 157, 335);
-        } catch (IOException e) {
-            redFlameSprite = null;
-        }
-        try {
-            BufferedImage blueSheet = ImageIO.read(getClass().getResourceAsStream("/blue_flame_spritesheet.png"));
-            blueFlameSprite = blueSheet.getSubimage(190, 400, 120, 255);
-        } catch (IOException e) {
-            blueFlameSprite = null;
         }
     }
 
@@ -149,11 +124,13 @@ public class GameView extends JPanel {
         int charY = 200;
         int fireboyX = 80;
         int watergirlX = windowWidth - 80 - charSize;
-        if (fireboySprite != null) {
-            g2.drawImage(fireboySprite, fireboyX, charY, charSize, charSize, null);
+        BufferedImage fireboyHead = theme.getPlayerHead(ElementState.FIRE);
+        BufferedImage watergirlHead = theme.getPlayerHead(ElementState.WATER);
+        if (fireboyHead != null) {
+            g2.drawImage(fireboyHead, fireboyX, charY, charSize, charSize, null);
         }
-        if (watergirlSprite != null) {
-            g2.drawImage(watergirlSprite, watergirlX, charY, charSize, charSize, null);
+        if (watergirlHead != null) {
+            g2.drawImage(watergirlHead, watergirlX, charY, charSize, charSize, null);
         }
         // Title
         g2.setFont(titleFont);
@@ -336,7 +313,7 @@ public class GameView extends JPanel {
             int w = (int) (gem.getWidth() * scale);
             int h = (int) (gem.getHeight() * scale);
             boolean isFire = gem.getElement() == ElementState.FIRE;
-            BufferedImage sprite = isFire ? fireGemSprite : blueGemSprite;
+            BufferedImage sprite = theme.getGem(gem.getElement());
             if (sprite != null) {
                 g2.drawImage(sprite, x, y, w, h, null);
             } else {
@@ -378,10 +355,12 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
         int h = (int) (entity.getHeight() * scale);
+        BufferedImage doorSprite = theme.getDoor();
         if (entity instanceof Door && doorSprite != null) {
             g2.drawImage(doorSprite, x, y, w, h, null);
             return;
         }
+        BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {
             int tileSize = Math.max(8, (int) (8 * scale));
             TexturePaint tile = new TexturePaint(wallTile,
@@ -401,7 +380,7 @@ public class GameView extends JPanel {
     }
 
     private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
-        BufferedImage sprite = castleTiles.getSprite(decor.sheetX(), decor.sheetY(), decor.sheetW(), decor.sheetH());
+        BufferedImage sprite = theme.getDecorationSprite(decor.sheetX(), decor.sheetY(), decor.sheetW(), decor.sheetH());
         if (sprite == null)
             return;
         int x = (int) (diff_X + (decor.pos().x() * scale));
@@ -447,7 +426,7 @@ public class GameView extends JPanel {
             playerFacingLeft.put(player, false);
         }
         boolean facingLeft = playerFacingLeft.getOrDefault(player, false);
-        BufferedImage flame = player.getElementState() == ElementState.FIRE ? redFlameSprite : blueFlameSprite;
+        BufferedImage flame = theme.getFlame(player.getElementState());
         if (player.hasJumpBoost() && flame != null) {
             double flameAspect = (double) flame.getWidth() / flame.getHeight();
             int flameH = (int) (h * 1.6);
@@ -457,8 +436,8 @@ public class GameView extends JPanel {
             g2.drawImage(flame, flameX, flameY, flameW, flameH, null);
         }
         boolean isFire = player.getElementState() == ElementState.FIRE;
-        BufferedImage headSprite = isFire ? fireboySprite : watergirlSprite;
-        BufferedImage bodySprite = isFire ? fireboyBodySprite : watergirlBodySprite;
+        BufferedImage headSprite = theme.getPlayerHead(player.getElementState());
+        BufferedImage bodySprite = theme.getPlayerBody(player.getElementState());
         int headH = (int) (h * (isFire ? 0.62 : 0.48));
         int overlap = isFire ? Math.max(2, h / 8) : Math.max(1, h / 20);
         int bodyExtend = isFire ? Math.max(1, h / 9) : Math.max(2, h / 2);
