@@ -184,8 +184,8 @@ public class GameStateNavigationTest {
         model.clockTick();
         model.getPlayers().get(1).setPos(new Position(58, 60));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(44, 55));
-        model.getPlayers().get(1).setPos(new Position(44, 55));
+        model.getPlayers().get(0).setPos(new Position(34, 55));
+        model.getPlayers().get(1).setPos(new Position(52, 55));
         model.clockTick();
         assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
                 "Completing level 1 should return to LEVEL_SELECT");
