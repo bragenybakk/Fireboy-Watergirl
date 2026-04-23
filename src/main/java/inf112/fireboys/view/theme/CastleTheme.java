@@ -1,5 +1,6 @@
 package inf112.fireboys.view.theme;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -68,5 +69,15 @@ public class CastleTheme implements Theme {
     @Override
     public BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH) {
         return castleTiles.getSprite(sheetX, sheetY, sheetW, sheetH);
+    }
+
+    @Override
+    public Color getPoolColor(ElementState element) {
+        return element == ElementState.FIRE ? Color.decode("#e25822") : Color.decode("#1e90ff");
+    }
+
+    @Override
+    public Color getBackgroundColor() {
+        return Color.decode("#161624");
     }
 }

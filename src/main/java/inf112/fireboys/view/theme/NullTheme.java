@@ -1,5 +1,6 @@
 package inf112.fireboys.view.theme;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import inf112.fireboys.model.ElementState;
@@ -43,5 +44,15 @@ public class NullTheme implements Theme {
     @Override
     public BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH) {
         return null;
+    }
+
+    @Override
+    public Color getPoolColor(ElementState element) {
+        return element == ElementState.FIRE ? Color.DARK_GRAY : Color.GRAY;
+    }
+
+    @Override
+    public Color getBackgroundColor() {
+        return Color.LIGHT_GRAY;
     }
 }

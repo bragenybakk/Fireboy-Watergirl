@@ -71,7 +71,7 @@ public class GameView extends JPanel {
         this.theme = theme;
         this.setSize(windowWidth, windowHeight);
         this.setFont(font);
-        this.setBackground(Color.decode("#161624"));
+        this.setBackground(theme.getBackgroundColor());
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
         try {
@@ -353,7 +353,7 @@ public class GameView extends JPanel {
     }
 
     private void drawBackground(Graphics2D g2) {
-        g2.setColor(Color.decode("#161624"));
+        g2.setColor(theme.getBackgroundColor());
         g2.fillRect(0, 0, getWidth(), getHeight());
     }
 
@@ -457,12 +457,7 @@ public class GameView extends JPanel {
                 new int[] { x, x + w, x + w - inset, x + inset },
                 new int[] { y, y, y + h, y + h },
                 4);
-        // Fill based on element type
-        if (pool.getElement() == ElementState.FIRE) {
-            g2.setColor(Color.decode("#e25822"));
-        } else {
-            g2.setColor(Color.decode("#1e90ff"));
-        }
+        g2.setColor(theme.getPoolColor(pool.getElement()));
         g2.fill(trap);
         // Outline
         g2.setColor(Color.BLACK);

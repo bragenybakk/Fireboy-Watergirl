@@ -1,5 +1,6 @@
 package inf112.fireboys.view.theme;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import inf112.fireboys.model.ElementState;
@@ -22,4 +23,8 @@ public interface Theme {
     BufferedImage getDoor();
 
     BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH);
+
+    Color getPoolColor(ElementState element);
+
+    Color getBackgroundColor();
 }
