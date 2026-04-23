@@ -289,12 +289,22 @@ public class GameView extends JPanel {
         BufferedImage frame = skeletonSheet.getFrame(animRow, col);
 
         if (frame != null) {
-            // Flip horizontally when moving left (negative velocityX).
+            // Scale the frame so the content bounding box (non-transparent pixels)
+            // lines up exactly with the enemy hitbox.
+            int contentW = SkeletonSpriteSheet.CONTENT_RIGHT  - SkeletonSpriteSheet.CONTENT_LEFT + 1;
+            int contentH = SkeletonSpriteSheet.CONTENT_BOTTOM - SkeletonSpriteSheet.CONTENT_TOP  + 1;
+            float sx = (float) w / contentW;
+            float sy = (float) h / contentH;
+            int drawW = Math.round(SkeletonSpriteSheet.FRAME_SIZE * sx);
+            int drawH = Math.round(SkeletonSpriteSheet.FRAME_SIZE * sy);
+            int drawX = x - Math.round(SkeletonSpriteSheet.CONTENT_LEFT * sx);
+            int drawY = y - Math.round(SkeletonSpriteSheet.CONTENT_TOP  * sy);
+
             boolean facingLeft = enemy.getVelocityX() < 0;
             if (facingLeft) {
-                g2.drawImage(frame, x + w, y, -w, h, null);
+                g2.drawImage(frame, drawX + drawW, drawY, -drawW, drawH, null);
             } else {
-                g2.drawImage(frame, x, y, w, h, null);
+                g2.drawImage(frame, drawX, drawY, drawW, drawH, null);
             }
         } else {
             // Fallback: colored rectangle if sprite is unavailable.

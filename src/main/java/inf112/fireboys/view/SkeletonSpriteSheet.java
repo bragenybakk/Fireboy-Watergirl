@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
  *   Row 4 (y=256): Spawn animation  —  2 frames
  */
 public class SkeletonSpriteSheet {
-    private static final int FRAME_SIZE = 64;
+    public static final int FRAME_SIZE = 64;
 
     public static final int ROW_ATTACK = 0;
     public static final int ROW_DEATH  = 1;
@@ -28,6 +28,13 @@ public class SkeletonSpriteSheet {
     public static final int WALK_FRAMES   = 11;
     public static final int IDLE_FRAMES   =  4;
     public static final int SPAWN_FRAMES  =  2;
+
+    // Bounding box of non-transparent pixels within a 64×64 frame (walk row).
+    // Used to align the sprite content precisely over the enemy hitbox.
+    public static final int CONTENT_TOP    = 17;
+    public static final int CONTENT_BOTTOM = 48;
+    public static final int CONTENT_LEFT   =  5;
+    public static final int CONTENT_RIGHT  = 40;
 
     private final BufferedImage sheet;
 

@@ -3,6 +3,7 @@ package inf112.fireboys.model.enemy;
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.entity.IMovable;
 import inf112.fireboys.model.entity.IStaticEntity;
+import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.player.IPlayer;
 
 import java.util.Collections;
@@ -150,6 +151,8 @@ public class Enemy implements IEnemy {
         double footY = position.y() + height;
         double leadingX = movingRight ? position.x() + width + speed : position.x() - speed;
         for (IStaticEntity e : entities) {
+            if (e instanceof Pool)
+                continue;
             double ex = e.getPos().x();
             double ey = e.getPos().y();
             boolean xOverlap = leadingX < ex + e.getWidth() && leadingX + 0.5 > ex;
