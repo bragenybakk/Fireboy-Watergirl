@@ -50,7 +50,9 @@ public class GameView extends JPanel {
     private Font menuFont = new Font("Arial", Font.PLAIN, 28);
     private Font selectedMenuFont = new Font("Arial", Font.BOLD, 32);
     private BufferedImage fireboySprite;
+    private BufferedImage fireboyBodySprite;
     private BufferedImage watergirlSprite;
+    private BufferedImage watergirlBodySprite;
     private BufferedImage blueGemSprite;
     private BufferedImage fireGemSprite;
     private BufferedImage adLeft;
@@ -75,7 +77,9 @@ public class GameView extends JPanel {
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
         this.spriteSheet = new SpriteSheet("/spritesheet.png");
         fireboySprite = spriteSheet.getFireboyHead();
+        fireboyBodySprite = spriteSheet.getFireboyBody();
         watergirlSprite = spriteSheet.getWatergirlHead();
+        watergirlBodySprite = spriteSheet.getWatergirlBody();
         blueGemSprite = spriteSheet.getBlueGem();
         fireGemSprite = spriteSheet.getFireGem();
         this.castleTiles = new CastleTileSheet("/oppcastle-mod-tiles.png");
@@ -499,17 +503,32 @@ public class GameView extends JPanel {
             int flameY = y + h - flameH;
             g2.drawImage(flame, flameX, flameY, flameW, flameH, null);
         }
-        BufferedImage sprite = player.getElementState() == ElementState.FIRE ? fireboySprite : watergirlSprite;
-        if (sprite != null) {
-            // Flip horizontally by passing negative width and offsetting x
+        boolean isFire = player.getElementState() == ElementState.FIRE;
+        BufferedImage headSprite = isFire ? fireboySprite : watergirlSprite;
+        BufferedImage bodySprite = isFire ? fireboyBodySprite : watergirlBodySprite;
+        int headH = (int) (h * (isFire ? 0.62 : 0.48));
+        int overlap = isFire ? Math.max(2, h / 8) : Math.max(1, h / 20);
+        int bodyExtend = isFire ? Math.max(1, h / 9) : Math.max(2, h / 2);
+        int bodyH = h - headH + overlap + bodyExtend;
+        if (headSprite != null) {
             if (facingLeft) {
-                g2.drawImage(sprite, x + w, y, -w, h, null);
+                g2.drawImage(headSprite, x + w, y, -w, headH, null);
             } else {
-                g2.drawImage(sprite, x, y, w, h, null);
+                g2.drawImage(headSprite, x, y, w, headH, null);
             }
         } else {
-            g2.setColor(player.getElementState() == ElementState.FIRE ? Color.RED : Color.BLUE);
-            g2.fillRect(x, y, w, h);
+            g2.setColor(isFire ? Color.RED : Color.BLUE);
+            g2.fillRect(x, y, w, headH);
+        }
+        if (bodySprite != null) {
+            if (facingLeft) {
+                g2.drawImage(bodySprite, x + w, y + headH - overlap, -w, bodyH, null);
+            } else {
+                g2.drawImage(bodySprite, x, y + headH - overlap, w, bodyH, null);
+            }
+        } else {
+            g2.setColor(isFire ? Color.RED : Color.BLUE);
+            g2.fillRect(x, y + headH, w, bodyH - overlap);
         }
     }
 

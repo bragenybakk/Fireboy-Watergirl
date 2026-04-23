@@ -170,13 +170,22 @@ public class GameStateNavigationTest {
         model.loadLevel("level1.txt");
         model.getPlayers().get(0).setPos(new Position(15, 105));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(78, 75));
+        model.getPlayers().get(0).setPos(new Position(70, 75));
         model.clockTick();
         model.getPlayers().get(0).setPos(new Position(35, 60));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(48, 90));
+        model.getPlayers().get(0).setPos(new Position(43, 90));
+        model.clockTick();
+        model.getPlayers().get(1).setPos(new Position(55, 105));
+        model.clockTick();
+        model.getPlayers().get(1).setPos(new Position(56, 90));
+        model.clockTick();
+        model.getPlayers().get(1).setPos(new Position(85, 75));
+        model.clockTick();
+        model.getPlayers().get(1).setPos(new Position(58, 60));
         model.clockTick();
         model.getPlayers().get(0).setPos(new Position(44, 55));
+        model.getPlayers().get(1).setPos(new Position(44, 55));
         model.clockTick();
         assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
                 "Completing level 1 should return to LEVEL_SELECT");

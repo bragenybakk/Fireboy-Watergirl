@@ -18,8 +18,16 @@ public class SpriteSheet {
         return getSprite(1900, 1000, 70, 70);
     }
 
+    public BufferedImage getFireboyBody() {
+        return getSprite(150, 420, 75, 60);
+    }
+
     public BufferedImage getWatergirlHead() {
         return getSprite(1900, 500, 70, 70);
+    }
+
+    public BufferedImage getWatergirlBody() {
+        return getSprite(910, 310, 75, 60);
     }
 
     public BufferedImage getBlueGem() {
