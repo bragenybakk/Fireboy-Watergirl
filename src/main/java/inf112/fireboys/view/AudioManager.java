@@ -14,7 +14,6 @@ public class AudioManager {
     private volatile boolean playing = false;
     private volatile boolean soundEnabled = true;
     private String currentMusicPath = null;
-
     public boolean isMusicEnabled() {
         return playing;
     }
@@ -33,7 +32,7 @@ public class AudioManager {
         musicThread = new Thread(() -> {
             while (playing) {
                 try (InputStream is = getClass().getResourceAsStream(resourcePath);
-                     BufferedInputStream bis = new BufferedInputStream(is)) {
+                        BufferedInputStream bis = new BufferedInputStream(is)) {
                     Player player = new Player(bis);
                     player.play();
                 } catch (Exception e) {
@@ -54,12 +53,12 @@ public class AudioManager {
     }
 
     public void playSound(String resourcePath) {
-        if (!soundEnabled) return;
+        if (!soundEnabled)
+            return;
         new Thread(() -> {
             try (InputStream is = getClass().getResourceAsStream(resourcePath);
-                 BufferedInputStream bis = new BufferedInputStream(is);
-                 AudioInputStream ais = AudioSystem.getAudioInputStream(bis)) {
-
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    AudioInputStream ais = AudioSystem.getAudioInputStream(bis)) {
                 AudioFormat baseFormat = ais.getFormat();
                 AudioFormat decodedFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,
@@ -69,9 +68,8 @@ public class AudioManager {
                         baseFormat.getChannels() * 2,
                         baseFormat.getSampleRate(),
                         false);
-
                 try (AudioInputStream decoded = AudioSystem.getAudioInputStream(decodedFormat, ais);
-                     SourceDataLine line = AudioSystem.getSourceDataLine(decodedFormat)) {
+                        SourceDataLine line = AudioSystem.getSourceDataLine(decodedFormat)) {
                     line.open(decodedFormat);
                     line.start();
                     byte[] buffer = new byte[4096];

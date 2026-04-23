@@ -40,8 +40,8 @@ import java.io.IOException;
  */
 public class GameView extends JPanel {
     private static final Color ENEMY_PATROL = new Color(0x8B0000);
-    private static final Color ENEMY_ALERT  = new Color(0xFF8C00);
-    private static final Color ENEMY_CHASE  = new Color(0xFF0000);
+    private static final Color ENEMY_ALERT = new Color(0xFF8C00);
+    private static final Color ENEMY_CHASE = new Color(0xFF0000);
     private ViewableGameModel viewableGameModel;
     private int windowWidth = 1100;
     private int windowHeight = 900;
@@ -277,33 +277,41 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (enemy.getPos().y() * scale));
         int w = (int) (enemy.getWidth() * scale);
         int h = (int) (enemy.getHeight() * scale);
-
         int tick = enemyAnimTick.getOrDefault(enemy, 0);
         enemyAnimTick.put(enemy, tick + 1);
-
         // Advance one animation frame every 5 draw ticks (~12 fps at 60 fps game).
         int animRow, frameCount;
         switch (enemy.getState()) {
-            case PATROL -> { animRow = SkeletonSpriteSheet.ROW_WALK;   frameCount = SkeletonSpriteSheet.WALK_FRAMES;   }
-            case ALERT  -> { animRow = SkeletonSpriteSheet.ROW_IDLE;   frameCount = SkeletonSpriteSheet.IDLE_FRAMES;   }
-            case CHASE  -> { animRow = SkeletonSpriteSheet.ROW_ATTACK; frameCount = SkeletonSpriteSheet.ATTACK_FRAMES; }
-            default     -> { animRow = SkeletonSpriteSheet.ROW_WALK;   frameCount = SkeletonSpriteSheet.WALK_FRAMES;   }
+            case PATROL -> {
+                animRow = SkeletonSpriteSheet.ROW_WALK;
+                frameCount = SkeletonSpriteSheet.WALK_FRAMES;
+            }
+            case ALERT -> {
+                animRow = SkeletonSpriteSheet.ROW_IDLE;
+                frameCount = SkeletonSpriteSheet.IDLE_FRAMES;
+            }
+            case CHASE -> {
+                animRow = SkeletonSpriteSheet.ROW_ATTACK;
+                frameCount = SkeletonSpriteSheet.ATTACK_FRAMES;
+            }
+            default -> {
+                animRow = SkeletonSpriteSheet.ROW_WALK;
+                frameCount = SkeletonSpriteSheet.WALK_FRAMES;
+            }
         }
         int col = (tick / 5) % frameCount;
         BufferedImage frame = skeletonSheet.getFrame(animRow, col);
-
         if (frame != null) {
             // Scale the frame so the content bounding box (non-transparent pixels)
             // lines up exactly with the enemy hitbox.
-            int contentW = SkeletonSpriteSheet.CONTENT_RIGHT  - SkeletonSpriteSheet.CONTENT_LEFT + 1;
-            int contentH = SkeletonSpriteSheet.CONTENT_BOTTOM - SkeletonSpriteSheet.CONTENT_TOP  + 1;
+            int contentW = SkeletonSpriteSheet.CONTENT_RIGHT - SkeletonSpriteSheet.CONTENT_LEFT + 1;
+            int contentH = SkeletonSpriteSheet.CONTENT_BOTTOM - SkeletonSpriteSheet.CONTENT_TOP + 1;
             float sx = (float) w / contentW;
             float sy = (float) h / contentH;
             int drawW = Math.round(SkeletonSpriteSheet.FRAME_SIZE * sx);
             int drawH = Math.round(SkeletonSpriteSheet.FRAME_SIZE * sy);
             int drawX = x - Math.round(SkeletonSpriteSheet.CONTENT_LEFT * sx);
-            int drawY = y - Math.round(SkeletonSpriteSheet.CONTENT_TOP  * sy);
-
+            int drawY = y - Math.round(SkeletonSpriteSheet.CONTENT_TOP * sy);
             boolean facingLeft = enemy.getVelocityX() < 0;
             if (facingLeft) {
                 g2.drawImage(frame, drawX + drawW, drawY, -drawW, drawH, null);
@@ -314,8 +322,8 @@ public class GameView extends JPanel {
             // Fallback: colored rectangle if sprite is unavailable.
             Color enemyColor = switch (enemy.getState()) {
                 case PATROL -> ENEMY_PATROL;
-                case ALERT  -> ENEMY_ALERT;
-                case CHASE  -> ENEMY_CHASE;
+                case ALERT -> ENEMY_ALERT;
+                case CHASE -> ENEMY_CHASE;
             };
             g2.setColor(enemyColor);
             g2.fillRect(x, y, w, h);
@@ -410,7 +418,6 @@ public class GameView extends JPanel {
                     1, 1);
             g2.setColor(new Color(210, 215, 225, 140));
             g2.fillRect(px + inset + 1, py + inset + 1, Math.max(1, pw - 2 * inset - 2), Math.max(1, stripeH / 2));
-
             g2.setColor(Color.BLACK);
             g2.drawRoundRect(px, py, Math.max(1, pw), Math.max(1, ph), arc, arc);
             if (pw > 10) {

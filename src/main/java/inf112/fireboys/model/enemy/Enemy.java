@@ -28,7 +28,6 @@ public class Enemy implements IEnemy {
     private final List<? extends IStaticEntity> entities;
     private EnemyState state = EnemyState.PATROL;
     private int alertTimer = 0;
-
     public Enemy(Position position, double width, double height,
             List<? extends IPlayer> players, List<? extends IStaticEntity> entities) {
         this.position = position;
