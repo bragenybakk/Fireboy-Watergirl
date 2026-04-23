@@ -2,5 +2,6 @@
     "java.format.settings.url": "${workspaceFolder}/java-formatter.xml",
     "java.format.settings.profile": "INF112",
     "editor.formatOnSave": true,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.debug.settings.onBuildFailureProceed": true
 }
