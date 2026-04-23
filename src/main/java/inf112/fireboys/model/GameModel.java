@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
-
 import inf112.fireboys.controller.ControllableGameModel;
 import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Position;
@@ -46,7 +45,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // Level file names
     private List<String> levelNames = null;
     private int unlockedLevelCount = 1;
-    private final Set<Player> playersAtDoor = new HashSet<>();
     // Time tracking
     private int levelTicks = 0;
     private final Map<String, Integer> levelBestTicks = new HashMap<>();
@@ -166,7 +164,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handlePlayerCollisions() {
-        playersAtDoor.clear();
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
@@ -183,13 +180,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     }
                     entity.whenContact(player);
                     if (entity instanceof Door) {
-                        playersAtDoor.add(player);
                         checkWinConditions();
                     }
                 }
             }
-            // If player was jumping from a pool, restore velocity so wall doesn't cancel
-            // the jump — but not if the player hit a ceiling (which pushes Y downward)
             if (savedVelocityY < 0 && player.getPos().y() <= yBeforeCollisions) {
                 player.setVelocityY(savedVelocityY);
                 player.setOnGroundFALSE();
@@ -207,9 +201,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handleEntityCollisions() {
-        // Pass 1: resolve movable entities against walls/floors
         resolveWallCollisions();
-        // Pass 2: resolve box-box collisions, reverting if pushed into a wall
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
                 for (StaticEntity otherEntity : entities) {
@@ -228,7 +220,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 }
             }
         }
-        // Pass 3: re-resolve walls in case box-box left overlaps
         resolveWallCollisions();
     }
 
@@ -429,7 +420,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handleLevelSelect() {
         if (levelNames == null || levelNames.isEmpty()) {
-            // nothing to load
             return;
         }
         int maxUnlockedIndex = Math.min(levelNames.size(), unlockedLevelCount) - 1;
@@ -441,11 +431,39 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         loadLevel(chosen + ".txt");
     }
 
+    private boolean allDoorsHavePlayer() {
+        for (StaticEntity entity : entities) {
+            if (!(entity instanceof Door door))
+                continue;
+            boolean hasPlayer = false;
+            for (Player player : players) {
+                if (playerIsAtDoor(door, player)) {
+                    hasPlayer = true;
+                    break;
+                }
+            }
+            if (!hasPlayer)
+                return false;
+        }
+        return true;
+    }
+
+    private boolean playerIsAtDoor(Door door, Player player) {
+        double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
+        double playerCenterY = player.getPos().y() + player.getHeight() / 2.0;
+        double doorLeft = door.getPos().x();
+        double doorRight = doorLeft + door.getWidth();
+        double doorTop = door.getPos().y();
+        double doorBottom = doorTop + door.getHeight();
+        return playerCenterX >= doorLeft && playerCenterX <= doorRight
+                && playerCenterY >= doorTop && playerCenterY <= doorBottom;
+    }
+
     private void checkWinConditions() {
         if (!areAllGemsCollected()) {
             return;
         }
-        if (!playersAtDoor.containsAll(players)) {
+        if (!allDoorsHavePlayer()) {
             return;
         }
         saveBestTime();
