@@ -62,9 +62,10 @@ public class GameView extends JPanel {
     private BufferedImage doorSprite;
     private BufferedImage redFlameSprite;
     private BufferedImage blueFlameSprite;
-    // Remembers last horizontal direction per player so sprite keeps facing
-    // that way after they stop moving.
     private final Map<Player, Boolean> playerFacingLeft = new HashMap<>();
+    private SkeletonSpriteSheet skeletonSheet;
+    // Per-enemy animation tick counter; incremented each draw call.
+    private final Map<IEnemy, Integer> enemyAnimTick = new HashMap<>();
     public GameView(ViewableGameModel viewableGameModel) {
         this.viewableGameModel = viewableGameModel;
         this.setSize(windowWidth, windowHeight);
@@ -99,6 +100,7 @@ public class GameView extends JPanel {
         } catch (IOException e) {
             blueFlameSprite = null;
         }
+        skeletonSheet = new SkeletonSpriteSheet("/skeleton_enemy.png");
     }
 
     /**
@@ -271,15 +273,41 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (enemy.getPos().y() * scale));
         int w = (int) (enemy.getWidth() * scale);
         int h = (int) (enemy.getHeight() * scale);
-        Color enemyColor = switch (enemy.getState()) {
-            case PATROL -> ENEMY_PATROL;
-            case ALERT  -> ENEMY_ALERT;
-            case CHASE  -> ENEMY_CHASE;
-        };
-        g2.setColor(enemyColor);
-        g2.fillRect(x, y, w, h);
-        g2.setColor(Color.BLACK);
-        g2.drawRect(x, y, w, h);
+
+        int tick = enemyAnimTick.getOrDefault(enemy, 0);
+        enemyAnimTick.put(enemy, tick + 1);
+
+        // Advance one animation frame every 5 draw ticks (~12 fps at 60 fps game).
+        int animRow, frameCount;
+        switch (enemy.getState()) {
+            case PATROL -> { animRow = SkeletonSpriteSheet.ROW_WALK;   frameCount = SkeletonSpriteSheet.WALK_FRAMES;   }
+            case ALERT  -> { animRow = SkeletonSpriteSheet.ROW_IDLE;   frameCount = SkeletonSpriteSheet.IDLE_FRAMES;   }
+            case CHASE  -> { animRow = SkeletonSpriteSheet.ROW_ATTACK; frameCount = SkeletonSpriteSheet.ATTACK_FRAMES; }
+            default     -> { animRow = SkeletonSpriteSheet.ROW_WALK;   frameCount = SkeletonSpriteSheet.WALK_FRAMES;   }
+        }
+        int col = (tick / 5) % frameCount;
+        BufferedImage frame = skeletonSheet.getFrame(animRow, col);
+
+        if (frame != null) {
+            // Flip horizontally when moving left (negative velocityX).
+            boolean facingLeft = enemy.getVelocityX() < 0;
+            if (facingLeft) {
+                g2.drawImage(frame, x + w, y, -w, h, null);
+            } else {
+                g2.drawImage(frame, x, y, w, h, null);
+            }
+        } else {
+            // Fallback: colored rectangle if sprite is unavailable.
+            Color enemyColor = switch (enemy.getState()) {
+                case PATROL -> ENEMY_PATROL;
+                case ALERT  -> ENEMY_ALERT;
+                case CHASE  -> ENEMY_CHASE;
+            };
+            g2.setColor(enemyColor);
+            g2.fillRect(x, y, w, h);
+            g2.setColor(Color.BLACK);
+            g2.drawRect(x, y, w, h);
+        }
     }
 
     private void drawAds(Graphics2D g2, int sideMargin, int viewWidth, int viewHeight) {
