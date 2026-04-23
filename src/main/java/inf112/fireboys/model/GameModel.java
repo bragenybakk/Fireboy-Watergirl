@@ -272,6 +272,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             for (StaticEntity entity : entities) {
                 if (entity instanceof Gem gem && gem.isCollected())
                     continue;
+                if (entity instanceof Pool)
+                    continue;
                 if (checkCollision(entity, enemy)) {
                     entity.whenContact(enemy);
                 }

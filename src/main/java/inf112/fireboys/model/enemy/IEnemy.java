@@ -13,6 +13,11 @@ public interface IEnemy extends IMovable {
     void update();
 
     /**
+     * Returns the current FSM state of the enemy.
+     */
+    EnemyState getState();
+
+    /**
      * Checks if the enemy is alive.
      */
     boolean isAlive();

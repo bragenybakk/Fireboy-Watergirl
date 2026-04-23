@@ -34,7 +34,6 @@ public class GameReader {
         List<Decoration> decorations = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
-
         InputStream is = GameReader.class.getClassLoader().getResourceAsStream(fileName);
         if (is == null) {
             throw new IOException("Level file not found on classpath: " + fileName);
@@ -74,7 +73,8 @@ public class GameReader {
                 case "GEM":
                     String gemType = sc.next();
                     ElementState gemElement = ElementState.valueOf(gemType);
-                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble(), gemElement));
+                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
+                            sc.nextDouble(), gemElement));
                     break;
                 case "BOOST_PLATFORM":
                 case "GRAVITY_POTION":
@@ -92,7 +92,8 @@ public class GameReader {
                     break;
                 }
                 case "ENEMY":
-                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
+                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
+                            sc.nextDouble(), players, entities));
                     break;
                 case "DECOR_TORCH":
                     decorations.add(new Decoration(new Position(sc.nextDouble(), sc.nextDouble()),
