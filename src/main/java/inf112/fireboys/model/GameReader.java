@@ -92,7 +92,7 @@ public class GameReader {
                     break;
                 }
                 case "ENEMY":
-                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
+                    enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble(), players, entities));
                     break;
                 case "DECOR_TORCH":
                     decorations.add(new Decoration(new Position(sc.nextDouble(), sc.nextDouble()),

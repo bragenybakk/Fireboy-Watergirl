@@ -6,6 +6,7 @@ import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Decoration;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
+import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
@@ -38,6 +39,9 @@ import java.io.IOException;
  * state.
  */
 public class GameView extends JPanel {
+    private static final Color ENEMY_PATROL = new Color(0x8B0000);
+    private static final Color ENEMY_ALERT  = new Color(0xFF8C00);
+    private static final Color ENEMY_CHASE  = new Color(0xFF0000);
     private ViewableGameModel viewableGameModel;
     private int windowWidth = 1100;
     private int windowHeight = 900;
@@ -267,7 +271,12 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (enemy.getPos().y() * scale));
         int w = (int) (enemy.getWidth() * scale);
         int h = (int) (enemy.getHeight() * scale);
-        g2.setColor(Color.decode("#8B0000"));
+        Color enemyColor = switch (enemy.getState()) {
+            case PATROL -> ENEMY_PATROL;
+            case ALERT  -> ENEMY_ALERT;
+            case CHASE  -> ENEMY_CHASE;
+        };
+        g2.setColor(enemyColor);
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
