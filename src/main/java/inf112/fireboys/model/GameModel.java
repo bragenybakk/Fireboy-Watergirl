@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +47,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private List<String> levelNames = null;
     private int unlockedLevelCount = 1;
     private final Set<Player> playersAtDoor = new HashSet<>();
+    // Time tracking
+    private int levelTicks = 0;
+    private final Map<String, Integer> levelBestTicks = new HashMap<>();
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -64,11 +69,45 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
         }
+        levelTicks++;
+        tickMovingEntities();
+        carryPlayersOnMovingPlatforms();
         applyGravityAll();
         updateAllPositions();
         handlePlayerCollisions();
         handleEntityCollisions();
         handleEnemyCollisions();
+    }
+
+    private void tickMovingEntities() {
+        for (StaticEntity entity : entities) {
+            if (entity instanceof MovingPlatform mp) {
+                mp.tick();
+            }
+        }
+    }
+
+    private void carryPlayersOnMovingPlatforms() {
+        for (Player player : players) {
+            if (!player.isOnGround())
+                continue;
+            double playerBottom = player.getPos().y() + player.getHeight();
+            double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
+            for (StaticEntity entity : entities) {
+                if (!(entity instanceof MovingPlatform mp))
+                    continue;
+                double platLeft = mp.getPos().x();
+                double platRight = platLeft + mp.getWidth();
+                double platTop = mp.getPos().y();
+                if (playerCenterX >= platLeft && playerCenterX <= platRight
+                        && Math.abs(playerBottom - platTop) < 2.0) {
+                    player.setPos(new Position(
+                            player.getPos().x() + mp.getDeltaX(),
+                            player.getPos().y() + mp.getDeltaY()));
+                    break;
+                }
+            }
+        }
     }
 
     private void applyGravityAll() {
@@ -86,8 +125,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    // Matching player sinks with gravity and lands on the pool floor; mismatching
-    // player dies in water.
     private void handlePoolInteraction(Player player) {
         double centerX = player.getPos().x() + player.getWidth() / 2.0;
         double topY = player.getPos().y();
@@ -409,6 +446,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         if (!playersAtDoor.containsAll(players)) {
             return;
         }
+        saveBestTime();
         unlockNextLevel();
         setGameState(GameState.LEVEL_SELECT);
     }
@@ -417,6 +455,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
+            this.levelTicks = 0;
             this.board = GameReader.loadLevel(levelFileName);
             List<Player> allPlayers = board.players();
             if (testModeSinglePlayer && !allPlayers.isEmpty()) {
@@ -536,6 +575,26 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             }
         }
         return false;
+    }
+
+    private void saveBestTime() {
+        if (currentLevelFileName == null)
+            return;
+        String key = currentLevelFileName.replaceAll("\\.txt$", "");
+        int prev = levelBestTicks.getOrDefault(key, Integer.MAX_VALUE);
+        if (levelTicks < prev) {
+            levelBestTicks.put(key, levelTicks);
+        }
+    }
+
+    @Override
+    public int getElapsedTicks() {
+        return levelTicks;
+    }
+
+    @Override
+    public Map<String, Integer> getLevelBestTicks() {
+        return levelBestTicks;
     }
 
     private void unlockNextLevel() {

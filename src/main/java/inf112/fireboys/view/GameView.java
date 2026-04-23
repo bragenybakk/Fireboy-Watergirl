@@ -238,12 +238,20 @@ public class GameView extends JPanel {
         drawHUD(g2);
     }
 
+    private String formatTime(int ticks) {
+        int totalSeconds = ticks / 60;
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
+
     private void drawHUD(Graphics2D g2) {
         g2.setFont(new Font("Arial", Font.BOLD, 30));
         g2.setColor(Color.WHITE);
         int collected = viewableGameModel.getCollectedGems();
         int total = viewableGameModel.getTotalGems();
         g2.drawString("Gems: " + collected + "/" + total, 20, 30);
+        g2.drawString("Time: " + formatTime(viewableGameModel.getElapsedTicks()), 20, 65);
         if (viewableGameModel.isPlayerOnBoostPlateWithoutCharge()) {
             g2.setFont(new Font("Arial", Font.BOLD, 20));
             g2.setColor(Color.WHITE);
@@ -510,14 +518,18 @@ public class GameView extends JPanel {
         g2.drawString(text, x, 120);
         // Draw available levels
         java.util.List<String> levels = viewableGameModel.getLevelNames();
+        Map<String, Integer> bestTicks = viewableGameModel.getLevelBestTicks();
         int selected = viewableGameModel.getSelectedMenuOption();
         int unlockedLevelCount = viewableGameModel.getUnlockedLevelCount();
         g2.setFont(menuFont);
         int startY = 220;
-        int spacing = 48;
+        int spacing = 60;
         for (int i = 0; i < levels.size(); i++) {
             String name = levels.get(i);
             boolean isUnlocked = i < unlockedLevelCount;
+            String timeLabel = bestTicks.containsKey(name)
+                    ? "Best: " + formatTime(bestTicks.get(name))
+                    : "Not completed";
             if (!isUnlocked) {
                 g2.setFont(menuFont);
                 g2.setColor(Color.GRAY);
@@ -531,16 +543,18 @@ public class GameView extends JPanel {
                 g2.setColor(Color.decode("#f5a623"));
                 String marker = "► ";
                 fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(marker + name);
+                String fullLabel = marker + name + "   " + timeLabel;
+                int textWidth = fm.stringWidth(fullLabel);
                 int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(marker + name, tx, startY + i * spacing);
+                g2.drawString(fullLabel, tx, startY + i * spacing);
             } else {
                 g2.setFont(menuFont);
                 g2.setColor(Color.WHITE);
                 fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(name);
+                String fullLabel = name + "   " + timeLabel;
+                int textWidth = fm.stringWidth(fullLabel);
                 int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(name, tx, startY + i * spacing);
+                g2.drawString(fullLabel, tx, startY + i * spacing);
             }
         }
         g2.setFont(font);
