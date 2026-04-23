@@ -9,6 +9,7 @@ import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
+import inf112.fireboys.model.entity.MovingPlatform;
 import inf112.fireboys.model.entity.Pool;
 import inf112.fireboys.model.entity.StaticEntity;
 import inf112.fireboys.model.entity.Wall;
@@ -82,6 +83,14 @@ public class GameReader {
                             new Position(sc.nextDouble(), sc.nextDouble()),
                             sc.nextDouble(), sc.nextDouble()));
                     break;
+                case "MOVING_PLATFORM": {
+                    double mpX = sc.nextDouble(), mpY = sc.nextDouble();
+                    double mpW = sc.nextDouble(), mpH = sc.nextDouble();
+                    double mpDX = sc.nextDouble(), mpDY = sc.nextDouble();
+                    double mpSpeed = sc.nextDouble(), mpDist = sc.nextDouble();
+                    entities.add(new MovingPlatform(new Position(mpX, mpY), mpW, mpH, mpDX, mpDY, mpSpeed, mpDist));
+                    break;
+                }
                 case "ENEMY":
                     enemies.add(new Enemy(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(), sc.nextDouble()));
                     break;
