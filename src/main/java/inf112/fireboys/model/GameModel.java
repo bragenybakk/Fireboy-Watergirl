@@ -465,11 +465,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         loadLevel(chosen + ".txt");
     }
 
-    private void checkButtonEffects() {
+    private void checkButton() {
         List<StaticEntity> toAdd = new ArrayList<>();
         for (StaticEntity entity : entities) {
             if (entity instanceof Button button && button.isPressed() && !button.isTrapSpawned()) {
-                toAdd.add(new Wall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight()));
+                toAdd.add(new LaserWall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight()));
                 button.markTrapSpawned();
             }
         }

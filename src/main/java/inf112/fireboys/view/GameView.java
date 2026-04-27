@@ -10,6 +10,7 @@ import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Button;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.LaserWall;
 import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
 import inf112.fireboys.model.entity.Pool;
@@ -501,8 +502,10 @@ public class GameView extends JPanel {
             g2.fillRect(x, y, w, h);
             g2.setColor(Color.BLACK);
             g2.drawRect(x, y, w, h);
+            drawLaser(g2, button, scale, diff_X, diff_Y);
             return;
         }
+        if (entity instanceof LaserWall) return;
         BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {
             int tileSize = Math.max(8, (int) (8 * scale));
@@ -520,6 +523,24 @@ public class GameView extends JPanel {
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
+    }
+
+    private void drawLaser(Graphics2D g2, Button button, double scale, int diff_X, int diff_Y) {
+        int tx = (int) (diff_X + button.getTrapPos().x() * scale);
+        int ty = (int) (diff_Y + button.getTrapPos().y() * scale);
+        int tw = Math.max(2, (int) (button.getTrapWidth() * scale));
+        int th = (int) (button.getTrapHeight() * scale);
+
+        if (button.isPressed()) {
+            g2.setColor(new Color(255, 30, 30, 25));
+            g2.fillRect(tx - 1, ty, tw + 2, th);
+            g2.setColor(new Color(255, 80, 80, 255));
+            g2.fillRect(tx, ty, tw, th);
+        }
+
+        g2.setColor(Color.WHITE);
+        g2.fillRect(tx, ty, tw, 1);
+        g2.fillRect(tx, ty + th - 1, tw, 1);
     }
 
     private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
