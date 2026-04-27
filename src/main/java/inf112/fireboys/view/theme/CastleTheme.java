@@ -67,6 +67,11 @@ public class CastleTheme implements Theme {
     }
 
     @Override
+    public BufferedImage getOpenDoor() {
+        return castleTiles.getOpenDoor();
+    }
+
+    @Override
     public BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH) {
         return castleTiles.getSprite(sheetX, sheetY, sheetW, sheetH);
     }

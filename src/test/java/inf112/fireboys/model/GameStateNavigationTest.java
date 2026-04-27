@@ -172,7 +172,7 @@ public class GameStateNavigationTest {
         model.clockTick();
         model.getPlayers().get(0).setPos(new Position(70, 75));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(35, 60));
+        model.getPlayers().get(0).setPos(new Position(45, 60));
         model.clockTick();
         model.getPlayers().get(0).setPos(new Position(43, 90));
         model.clockTick();
@@ -182,11 +182,15 @@ public class GameStateNavigationTest {
         model.clockTick();
         model.getPlayers().get(1).setPos(new Position(85, 75));
         model.clockTick();
-        model.getPlayers().get(1).setPos(new Position(58, 60));
+        model.getPlayers().get(1).setPos(new Position(62, 60));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(34, 55));
-        model.getPlayers().get(1).setPos(new Position(52, 55));
-        model.clockTick();
+        for (int i = 0; i < 70; i++) {
+            model.getPlayers().get(0).setPos(new Position(34, 55));
+            model.getPlayers().get(1).setPos(new Position(52, 55));
+            model.getPlayers().get(0).setVelocityY(0);
+            model.getPlayers().get(1).setVelocityY(0);
+            model.clockTick();
+        }
         assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
                 "Completing level 1 should return to LEVEL_SELECT");
         model.menuDown();
@@ -205,8 +209,11 @@ public class GameStateNavigationTest {
                 "Door should stay locked until all gems are collected");
         model.getPlayers().get(0).setPos(new Position(40, 84));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(80, 78));
-        model.clockTick();
+        for (int i = 0; i < 70; i++) {
+            model.getPlayers().get(0).setPos(new Position(80, 78));
+            model.getPlayers().get(0).setVelocityY(0);
+            model.clockTick();
+        }
         assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
                 "After collecting all gems, door should complete the level");
     }

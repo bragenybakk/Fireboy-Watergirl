@@ -42,6 +42,11 @@ public class NullTheme implements Theme {
     }
 
     @Override
+    public BufferedImage getOpenDoor() {
+        return null;
+    }
+
+    @Override
     public BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH) {
         return null;
     }

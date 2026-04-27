@@ -95,8 +95,11 @@ public class GameModelTest {
         Board board = readGameEasy();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        model.getPlayers().get(0).setPos(new Position(80, 80));
-        model.clockTick();
+        for (int i = 0; i < 70; i++) {
+            model.getPlayers().get(0).setPos(new Position(80, 80));
+            model.getPlayers().get(0).setVelocityY(0);
+            model.clockTick();
+        }
         assertEquals(GameState.LEVEL_SELECT, model.getGameState(),
                 "Game state should be LEVEL_SELECT after completing the level");
     }
