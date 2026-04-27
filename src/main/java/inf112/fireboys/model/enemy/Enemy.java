@@ -110,7 +110,7 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < PATROL_SPEED * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -2.0;
+                velocityY = -1.4;
                 jumpCooldown = 45;
             } else {
                 movingRight = !movingRight;
@@ -132,14 +132,14 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < CHASE_SPEED * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -2.0;
+                velocityY = -1.4;
                 jumpCooldown = 45;
             } else {
                 movingRight = !movingRight;
             }
         } else if (wasOnGround && !entities.isEmpty() && !hasGroundAhead(CHASE_SPEED)) {
             if (jumpCooldown == 0) {
-                velocityY = -2.0;
+                velocityY = -1.4;
                 jumpCooldown = 45;
             }
         }
