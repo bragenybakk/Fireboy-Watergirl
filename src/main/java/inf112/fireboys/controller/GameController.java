@@ -40,6 +40,14 @@ public class GameController implements KeyListener, MouseListener {
         gameLoopTimer.start();
     }
 
+    void stopTimer() {
+        gameLoopTimer.stop();
+    }
+
+    void triggerUpdate() {
+        updateGame();
+    }
+
     private void updateGame() {
         GameState currentState = gameModel.getGameState();
         if (previousState == GameState.PLAYING && currentState == GameState.GAME_OVER) {

@@ -14,6 +14,8 @@ public class AudioManager {
     private volatile boolean playing = false;
     private volatile boolean soundEnabled = true;
     private String currentMusicPath = null;
+    private volatile Player currentPlayer = null;
+
     public boolean isMusicEnabled() {
         return playing;
     }
@@ -34,9 +36,17 @@ public class AudioManager {
                 try (InputStream is = getClass().getResourceAsStream(resourcePath);
                         BufferedInputStream bis = new BufferedInputStream(is)) {
                     Player player = new Player(bis);
+                    currentPlayer = player;
+                    if (!playing) {
+                        player.close();
+                        break;
+                    }
                     player.play();
+                    currentPlayer = null;
                 } catch (Exception e) {
-                    System.err.println("Feil ved avspilling av musikk: " + e.getMessage());
+                    if (playing) {
+                        System.err.println("Feil ved avspilling av musikk: " + e.getMessage());
+                    }
                     break;
                 }
             }
@@ -88,6 +98,11 @@ public class AudioManager {
 
     public void stop() {
         playing = false;
+        Player p = currentPlayer;
+        if (p != null) {
+            p.close();
+            currentPlayer = null;
+        }
         if (musicThread != null) {
             musicThread.interrupt();
         }
