@@ -11,7 +11,8 @@ import javax.imageio.ImageIO;
 public class CastleTileSheet {
     // Coordinates of individual tiles within the sheet (x, y, w, h).
     private static final int WALL_TILE_X = 128, WALL_TILE_Y = 68, WALL_TILE_W = 32, WALL_TILE_H = 32;
-    private static final int DOOR_X = 384, DOOR_Y = 208, DOOR_W = 64, DOOR_H = 80;
+    private static final int DOOR_X = 320, DOOR_Y = 208, DOOR_W = 64, DOOR_H = 80;
+    private static final int OPEN_DOOR_X = 256, OPEN_DOOR_Y = 208, OPEN_DOOR_W = 64, OPEN_DOOR_H = 80;
     private static final int TORCH_X = 96, TORCH_Y = 288, TORCH_W = 32, TORCH_H = 32;
     private static final int WINDOW_X = 96, WINDOW_Y = 256, WINDOW_W = 32, WINDOW_H = 32;
     private BufferedImage sheet;
@@ -29,6 +30,10 @@ public class CastleTileSheet {
 
     public BufferedImage getDoor() {
         return getSprite(DOOR_X, DOOR_Y, DOOR_W, DOOR_H);
+    }
+
+    public BufferedImage getOpenDoor() {
+        return getSprite(OPEN_DOOR_X, OPEN_DOOR_Y, OPEN_DOOR_W, OPEN_DOOR_H);
     }
 
     public BufferedImage getTorch() {

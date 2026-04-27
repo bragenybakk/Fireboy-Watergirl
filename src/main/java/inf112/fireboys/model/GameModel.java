@@ -2,8 +2,6 @@ package inf112.fireboys.model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.BufferedReader;
@@ -48,6 +46,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     // Time tracking
     private int levelTicks = 0;
     private final Map<String, Integer> levelBestTicks = new HashMap<>();
+    private static final int WIN_DELAY_TICKS = 60;
+    private int winDelayTicks = 0;
+
+    @Override
+    public double getWinFadeProgress() {
+        return Math.min(1.0, (double) winDelayTicks / WIN_DELAY_TICKS);
+    }
     // Constructor for menu only (no board)
     public GameModel() {
         this.board = null;
@@ -75,6 +80,37 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         handlePlayerCollisions();
         handleEntityCollisions();
         handleEnemyCollisions();
+        updateDoorOpenStates();
+        tickWinDelay();
+    }
+
+    private void updateDoorOpenStates() {
+        for (StaticEntity entity : entities) {
+            if (!(entity instanceof Door door))
+                continue;
+            boolean hasPlayer = false;
+            for (Player player : players) {
+                if (playerIsAtDoor(door, player)) {
+                    hasPlayer = true;
+                    break;
+                }
+            }
+            door.setOpen(hasPlayer);
+        }
+    }
+
+    private void tickWinDelay() {
+        if (areAllGemsCollected() && allDoorsHavePlayer()) {
+            winDelayTicks++;
+            if (winDelayTicks >= WIN_DELAY_TICKS) {
+                saveBestTime();
+                unlockNextLevel();
+                setGameState(GameState.LEVEL_SELECT);
+                winDelayTicks = 0;
+            }
+        } else {
+            winDelayTicks = 0;
+        }
     }
 
     private void tickMovingEntities() {
@@ -179,9 +215,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                         handlePush(player, movable);
                     }
                     entity.whenContact(player);
-                    if (entity instanceof Door) {
-                        checkWinConditions();
-                    }
                 }
             }
             if (savedVelocityY < 0 && player.getPos().y() <= yBeforeCollisions) {
@@ -459,23 +492,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 && playerCenterY >= doorTop && playerCenterY <= doorBottom;
     }
 
-    private void checkWinConditions() {
-        if (!areAllGemsCollected()) {
-            return;
-        }
-        if (!allDoorsHavePlayer()) {
-            return;
-        }
-        saveBestTime();
-        unlockNextLevel();
-        setGameState(GameState.LEVEL_SELECT);
-    }
     // =============== LEVEL READER / LOADER ===============
 
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
             this.levelTicks = 0;
+            this.winDelayTicks = 0;
             this.board = GameReader.loadLevel(levelFileName);
             List<Player> allPlayers = board.players();
             if (testModeSinglePlayer && !allPlayers.isEmpty()) {

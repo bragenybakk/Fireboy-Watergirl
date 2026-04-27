@@ -287,6 +287,15 @@ public class GameView extends JPanel {
         }
         drawAdBlockToggle(g2);
         drawHUD(g2);
+        drawWinFade(g2);
+    }
+
+    private void drawWinFade(Graphics2D g2) {
+        double progress = viewableGameModel.getWinFadeProgress();
+        if (progress <= 0) return;
+        int alpha = (int) Math.min(255, progress * 255);
+        g2.setColor(new Color(255, 255, 255, alpha));
+        g2.fillRect(0, 0, getWidth(), getHeight());
     }
 
     private String formatTime(int ticks) {
@@ -473,10 +482,18 @@ public class GameView extends JPanel {
         int y = (int) (diff_Y + (entity.getPos().y() * scale));
         int w = (int) (entity.getWidth() * scale);
         int h = (int) (entity.getHeight() * scale);
-        BufferedImage doorSprite = theme.getDoor();
-        if (entity instanceof Door && doorSprite != null) {
-            g2.drawImage(doorSprite, x, y, w, h, null);
-            return;
+        if (entity instanceof Door door) {
+            BufferedImage doorSprite;
+            if (door.isOpen()) {
+                doorSprite = theme.getOpenDoor();
+            } else {
+                doorSprite = theme.getDoor();
+            }
+            if (doorSprite == null) doorSprite = theme.getDoor();
+            if (doorSprite != null) {
+                g2.drawImage(doorSprite, x, y, w, h, null);
+                return;
+            }
         }
         BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {

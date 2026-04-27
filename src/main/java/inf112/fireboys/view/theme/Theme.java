@@ -22,6 +22,8 @@ public interface Theme {
 
     BufferedImage getDoor();
 
+    BufferedImage getOpenDoor();
+
     BufferedImage getDecorationSprite(int sheetX, int sheetY, int sheetW, int sheetH);
 
     Color getPoolColor(ElementState element);

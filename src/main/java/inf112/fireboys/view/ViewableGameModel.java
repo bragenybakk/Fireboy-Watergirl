@@ -62,4 +62,7 @@ public interface ViewableGameModel {
      * True when the first player stands on a boost plate without a charged jump.
      */
     boolean isPlayerOnBoostPlateWithoutCharge();
+
+    /** Returns 0.0 (no fade) to 1.0 (full fade) for the win-screen fade overlay. */
+    double getWinFadeProgress();
 }
