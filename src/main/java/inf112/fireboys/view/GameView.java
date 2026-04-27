@@ -18,17 +18,21 @@ import inf112.fireboys.model.player.Player;
 import inf112.fireboys.view.theme.CastleTheme;
 import inf112.fireboys.view.theme.Theme;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RadialGradientPaint;
 import java.awt.Polygon;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,62 +128,120 @@ public class GameView extends JPanel {
     }
 
     private void drawMainMenu(Graphics2D g2) {
-        // Background
-        g2.setColor(Color.decode("#1a1a2e"));
+        // --- BACKGROUND ---
+        g2.setColor(Color.decode("#0d0d1f"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-        // Menu characters
-        int charSize = 120;
-        int charY = 200;
-        int fireboyX = 80;
-        int watergirlX = windowWidth - 80 - charSize;
-        BufferedImage fireboyHead = theme.getPlayerHead(ElementState.FIRE);
-        BufferedImage watergirlHead = theme.getPlayerHead(ElementState.WATER);
-        if (fireboyHead != null) {
-            g2.drawImage(fireboyHead, fireboyX, charY, charSize, charSize, null);
+
+        // Fire glow bottom-left
+        RadialGradientPaint fireGlow = new RadialGradientPaint(
+            new Point2D.Float(0, windowHeight),
+            windowHeight * 0.9f,
+            new float[]{0f, 1f},
+            new Color[]{new Color(200, 50, 0, 110), new Color(0, 0, 0, 0)}
+        );
+        g2.setPaint(fireGlow);
+        g2.fillRect(0, 0, windowWidth, windowHeight);
+
+        // Water glow bottom-right
+        RadialGradientPaint waterGlow = new RadialGradientPaint(
+            new Point2D.Float(windowWidth, windowHeight),
+            windowHeight * 0.9f,
+            new float[]{0f, 1f},
+            new Color[]{new Color(0, 80, 200, 110), new Color(0, 0, 0, 0)}
+        );
+        g2.setPaint(waterGlow);
+        g2.fillRect(0, 0, windowWidth, windowHeight);
+
+        // --- CHARACTERS (large, bottom corners) ---
+        int charH = 320;
+        BufferedImage fireboySprite = theme.getPlayerHead(ElementState.FIRE);
+        BufferedImage watergirlSprite = theme.getPlayerHead(ElementState.WATER);
+
+        int charY = windowHeight - charH - 100;
+        if (fireboySprite != null) {
+            int charW = charH * fireboySprite.getWidth() / fireboySprite.getHeight();
+            g2.drawImage(fireboySprite, 20, charY, charW, charH, null);
         }
-        if (watergirlHead != null) {
-            g2.drawImage(watergirlHead, watergirlX, charY, charSize, charSize, null);
+        if (watergirlSprite != null) {
+            int charW = charH * watergirlSprite.getWidth() / watergirlSprite.getHeight();
+            g2.drawImage(watergirlSprite, windowWidth - 20 - charW, charY, charW, charH, null);
         }
-        // Title
-        g2.setFont(titleFont);
-        g2.setColor(Color.decode("#e94560"));
+
+        // --- TITLE ---
+        Font bigTitle = new Font("Impact", Font.PLAIN, 82);
+        g2.setFont(bigTitle);
         String title = "FIREBOY & WATERGIRL";
         FontMetrics fm = g2.getFontMetrics();
         int titleX = (windowWidth - fm.stringWidth(title)) / 2;
-        g2.drawString(title, titleX, 120);
-        // Menu options
+        int titleY = 130;
+
+        // Drop shadow (layered for depth)
+        for (int i = 5; i >= 1; i--) {
+            g2.setColor(new Color(0, 0, 0, 40 + i * 20));
+            g2.drawString(title, titleX + i, titleY + i);
+        }
+
+        // Gradient: fire orange → white → water blue
+        GradientPaint titleGrad = new GradientPaint(
+            titleX, titleY, Color.decode("#ff4400"),
+            titleX + fm.stringWidth(title), titleY, Color.decode("#0099ff")
+        );
+        g2.setPaint(titleGrad);
+        g2.drawString(title, titleX, titleY);
+
+        // --- DECORATIVE DIVIDER ---
+        int divY = titleY + 18;
+        g2.setStroke(new BasicStroke(2f));
+        GradientPaint divGrad = new GradientPaint(
+            150, divY, Color.decode("#ff4400"),
+            windowWidth - 150, divY, Color.decode("#0099ff")
+        );
+        g2.setPaint(divGrad);
+        g2.drawLine(150, divY, windowWidth - 150, divY);
+        g2.setStroke(new BasicStroke(1f));
+
+        // --- MENU OPTIONS ---
+        Font menuF = new Font("Arial", Font.PLAIN, 30);
+        Font selectedF = new Font("Arial", Font.BOLD, 34);
         String[] options = viewableGameModel.getMenuOptions();
         int selectedOption = viewableGameModel.getSelectedMenuOption();
-        int startY = 250;
-        int spacing = 60;
+        int startY = divY + 75;
+        int spacing = 62;
+
         for (int i = 0; i < options.length; i++) {
             if (i == selectedOption) {
-                // Selected item
-                g2.setFont(selectedMenuFont);
+                g2.setFont(selectedF);
+                fm = g2.getFontMetrics();
+                String label = "► " + options[i];
+                int tw = fm.stringWidth(label);
+                int ox = (windowWidth - tw) / 2;
+                int oy = startY + i * spacing;
+
+                // Glowing selection box
+                g2.setColor(new Color(245, 166, 35, 25));
+                g2.fillRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setColor(new Color(245, 166, 35, 90));
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setStroke(new BasicStroke(1f));
+
                 g2.setColor(Color.decode("#f5a623"));
-                // Draw cursor
-                String marker = "► ";
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(marker + options[i]);
-                int x = (windowWidth - textWidth) / 2;
-                g2.drawString(marker + options[i], x, startY + i * spacing);
+                g2.drawString(label, ox, oy);
             } else {
-                // Unselected item
-                g2.setFont(menuFont);
-                g2.setColor(Color.WHITE);
+                g2.setFont(menuF);
                 fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(options[i]);
-                int x = (windowWidth - textWidth) / 2;
-                g2.drawString(options[i], x, startY + i * spacing);
+                int tw = fm.stringWidth(options[i]);
+                g2.setColor(new Color(190, 190, 210));
+                g2.drawString(options[i], (windowWidth - tw) / 2, startY + i * spacing);
             }
         }
-        // Instructions
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
+
+        // --- INSTRUCTIONS ---
+        g2.setFont(new Font("Arial", Font.PLAIN, 13));
+        g2.setColor(new Color(90, 90, 110));
         String instructions = "Use ↑↓ to navigate, ENTER to select";
         fm = g2.getFontMetrics();
-        int instrX = (windowWidth - fm.stringWidth(instructions)) / 2;
-        g2.drawString(instructions, instrX, windowHeight - 50);
+        g2.drawString(instructions, (windowWidth - fm.stringWidth(instructions)) / 2, windowHeight - 20);
     }
 
     private void drawGame(Graphics2D g2) {
@@ -503,219 +565,192 @@ public class GameView extends JPanel {
         }
     }
 
-    private void drawPauseMenu(Graphics2D g2) {
-        // Semi-transparent overlay
-        g2.setColor(new Color(0, 0, 0, 150));
+    // --- Shared menu helpers ---
+
+    private void drawMenuBackground(Graphics2D g2) {
+        g2.setColor(Color.decode("#0d0d1f"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-        g2.setFont(titleFont);
-        g2.setColor(Color.WHITE);
-        String pauseText = "PAUSED";
+    }
+
+    private void drawMenuTitle(Graphics2D g2, String title, int y, Color left, Color right) {
+        Font f = new Font("Impact", Font.PLAIN, 72);
+        g2.setFont(f);
         FontMetrics fm = g2.getFontMetrics();
-        int x = (windowWidth - fm.stringWidth(pauseText)) / 2;
-        g2.drawString(pauseText, x, windowHeight / 3);
-        // Menu options
-        String[] options = viewableGameModel.getMenuOptions();
-        int selectedOption = viewableGameModel.getSelectedMenuOption();
-        int startY = windowHeight / 3 + 80;
-        int spacing = 60;
+        int tx = (windowWidth - fm.stringWidth(title)) / 2;
+        for (int i = 4; i >= 1; i--) {
+            g2.setColor(new Color(0, 0, 0, 40 + i * 20));
+            g2.drawString(title, tx + i, y + i);
+        }
+        g2.setPaint(new GradientPaint(tx, y, left, tx + fm.stringWidth(title), y, right));
+        g2.drawString(title, tx, y);
+        int divY = y + 18;
+        g2.setStroke(new BasicStroke(2f));
+        g2.setPaint(new GradientPaint(150, divY, left, windowWidth - 150, divY, right));
+        g2.drawLine(150, divY, windowWidth - 150, divY);
+        g2.setStroke(new BasicStroke(1f));
+    }
+
+    private void drawMenuOptions(Graphics2D g2, String[] options, int selected, int startY, int spacing) {
+        Font normalF = new Font("Arial", Font.PLAIN, 30);
+        Font selF = new Font("Arial", Font.BOLD, 34);
         for (int i = 0; i < options.length; i++) {
-            if (i == selectedOption) {
-                g2.setFont(selectedMenuFont);
+            if (i == selected) {
+                g2.setFont(selF);
+                FontMetrics fm = g2.getFontMetrics();
+                String label = "► " + options[i];
+                int tw = fm.stringWidth(label);
+                int ox = (windowWidth - tw) / 2;
+                int oy = startY + i * spacing;
+                g2.setColor(new Color(245, 166, 35, 25));
+                g2.fillRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setColor(new Color(245, 166, 35, 90));
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setStroke(new BasicStroke(1f));
                 g2.setColor(Color.decode("#f5a623"));
-                String marker = "► ";
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(marker + options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(marker + options[i], tx, startY + i * spacing);
+                g2.drawString(label, ox, oy);
             } else {
-                g2.setFont(menuFont);
-                g2.setColor(Color.WHITE);
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(options[i], tx, startY + i * spacing);
+                g2.setFont(normalF);
+                FontMetrics fm = g2.getFontMetrics();
+                int tw = fm.stringWidth(options[i]);
+                g2.setColor(new Color(190, 190, 210));
+                g2.drawString(options[i], (windowWidth - tw) / 2, startY + i * spacing);
             }
         }
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
-        String hint = "Use ↑↓ to navigate, ENTER to select, ESC to resume";
-        fm = g2.getFontMetrics();
-        x = (windowWidth - fm.stringWidth(hint)) / 2;
-        g2.drawString(hint, x, windowHeight - 50);
+    }
+
+    private void drawMenuHint(Graphics2D g2, String hint) {
+        g2.setFont(new Font("Arial", Font.PLAIN, 13));
+        g2.setColor(new Color(90, 90, 110));
+        FontMetrics fm = g2.getFontMetrics();
+        g2.drawString(hint, (windowWidth - fm.stringWidth(hint)) / 2, windowHeight - 20);
+    }
+
+    // --- Menu screens ---
+
+    private void drawPauseMenu(Graphics2D g2) {
+        g2.setColor(new Color(0, 0, 0, 170));
+        g2.fillRect(0, 0, windowWidth, windowHeight);
+        int titleY = windowHeight / 3;
+        drawMenuTitle(g2, "PAUSED", titleY, Color.decode("#aaaaff"), Color.decode("#ffffff"));
+        drawMenuOptions(g2, viewableGameModel.getMenuOptions(),
+                viewableGameModel.getSelectedMenuOption(), titleY + 80, 62);
+        drawMenuHint(g2, "Use ↑↓ to navigate, ENTER to select, ESC to resume");
     }
 
     private void drawLevelSelect(Graphics2D g2) {
-        g2.setColor(Color.decode("#1a1a2e"));
-        g2.fillRect(0, 0, windowWidth, windowHeight);
-        g2.setFont(titleFont);
-        g2.setColor(Color.WHITE);
-        String text = "LEVEL SELECT";
-        FontMetrics fm = g2.getFontMetrics();
-        int x = (windowWidth - fm.stringWidth(text)) / 2;
-        g2.drawString(text, x, 120);
-        // Draw available levels
+        drawMenuBackground(g2);
+        drawMenuTitle(g2, "LEVEL SELECT", 110, Color.decode("#ff4400"), Color.decode("#0099ff"));
+
         java.util.List<String> levels = viewableGameModel.getLevelNames();
         Map<String, Integer> bestTicks = viewableGameModel.getLevelBestTicks();
         int selected = viewableGameModel.getSelectedMenuOption();
         int unlockedLevelCount = viewableGameModel.getUnlockedLevelCount();
-        g2.setFont(menuFont);
-        int startY = 220;
-        int spacing = 60;
+        Font normalF = new Font("Arial", Font.PLAIN, 30);
+        Font selF = new Font("Arial", Font.BOLD, 34);
+        int startY = 200;
+        int spacing = 62;
+
         for (int i = 0; i < levels.size(); i++) {
             String name = levels.get(i);
             boolean isUnlocked = i < unlockedLevelCount;
             String timeLabel = bestTicks.containsKey(name)
-                    ? "Best: " + formatTime(bestTicks.get(name))
-                    : "Not completed";
+                    ? "   Best: " + formatTime(bestTicks.get(name))
+                    : "   Not completed";
             if (!isUnlocked) {
-                g2.setFont(menuFont);
-                g2.setColor(Color.GRAY);
-                fm = g2.getFontMetrics();
-                String lockedName = "[LOCKED] " + name;
-                int textWidth = fm.stringWidth(lockedName);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(lockedName, tx, startY + i * spacing);
+                g2.setFont(normalF);
+                g2.setColor(new Color(80, 80, 100));
+                FontMetrics fm = g2.getFontMetrics();
+                String locked = "[LOCKED] " + name;
+                g2.drawString(locked, (windowWidth - fm.stringWidth(locked)) / 2, startY + i * spacing);
             } else if (i == selected) {
-                g2.setFont(selectedMenuFont);
+                g2.setFont(selF);
+                FontMetrics fm = g2.getFontMetrics();
+                String label = "► " + name + timeLabel;
+                int tw = fm.stringWidth(label);
+                int ox = (windowWidth - tw) / 2;
+                int oy = startY + i * spacing;
+                g2.setColor(new Color(245, 166, 35, 25));
+                g2.fillRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setColor(new Color(245, 166, 35, 90));
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
+                g2.setStroke(new BasicStroke(1f));
                 g2.setColor(Color.decode("#f5a623"));
-                String marker = "► ";
-                fm = g2.getFontMetrics();
-                String fullLabel = marker + name + "   " + timeLabel;
-                int textWidth = fm.stringWidth(fullLabel);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(fullLabel, tx, startY + i * spacing);
+                g2.drawString(label, ox, oy);
             } else {
-                g2.setFont(menuFont);
-                g2.setColor(Color.WHITE);
-                fm = g2.getFontMetrics();
-                String fullLabel = name + "   " + timeLabel;
-                int textWidth = fm.stringWidth(fullLabel);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(fullLabel, tx, startY + i * spacing);
+                g2.setFont(normalF);
+                FontMetrics fm = g2.getFontMetrics();
+                String label = name + timeLabel;
+                g2.setColor(new Color(190, 190, 210));
+                g2.drawString(label, (windowWidth - fm.stringWidth(label)) / 2, startY + i * spacing);
             }
         }
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
-        String hint = "Fullfør nivåer i rekkefølge for å låse opp neste";
-        fm = g2.getFontMetrics();
-        x = (windowWidth - fm.stringWidth(hint)) / 2;
-        g2.drawString(hint, x, windowHeight - 50);
+        drawMenuHint(g2, "Fullfør nivåer i rekkefølge for å låse opp neste");
     }
 
     private void drawSettings(Graphics2D g2) {
-        g2.setColor(Color.decode("#1a1a2e"));
-        g2.fillRect(0, 0, windowWidth, windowHeight);
-        g2.setFont(titleFont);
-        g2.setColor(Color.WHITE);
-        String text = "SETTINGS";
-        FontMetrics fm = g2.getFontMetrics();
-        int x = (windowWidth - fm.stringWidth(text)) / 2;
-        g2.drawString(text, x, 120);
-        String[] options = viewableGameModel.getMenuOptions();
-        int selectedOption = viewableGameModel.getSelectedMenuOption();
-        int startY = 250;
-        int spacing = 70;
-        for (int i = 0; i < options.length; i++) {
-            if (i == selectedOption) {
-                g2.setFont(selectedMenuFont);
-                g2.setColor(Color.decode("#f5a623"));
-                String marker = "► ";
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(marker + options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(marker + options[i], tx, startY + i * spacing);
-            } else {
-                g2.setFont(menuFont);
-                g2.setColor(Color.WHITE);
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(options[i], tx, startY + i * spacing);
-            }
-        }
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
-        String hint = "Use ↑↓ to navigate, ENTER to toggle, ESC to go back";
-        fm = g2.getFontMetrics();
-        x = (windowWidth - fm.stringWidth(hint)) / 2;
-        g2.drawString(hint, x, windowHeight - 50);
+        drawMenuBackground(g2);
+        drawMenuTitle(g2, "SETTINGS", 110, Color.decode("#ff4400"), Color.decode("#0099ff"));
+        drawMenuOptions(g2, viewableGameModel.getMenuOptions(),
+                viewableGameModel.getSelectedMenuOption(), 210, 70);
+        drawMenuHint(g2, "Use ↑↓ to navigate, ENTER to toggle, ESC to go back");
     }
 
     private void drawGameOver(Graphics2D g2) {
-        g2.setColor(new Color(0, 0, 0, 150));
+        g2.setColor(new Color(0, 0, 0, 170));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-        g2.setFont(titleFont);
-        g2.setColor(Color.decode("#e94560"));
-        String text = "GAME OVER";
-        FontMetrics fm = g2.getFontMetrics();
-        int x = (windowWidth - fm.stringWidth(text)) / 2;
-        g2.drawString(text, x, windowHeight / 3);
-        // Menu options
-        String[] options = viewableGameModel.getMenuOptions();
-        int selectedOption = viewableGameModel.getSelectedMenuOption();
-        int startY = windowHeight / 3 + 80;
-        int spacing = 60;
-        for (int i = 0; i < options.length; i++) {
-            if (i == selectedOption) {
-                g2.setFont(selectedMenuFont);
-                g2.setColor(Color.decode("#f5a623"));
-                String marker = "► ";
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(marker + options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(marker + options[i], tx, startY + i * spacing);
-            } else {
-                g2.setFont(menuFont);
-                g2.setColor(Color.WHITE);
-                fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(options[i]);
-                int tx = (windowWidth - textWidth) / 2;
-                g2.drawString(options[i], tx, startY + i * spacing);
-            }
-        }
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
-        String hint = "Use ↑↓ to navigate, ENTER to select";
-        fm = g2.getFontMetrics();
-        x = (windowWidth - fm.stringWidth(hint)) / 2;
-        g2.drawString(hint, x, windowHeight - 50);
+        int titleY = windowHeight / 3;
+        drawMenuTitle(g2, "GAME OVER", titleY, Color.decode("#ff2200"), Color.decode("#ff6600"));
+        drawMenuOptions(g2, viewableGameModel.getMenuOptions(),
+                viewableGameModel.getSelectedMenuOption(), titleY + 80, 62);
+        drawMenuHint(g2, "Use ↑↓ to navigate, ENTER to select");
     }
 
     private void drawHowToPlay(Graphics2D g2) {
-        // Dark background, same as the other menus
-        g2.setColor(Color.decode("#1a1a2e"));
-        g2.fillRect(0, 0, windowWidth, windowHeight);
-        // Title at top
-        g2.setFont(titleFont);
-        g2.setColor(Color.decode("#e94560"));
-        String title = "HOW TO PLAY";
-        FontMetrics fm = g2.getFontMetrics();
-        int x = (windowWidth - fm.stringWidth(title)) / 2;
-        g2.drawString(title, x, 100);
-        // Instructions as a list
-        g2.setFont(menuFont);
-        g2.setColor(Color.WHITE);
-        String[] lines = {
-                "Fireboy:  Move with A / D,  Jump with W",
-                "Watergirl:  Move with ← →,  Jump with ↑",
-                "",
-                "Reach the doors to complete the level",
-                "Avoid enemies and hazards",
-                "Fireboy dies in water, Watergirl dies in fire"
+        drawMenuBackground(g2);
+        drawMenuTitle(g2, "HOW TO PLAY", 100, Color.decode("#ff4400"), Color.decode("#0099ff"));
+
+        Font bodyF = new Font("Arial", Font.PLAIN, 26);
+        g2.setFont(bodyF);
+        String[][] sections = {
+            {"FIREBOY", "Move with A / D   •   Jump with W"},
+            {"WATERGIRL", "Move with ← →   •   Jump with ↑"},
         };
-        int startY = 200;
-        int spacing = 55;
-        for (int i = 0; i < lines.length; i++) {
+        String[] rules = {
+            "Reach the doors to complete the level",
+            "Fireboy dies in water  •  Watergirl dies in fire",
+            "Avoid enemies and hazards",
+        };
+
+        int y = 200;
+        for (String[] section : sections) {
+            // Character label
+            g2.setFont(new Font("Arial", Font.BOLD, 22));
+            FontMetrics fm = g2.getFontMetrics();
+            g2.setColor(section[0].equals("FIREBOY") ? Color.decode("#ff4400") : Color.decode("#0099ff"));
+            g2.drawString(section[0], (windowWidth - fm.stringWidth(section[0])) / 2, y);
+            y += 34;
+            g2.setFont(bodyF);
             fm = g2.getFontMetrics();
-            int lineX = (windowWidth - fm.stringWidth(lines[i])) / 2;
-            g2.drawString(lines[i], lineX, startY + i * spacing);
+            g2.setColor(new Color(200, 200, 220));
+            g2.drawString(section[1], (windowWidth - fm.stringWidth(section[1])) / 2, y);
+            y += 60;
         }
-        // Hint at bottom to go back
-        g2.setFont(font);
-        g2.setColor(Color.GRAY);
-        String hint = "Press ESC to go back";
-        fm = g2.getFontMetrics();
-        x = (windowWidth - fm.stringWidth(hint)) / 2;
-        g2.drawString(hint, x, windowHeight - 50);
+
+        // Divider
+        g2.setColor(new Color(60, 60, 90));
+        g2.setStroke(new BasicStroke(1f));
+        g2.drawLine(250, y - 15, windowWidth - 250, y - 15);
+
+        g2.setFont(bodyF);
+        for (String rule : rules) {
+            FontMetrics fm = g2.getFontMetrics();
+            g2.setColor(new Color(170, 170, 200));
+            g2.drawString(rule, (windowWidth - fm.stringWidth(rule)) / 2, y + 10);
+            y += 52;
+        }
+
+        drawMenuHint(g2, "Press ESC to go back");
     }
 }
