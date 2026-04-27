@@ -8,6 +8,7 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
+import inf112.fireboys.model.entity.Button;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
@@ -494,6 +495,13 @@ public class GameView extends JPanel {
                 g2.drawImage(doorSprite, x, y, w, h, null);
                 return;
             }
+        }
+        if (entity instanceof Button button) {
+            g2.setColor(button.isPressed() ? new Color(0, 80, 200) : new Color(0, 140, 255));
+            g2.fillRect(x, y, w, h);
+            g2.setColor(Color.BLACK);
+            g2.drawRect(x, y, w, h);
+            return;
         }
         BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {
