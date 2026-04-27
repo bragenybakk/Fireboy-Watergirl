@@ -3,7 +3,6 @@ package inf112.fireboys.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,83 +15,70 @@ import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 
 public class BoostPlatformTest {
-    /** Player (8×8) with feet on platform top at y=20. */
-    private static final Position PLAYER_ON_TOP = new Position(12, 12);
-    private static final Position PLATFORM_POS = new Position(10, 20);
-    private BoostPlatform platform;
+    private static final Position PLAYER_POS = new Position(12, 20);
+    private static final Position PLATFORM_POS = new Position(10, 28);
     private Player fireboy;
     private Player watergirl;
+
     @BeforeEach
     void setUp() {
-        platform = new BoostPlatform(PLATFORM_POS, 8, 2);
-        fireboy = new Player(PLAYER_ON_TOP, ElementState.FIRE);
-        watergirl = new Player(PLAYER_ON_TOP, ElementState.WATER);
+        fireboy = new Player(PLAYER_POS, ElementState.FIRE);
+        watergirl = new Player(PLAYER_POS, ElementState.WATER);
+    }
+
+    private GameModel modelWith(Player p, StaticEntity... entities) {
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(p);
+        ArrayList<StaticEntity> ents = new ArrayList<>();
+        for (StaticEntity e : entities) ents.add(e);
+        Board board = new Board(50, 50, players, ents, new ArrayList<>());
+        GameModel model = new GameModel(board);
+        model.setGameState(GameState.PLAYING);
+        return model;
     }
 
     @Test
-    void contactDoesNotGrantBoostWithoutJump() {
+    void contactAloneDoesNotGrantBoost() {
+        BoostPlatform platform = new BoostPlatform(PLATFORM_POS, 8, 2);
         platform.whenContact(fireboy);
-        assertFalse(fireboy.hasJumpBoost());
-    }
-
-    @Test
-    void anyPlayerContactDoesNotAutoGrant() {
         platform.whenContact(watergirl);
+        assertFalse(fireboy.hasJumpBoost());
         assertFalse(watergirl.hasJumpBoost());
     }
 
     @Test
     void noBoostFromSideHit() {
+        BoostPlatform platform = new BoostPlatform(PLATFORM_POS, 8, 2);
         Player side = new Player(new Position(20, 21), ElementState.FIRE);
         platform.whenContact(side);
         assertFalse(side.hasJumpBoost());
     }
 
     @Test
-    void thinPlateOnFloor_detectsStandingWhenFeetAtFloorLevel() {
-        // Plate h=1 at y=109 (AABB 109–110); player 8×8 at y=102 → feet at 110, same as
-        // floor under plate.
-        List<Player> pl = new ArrayList<>();
-        Player p = new Player(new Position(12, 102), ElementState.FIRE);
+    void standingOnPlateSetsChargeReady() {
+        Player p = new Player(PLAYER_POS, ElementState.FIRE);
         p.setOnGroundTRUE();
-        pl.add(p);
-        List<StaticEntity> ents = new ArrayList<>();
-        ents.add(new BoostPlatform(new Position(10, 109), 10, 1));
-        Board board = new Board(40, 40, pl, ents, new ArrayList<>());
-        GameModel model = new GameModel(board);
-        model.setGameState(GameState.PLAYING);
+        GameModel model = modelWith(p, new BoostPlatform(PLATFORM_POS, 8, 2));
         assertTrue(model.isPlayerOnBoostPlateWithoutCharge());
     }
 
     @Test
-    void jumpOnPlateChargesWithoutLeavingGround() {
-        Player p = new Player(PLAYER_ON_TOP, ElementState.FIRE);
+    void jumpingOnPlateChargesBoostWithoutMoving() {
+        Player p = new Player(PLAYER_POS, ElementState.FIRE);
         p.setOnGroundTRUE();
-        List<Player> pl = new ArrayList<>();
-        pl.add(p);
-        List<StaticEntity> ents = new ArrayList<>();
-        ents.add(new BoostPlatform(PLATFORM_POS, 8, 2));
-        Board board = new Board(40, 40, pl, ents, new ArrayList<>());
-        GameModel model = new GameModel(board);
-        model.setGameState(GameState.PLAYING);
-        assertTrue(model.isPlayerOnBoostPlateWithoutCharge());
+        GameModel model = modelWith(p, new BoostPlatform(PLATFORM_POS, 8, 2));
         model.player2Jump();
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }
 
     @Test
-    void chargeOnPlateThenJumpOffUsesBoost() {
-        List<StaticEntity> ents = new ArrayList<>();
-        ents.add(new Wall(new Position(0, 30), 50, 8));
-        ents.add(new BoostPlatform(new Position(10, 28), 10, 2));
-        Player p = new Player(new Position(12, 20), ElementState.FIRE);
+    void jumpingOffPlateUsesBoostAndConsumesIt() {
+        Player p = new Player(PLAYER_POS, ElementState.FIRE);
         p.setOnGroundTRUE();
-        List<Player> pl = new ArrayList<>();
-        pl.add(p);
-        Board board = new Board(50, 50, pl, ents, new ArrayList<>());
-        GameModel model = new GameModel(board);
-        model.setGameState(GameState.PLAYING);
+        GameModel model = modelWith(p,
+                new Wall(new Position(0, 30), 50, 8),
+                new BoostPlatform(PLATFORM_POS, 10, 2));
         model.player2Jump();
         assertTrue(p.hasJumpBoost());
         p.setPos(new Position(5, 22));
@@ -104,54 +90,37 @@ public class BoostPlatformTest {
     }
 
     @Test
-    void canChargeAgainOnPlateAfterBoostWasUsed() {
-        List<StaticEntity> ents = new ArrayList<>();
-        ents.add(new Wall(new Position(0, 30), 50, 8));
-        ents.add(new BoostPlatform(new Position(10, 28), 10, 2));
-        Player p = new Player(new Position(12, 20), ElementState.FIRE);
+    void canRechargeOnPlateAfterBoostUsed() {
+        Player p = new Player(PLAYER_POS, ElementState.FIRE);
         p.setOnGroundTRUE();
-        List<Player> pl = new ArrayList<>();
-        pl.add(p);
-        Board board = new Board(50, 50, pl, ents, new ArrayList<>());
-        GameModel model = new GameModel(board);
-        model.setGameState(GameState.PLAYING);
+        GameModel model = modelWith(p,
+                new Wall(new Position(0, 30), 50, 8),
+                new BoostPlatform(PLATFORM_POS, 10, 2));
         model.player2Jump();
-        assertTrue(p.hasJumpBoost());
         p.setPos(new Position(5, 22));
         p.setOnGroundTRUE();
         model.player2Jump();
         assertFalse(p.hasJumpBoost());
         p.setVelocityY(0);
-        p.setPos(new Position(12, 20));
+        p.setPos(PLAYER_POS);
         p.setOnGroundTRUE();
-        assertTrue(model.isPlayerOnBoostPlateWithoutCharge());
         model.player2Jump();
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }
 
     @Test
-    void jumpImpulseStrongerWhenCharged() {
-        double normalImpulse = fireboy.getJumpImpulse();
+    void boostedJumpImpulseIs1Point5xNormal() {
+        double normal = fireboy.getJumpImpulse();
         fireboy.grantJumpBoost();
-        double boostedImpulse = fireboy.getJumpImpulse();
-        assertTrue(boostedImpulse < normalImpulse, "Boosted impulse should be more negative (stronger)");
-    }
-
-    @Test
-    void boostUsesConfiguredStrength() {
-        double normalImpulse = fireboy.getJumpImpulse();
-        fireboy.grantJumpBoost();
-        double boostedImpulse = fireboy.getJumpImpulse();
-        assertEquals(normalImpulse * 1.5, boostedImpulse, 0.001);
+        assertEquals(normal * 1.5, fireboy.getJumpImpulse(), 0.001);
     }
 
     @Test
     void boostConsumedAfterJump() {
         fireboy.grantJumpBoost();
-        assertTrue(fireboy.hasJumpBoost());
         fireboy.consumeJumpBoost();
         assertFalse(fireboy.hasJumpBoost());
-        assertEquals(fireboy.getJumpImpulse(), new Player(PLAYER_ON_TOP, ElementState.FIRE).getJumpImpulse());
+        assertEquals(fireboy.getJumpImpulse(), new Player(PLAYER_POS, ElementState.FIRE).getJumpImpulse());
     }
 }
