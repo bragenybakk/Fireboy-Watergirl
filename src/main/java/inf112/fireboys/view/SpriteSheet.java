@@ -6,28 +6,37 @@ import javax.imageio.ImageIO;
 
 public class SpriteSheet {
     private BufferedImage sheet;
+    private BufferedImage charSheet;
+
     public SpriteSheet(String path) {
         try {
             sheet = ImageIO.read(getClass().getResourceAsStream(path));
         } catch (IOException e) {
             System.err.println("Kunne ikke laste spritesheet: " + path);
         }
+        try {
+            charSheet = ImageIO.read(getClass().getResourceAsStream("/fireboy&watergirl_char.png"));
+        } catch (IOException e) {
+            System.err.println("Kunne ikke laste karakter-sprites");
+        }
     }
 
     public BufferedImage getFireboyHead() {
-        return getSprite(1900, 1000, 70, 70);
+        if (charSheet == null) return null;
+        return charSheet.getSubimage(1, 2, 274, 469);
     }
 
     public BufferedImage getFireboyBody() {
-        return getSprite(150, 420, 75, 60);
+        return null;
     }
 
     public BufferedImage getWatergirlHead() {
-        return getSprite(1900, 500, 70, 70);
+        if (charSheet == null) return null;
+        return charSheet.getSubimage(275, 50, 268, 421);
     }
 
     public BufferedImage getWatergirlBody() {
-        return getSprite(910, 310, 75, 60);
+        return null;
     }
 
     public BufferedImage getBlueGem() {
@@ -38,9 +47,6 @@ public class SpriteSheet {
         return getSprite(1095, 1375, 70, 70);
     }
 
-    /**
-     * Extract a sprite region from the sheet.
-     */
     private BufferedImage getSprite(int x, int y, int width, int height) {
         if (sheet == null)
             return null;
