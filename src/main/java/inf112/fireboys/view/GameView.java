@@ -487,31 +487,19 @@ public class GameView extends JPanel {
             g2.drawImage(flame, flameX, flameY, flameW, flameH, null);
         }
         boolean isFire = player.getElementState() == ElementState.FIRE;
-        BufferedImage headSprite = theme.getPlayerHead(player.getElementState());
-        BufferedImage bodySprite = theme.getPlayerBody(player.getElementState());
-        int headH = (int) (h * (isFire ? 0.62 : 0.48));
-        int overlap = isFire ? Math.max(2, h / 8) : Math.max(1, h / 20);
-        int bodyExtend = isFire ? Math.max(1, h / 9) : Math.max(2, h / 2);
-        int bodyH = h - headH + overlap + bodyExtend;
-        if (headSprite != null) {
-            if (facingLeft) {
-                g2.drawImage(headSprite, x + w, y, -w, headH, null);
-            } else {
-                g2.drawImage(headSprite, x, y, w, headH, null);
-            }
+        BufferedImage sprite = theme.getPlayerHead(player.getElementState());
+        if (sprite != null) {
+            int drawW = w * 3 / 4;
+            int drawH = drawW * sprite.getHeight() / sprite.getWidth();
+            int drawX = x + (w - drawW) / 2;
+            int drawY = y + h - drawH;
+            if (facingLeft)
+                g2.drawImage(sprite, drawX + drawW, drawY, -drawW, drawH, null);
+            else
+                g2.drawImage(sprite, drawX, drawY, drawW, drawH, null);
         } else {
             g2.setColor(isFire ? Color.RED : Color.BLUE);
-            g2.fillRect(x, y, w, headH);
-        }
-        if (bodySprite != null) {
-            if (facingLeft) {
-                g2.drawImage(bodySprite, x + w, y + headH - overlap, -w, bodyH, null);
-            } else {
-                g2.drawImage(bodySprite, x, y + headH - overlap, w, bodyH, null);
-            }
-        } else {
-            g2.setColor(isFire ? Color.RED : Color.BLUE);
-            g2.fillRect(x, y + headH, w, bodyH - overlap);
+            g2.fillRect(x, y, w, h);
         }
     }
 
