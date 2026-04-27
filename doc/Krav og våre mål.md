@@ -2,16 +2,16 @@
 
 ## MVP-krav
 
-- Vise et spillebrett
-- Vise spiller på spillebrett
-- Flytte spiller (vha taster e.l.)
-- Spiller interagerer med terreng
-- Spiller har poeng og interagerer med poenggjenstander
-- Vise fiender/monstre; de skal interagere med terreng og spiller
-- Spiller kan dø (ved kontakt med fiender, eller ved å falle utfor skjermen)
-- Mål for spillbrett (enten et sted, en mengde poeng, drepe alle fiender e.l.)
-- Nytt spillbrett når forrige er ferdig
-- Start-skjerm ved oppstart / game over
+1. Vise et spillebrett
+2. Vise spiller på spillebrett
+3. Flytte spiller (vha taster e.l.)
+4. Spiller interagerer med terreng
+5. Spiller har poeng og interagerer med poenggjenstander
+6. Vise fiender/monstre; de skal interagere med terreng og spiller
+7. Spiller kan dø (ved kontakt med fiender, eller ved å falle utfor skjermen)
+8. Mål for spillbrett (enten et sted, en mengde poeng, drepe alle fiender e.l.)
+9. Nytt spillbrett når forrige er ferdig
+10. Start-skjerm ved oppstart / game over
 
 ## Ikke-funksjonelle krav
 
@@ -25,7 +25,7 @@
 ### Design / prosjekt / prosess / rapportering (20%)
 
 **Formalia**
-- README.md-fil med navn på teammedlemmer, teamet og prosjektet, kort beskrivelse og brukerveiledning, teknisk info om hvordan koden kjøres, og informasjon om hvor grafikk/lyd er hentet fra (kilde/opphavsrett)
+- README.md-fil med navn på teammedlemmer, gruppen og prosjektet, kort beskrivelse og brukerveiledning, teknisk info om hvordan koden kjøres, og informasjon om hvor grafikk/lyd er hentet fra (kilde/opphavsrett)
 - doc/report-X.md-fil med oversiktlig svar på oppgaver
 - Alt er oversiktlig og riktig format
 

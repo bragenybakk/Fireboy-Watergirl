@@ -1,0 +1,86 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam classFontStyle bold
+hide empty members
+
+' --- Grensesnitt-hierarki ---
+interface IStaticEntity {
+    +getPos() : Position
+    +getWidth() : double
+    +getHeight() : double
+}
+interface IMovable {
+    +getVelocityX() : double
+    +getVelocityY() : double
+    +getWeight() : double
+}
+interface IPlayer {
+    +getElementState() : ElementState
+    +isOnGround() : boolean
+}
+interface IEnemy {
+    +update()
+    +isAlive() : boolean
+}
+
+IStaticEntity <|-- IMovable
+IMovable <|-- IPlayer
+IMovable <|-- IEnemy
+
+' --- StaticEntity-treet ---
+abstract class StaticEntity {
+    +whenContact(IMovable)
+    #{abstract} contactAction(IMovable, CollisionSide)
+}
+StaticEntity ..|> IStaticEntity
+
+class Wall
+class Door {
+    -isOpen : boolean
+    +setOpen(boolean)
+}
+class Box {
+    -weight : double
+}
+class Gem {
+    -element : ElementState
+    -collected : boolean
+}
+class Pool {
+    -element : ElementState
+}
+
+StaticEntity <|-- Wall
+StaticEntity <|-- Door
+StaticEntity <|-- Box
+StaticEntity <|-- Gem
+StaticEntity <|-- Pool
+Box ..|> IMovable
+
+' --- Konkrete spiller- og fiende-klasser ---
+class Player {
+    -element : ElementState
+    +kill()
+}
+class Enemy {
+    -state : EnemyState
+}
+Player ..|> IPlayer
+Enemy ..|> IEnemy
+
+' --- Theme abstract factory ---
+interface Theme {
+    +getDoor() : BufferedImage
+    +getOpenDoor() : BufferedImage
+    +getPlayerHead(ElementState) : BufferedImage
+}
+class CastleTheme
+class NullTheme
+Theme <|.. CastleTheme
+Theme <|.. NullTheme
+
+@enduml
