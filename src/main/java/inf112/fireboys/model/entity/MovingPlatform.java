@@ -2,9 +2,7 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 
-/**
- * Moving walls
- */
+/** A platform that moves back and forth between two points along a direction. */
 public class MovingPlatform extends Wall {
     private final Position startPos;
     private final double dirX;
@@ -15,6 +13,10 @@ public class MovingPlatform extends Wall {
     private int travelDir = 1;
     private double deltaX = 0;
     private double deltaY = 0;
+    /**
+     * Creates a moving platform. It moves in the direction (dirX, dirY) at the
+     * given speed, bouncing back when it has traveled the given distance.
+     */
     public MovingPlatform(Position position, double width, double height,
             double dirX, double dirY, double speed, double distance) {
         super(position, width, height);
@@ -26,6 +28,7 @@ public class MovingPlatform extends Wall {
         this.distance = distance;
     }
 
+    /** Advances the platform one step, updating its position and delta values. */
     public void tick() {
         deltaX = dirX * speed * travelDir;
         deltaY = dirY * speed * travelDir;
@@ -40,10 +43,12 @@ public class MovingPlatform extends Wall {
         setPos(new Position(startPos.x() + dirX * distanceTraveled, startPos.y() + dirY * distanceTraveled));
     }
 
+    /** Returns how far the platform moved horizontally this tick. */
     public double getDeltaX() {
         return deltaX;
     }
 
+    /** Returns how far the platform moved vertically this tick. */
     public double getDeltaY() {
         return deltaY;
     }

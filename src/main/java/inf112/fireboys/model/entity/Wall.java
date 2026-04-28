@@ -4,7 +4,9 @@ import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.player.IPlayer;
 
+/** A solid wall that blocks movement from all sides. */
 public class Wall extends StaticEntity {
+    /** Creates a wall at the given position with the given size. */
     public Wall(Position position, double width, double height) {
         super(position, width, height);
     }

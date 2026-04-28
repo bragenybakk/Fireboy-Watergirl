@@ -4,10 +4,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+/** Loads character and gem sprites from the sprite sheet images. */
 public class SpriteSheet {
     private BufferedImage sheet;
     private BufferedImage charSheet;
 
+    /** Loads the sprite sheet from the given resource path, and the character sheet. */
     public SpriteSheet(String path) {
         try {
             sheet = ImageIO.read(getClass().getResourceAsStream(path));
@@ -21,20 +23,24 @@ public class SpriteSheet {
         }
     }
 
+    /** Returns the Fireboy head sprite. */
     public BufferedImage getFireboyHead() {
         if (charSheet == null) return null;
         return charSheet.getSubimage(1, 2, 274, 469);
     }
 
+    /** Returns the Watergirl head sprite. */
     public BufferedImage getWatergirlHead() {
         if (charSheet == null) return null;
         return charSheet.getSubimage(275, 50, 268, 421);
     }
 
+    /** Returns the blue (water) gem sprite. */
     public BufferedImage getBlueGem() {
         return getSprite(980, 1375, 70, 70);
     }
 
+    /** Returns the red (fire) gem sprite. */
     public BufferedImage getFireGem() {
         return getSprite(1095, 1375, 70, 70);
     }

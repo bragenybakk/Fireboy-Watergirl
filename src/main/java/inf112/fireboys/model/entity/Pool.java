@@ -3,17 +3,22 @@ package inf112.fireboys.model.entity;
 import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
 
+/** A pool of liquid that kills players of the opposite element type. */
 public class Pool extends StaticEntity {
     private ElementState element;
+
+    /** Creates a pool at the given position with the given size and element type. */
     public Pool(Position position, double width, double height, ElementState element) {
         super(position, width, height);
         this.element = element;
     }
 
+    /** Returns the element type of this pool (FIRE or WATER). */
     public ElementState getElement() {
         return element;
     }
 
+    /** Sets the element type of this pool. */
     public void setElement(ElementState element) {
         this.element = element;
     }

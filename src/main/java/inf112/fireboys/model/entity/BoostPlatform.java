@@ -10,6 +10,7 @@ import inf112.fireboys.model.player.IPlayer;
  */
 public class BoostPlatform extends StaticEntity {
 
+    /** Creates a boost platform at the given position with the given size. */
     public BoostPlatform(Position position, double width, double height) {
         super(position, width, height);
     }

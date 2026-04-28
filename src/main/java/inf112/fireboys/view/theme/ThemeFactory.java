@@ -6,5 +6,6 @@ package inf112.fireboys.view.theme;
  */
 @FunctionalInterface
 public interface ThemeFactory {
+    /** Creates and returns a new Theme instance. */
     Theme create();
 }

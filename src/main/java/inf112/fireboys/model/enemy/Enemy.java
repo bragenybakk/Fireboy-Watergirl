@@ -9,6 +9,7 @@ import inf112.fireboys.model.player.IPlayer;
 import java.util.Collections;
 import java.util.List;
 
+/** An enemy that patrols the level and chases players when they get close. */
 public class Enemy implements IEnemy {
     private Position position;
     private double velocityX, velocityY;
@@ -28,6 +29,10 @@ public class Enemy implements IEnemy {
     private final List<? extends IStaticEntity> entities;
     private EnemyState state = EnemyState.PATROL;
     private int alertTimer = 0;
+    /**
+     * Creates an enemy with awareness of the given players and entities.
+     * The entity list is used to detect edges so the enemy doesn't walk off platforms.
+     */
     public Enemy(Position position, double width, double height,
             List<? extends IPlayer> players, List<? extends IStaticEntity> entities) {
         this.position = position;
@@ -41,10 +46,12 @@ public class Enemy implements IEnemy {
         this.entities = entities;
     }
 
+    /** Creates an enemy aware of players but with no entity list for edge detection. */
     public Enemy(Position position, double width, double height, List<? extends IPlayer> players) {
         this(position, width, height, players, Collections.emptyList());
     }
 
+    /** Creates a standalone enemy with no players or entities to interact with. */
     public Enemy(Position position, double width, double height) {
         this(position, width, height, Collections.emptyList(), Collections.emptyList());
     }

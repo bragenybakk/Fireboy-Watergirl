@@ -17,6 +17,7 @@ public class CastleTileSheet {
     private static final int WINDOW_X = 96, WINDOW_Y = 256, WINDOW_W = 32, WINDOW_H = 32;
     private static final int BOX_X = 34, BOX_Y = 66, BOX_W = 26, BOX_H = 27;
     private BufferedImage sheet;
+    /** Loads the tile sheet image from the given resource path. */
     public CastleTileSheet(String path) {
         try {
             sheet = ImageIO.read(getClass().getResourceAsStream(path));
@@ -25,30 +26,37 @@ public class CastleTileSheet {
         }
     }
 
+    /** Returns the wall tile sprite. */
     public BufferedImage getWallTile() {
         return getSprite(WALL_TILE_X, WALL_TILE_Y, WALL_TILE_W, WALL_TILE_H);
     }
 
+    /** Returns the closed door sprite. */
     public BufferedImage getDoor() {
         return getSprite(DOOR_X, DOOR_Y, DOOR_W, DOOR_H);
     }
 
+    /** Returns the open door sprite. */
     public BufferedImage getOpenDoor() {
         return getSprite(OPEN_DOOR_X, OPEN_DOOR_Y, OPEN_DOOR_W, OPEN_DOOR_H);
     }
 
+    /** Returns the torch decoration sprite. */
     public BufferedImage getTorch() {
         return getSprite(TORCH_X, TORCH_Y, TORCH_W, TORCH_H);
     }
 
+    /** Returns the window decoration sprite. */
     public BufferedImage getWindow() {
         return getSprite(WINDOW_X, WINDOW_Y, WINDOW_W, WINDOW_H);
     }
 
+    /** Returns the box sprite. */
     public BufferedImage getBox() {
         return getSprite(BOX_X, BOX_Y, BOX_W, BOX_H);
     }
 
+    /** Returns a sub-image from the sheet at the given pixel coordinates and size. */
     public BufferedImage getSprite(int x, int y, int width, int height) {
         if (sheet == null)
             return null;
