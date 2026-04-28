@@ -161,10 +161,38 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Sinks a movable to the pool floor if it straddles it while falling. Returns true if it was placed on the floor. */
+    private boolean sinkOnPoolFloor(IMovable movable, Pool pool) {
+        double centerX = movable.getPos().x() + movable.getWidth() / 2.0;
+        double topY = movable.getPos().y();
+        double bottomY = topY + movable.getHeight();
+        if (pool.footOnFloor(centerX, topY, bottomY) && movable.getVelocityY() >= 0) {
+            double floorY = pool.floorYAt(centerX);
+            movable.setPos(new Position(movable.getPos().x(), floorY - movable.getHeight()));
+            movable.setVelocityY(0);
+            return true;
+        }
+        return false;
+    }
+
+    /** Returns true if the movable's foot is below a pool surface. If requiredElement is non-null, only pools of that element count. */
+    private boolean isInPoolWater(IMovable movable, ElementState requiredElement) {
+        double centerX = movable.getPos().x() + movable.getWidth() / 2.0;
+        double bottomY = movable.getPos().y() + movable.getHeight();
+        for (IStaticEntity entity : entities) {
+            if (!(entity instanceof Pool pool))
+                continue;
+            if (requiredElement != null && pool.getElement() != requiredElement)
+                continue;
+            if (pool.footIsInWater(centerX, bottomY))
+                return true;
+        }
+        return false;
+    }
+
     private void handlePoolInteraction(Player player) {
         double centerX = player.getPos().x() + player.getWidth() / 2.0;
-        double topY = player.getPos().y();
-        double bottomY = topY + player.getHeight();
+        double bottomY = player.getPos().y() + player.getHeight();
         for (IStaticEntity entity : entities) {
             if (!(entity instanceof Pool pool))
                 continue;
@@ -172,26 +200,22 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 if (pool.footIsInWater(centerX, bottomY)) {
                     player.kill();
                 }
-            } else if (pool.footOnFloor(centerX, topY, bottomY) && player.getVelocityY() >= 0) {
-                double floorY = pool.floorYAt(centerX);
-                player.setPos(new Position(player.getPos().x(), floorY - player.getHeight()));
-                player.setVelocityY(0);
+            } else if (sinkOnPoolFloor(player, pool)) {
                 player.setOnGroundTRUE();
             }
         }
     }
 
-    private boolean isInMatchingPoolWater(Player player) {
-        double centerX = player.getPos().x() + player.getWidth() / 2.0;
-        double bottomY = player.getPos().y() + player.getHeight();
-        for (IStaticEntity entity : entities) {
-            if (entity instanceof Pool pool
-                    && pool.getElement() == player.getElementState()
-                    && pool.footIsInWater(centerX, bottomY)) {
-                return true;
+    private void handleBoxPoolInteractions() {
+        for (StaticEntity entity : entities) {
+            if (!(entity instanceof Box box))
+                continue;
+            for (IStaticEntity poolEntity : entities) {
+                if (poolEntity instanceof Pool pool) {
+                    sinkOnPoolFloor(box, pool);
+                }
             }
         }
-        return false;
     }
 
     /** Returns the combined score of all players. */
@@ -207,7 +231,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
             handlePoolInteraction(player);
-            boolean inMatchingPool = isInMatchingPoolWater(player);
+            boolean inMatchingPool = isInPoolWater(player, player.getElementState());
             for (IStaticEntity entity : entities) {
                 if (entity instanceof Gem gem && gem.isCollected())
                     continue;
@@ -237,6 +261,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void handleEntityCollisions() {
+        handleBoxPoolInteractions();
         resolveWallCollisions();
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
@@ -262,9 +287,12 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private void resolveWallCollisions() {
         for (StaticEntity entity : entities) {
             if (entity instanceof IMovable movable) {
+                boolean inPool = (movable instanceof Box) && isInPoolWater(movable, null);
                 for (StaticEntity otherEntity : entities) {
                     if (entity != otherEntity && !(otherEntity instanceof IMovable)
                             && checkCollision(otherEntity, movable)) {
+                        if (inPool && otherEntity instanceof Wall)
+                            continue;
                         otherEntity.whenContact(movable);
                     }
                 }
