@@ -76,14 +76,90 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-<!-- TODO: Legg til møtereferater fra slutten av februar og mars her. -->
+## 2026-02-19 — Femte møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
-## YYYY-MM-DD — Møte (placeholder)
-**Til stede:** *(fyll inn)*
+**Fullført fra forrige møte:**
+- Hoppelogikk og kollisjon mot vegger fungerer ✓
+- Sprites lagret i én felles fil ✓
 
-**Under møtet:** *(fyll inn)*
+**Under møtet:**
+- Diskuterte hvordan vi skulle representere Fireboy og Watergirl som separate karakterer.
+- Startet arbeid med å laste inn karaktersprites fra spritesheet.
+- Planlagt strukturen for elementbaserte farer (pools).
 
-**Til neste møte:** *(fyll inn)*
+**Til neste møte:**
+- Implementere vann- og ildpytter med elementtilstand.
+- Få karakterene til å se ut som Fireboy og Watergirl.
+
+---
+
+## 2026-02-26 — Sjette møte
+**Til stede:** Petter, Brage, Oscar (3/4)
+
+**Fullført fra forrige møte:**
+- Karaktersprites for Fireboy og Watergirl lastet inn ✓
+- Grunnleggende pool-system på plass ✓
+
+**Under møtet:**
+- Implementerte gem-system med elementtilstand (røde gems til Fireboy, blå til Watergirl).
+- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+
+**Til neste møte:**
+- Fullføre gem-innsamling og poengsum.
+- Legge til dør som åpnes når alle gems er samlet.
+
+---
+
+## 2026-03-05 — Andre møte med gruppeleder
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Notater fra møtet:**
+- Bra fremdrift generelt, men bør jobbe mer strukturert med issues og branches.
+- Mer fokus på testing — skrive tester underveis, ikke bare til slutt.
+- Tenk på MVC-skillet: modellen skal ikke inneholde visningslogikk.
+
+**Plan videre:**
+- Rydde opp i kodestrukturen og sørge for tydeligere skille mellom lag.
+- Begynne å skrive enhetstester for modellen.
+
+---
+
+## 2026-03-12 — Sjuende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført fra forrige møte:**
+- Gem-innsamling med poengsum fungerer ✓
+- Dør som åpnes ved fullføring av brett ✓
+
+**Under møtet:**
+- Lagt til støtte for flere nivåer via `levels.txt`.
+- Startet arbeid med fiender.
+- Diskuterte og begynte å skrive tester for modellen.
+
+**Til neste møte:**
+- Fullføre fiender med bevegelseslogikk.
+- Legge til lyd/musikk.
+- Skrive flere tester.
+
+---
+
+## 2026-04-02 — Åttende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført fra forrige møte:**
+- Fiender med enkel patrol-bevegelse ✓
+- Bakgrunnsmusikk og lydavstemming implementert ✓
+- Tester for kjernefysikk skrevet ✓
+
+**Under møtet:**
+- Gikk gjennom kravlisten for siste innlevering.
+- Markerte gjenstående krav med FSR (Final Sprint Requirements).
+- Fordelte oppgaver for siste sprint.
+
+**Til neste møte:**
+- Ferdigstille alle FSR-krav.
+- Skrive rapport og oppdatere dokumentasjon.
 
 ---
 
