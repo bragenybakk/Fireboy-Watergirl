@@ -207,14 +207,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Returns the combined score of all players. */
-    @Override
-    public int getScore() {
-        if (players == null || players.isEmpty())
-            return 0;
-        return players.stream().mapToInt(p -> p.getScore()).sum();
-    }
-
     private void handlePlayerCollisions() {
         for (Player player : players) {
             double savedVelocityY = player.getVelocityY();
