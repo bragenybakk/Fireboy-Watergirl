@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.AudioManager;
-import inf112.fireboys.view.GameView;
+import inf112.fireboys.view.ControllableGameView;
 
 import javax.swing.Timer;
 
@@ -17,17 +17,15 @@ import javax.swing.Timer;
  */
 public class GameController implements KeyListener, MouseListener {
     private ControllableGameModel gameModel;
-    private GameView gameView;
+    private ControllableGameView gameView;
     private AudioManager audioManager;
     private Timer gameLoopTimer;
     private GameState previousState = null;
-    // Track which keys are currently pressed
-    // Watergirl: arrow keys, Fireboy: WASD
     private boolean leftPressed = false;
     private boolean rightPressed = false;
     private boolean p2LeftPressed = false;
     private boolean p2RightPressed = false;
-    public GameController(ControllableGameModel gameModel, GameView gameView, AudioManager audioManager) {
+    public GameController(ControllableGameModel gameModel, ControllableGameView gameView, AudioManager audioManager) {
         this.gameModel = gameModel;
         this.gameView = gameView;
         this.audioManager = audioManager;
@@ -35,7 +33,6 @@ public class GameController implements KeyListener, MouseListener {
         gameView.addKeyListener(this);
         gameView.addMouseListener(this);
         gameView.requestFocusInWindow();
-        // Start game loop timer (60 FPS = ~16ms per frame)
         gameLoopTimer = new Timer(16, e -> updateGame());
         gameLoopTimer.start();
     }
@@ -55,10 +52,14 @@ public class GameController implements KeyListener, MouseListener {
         }
         previousState = currentState;
         if (currentState == GameState.PLAYING) {
-            if (leftPressed) gameModel.movePlayerLeft();
-            if (rightPressed) gameModel.movePlayerRight();
-            if (p2LeftPressed) gameModel.movePlayer2Left();
-            if (p2RightPressed) gameModel.movePlayer2Right();
+            if (leftPressed)
+                gameModel.movePlayerLeft();
+            if (rightPressed)
+                gameModel.movePlayerRight();
+            if (p2LeftPressed)
+                gameModel.movePlayer2Left();
+            if (p2RightPressed)
+                gameModel.movePlayer2Right();
             gameModel.clockTick();
         } else {
             leftPressed = false;
@@ -202,19 +203,23 @@ public class GameController implements KeyListener, MouseListener {
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     leftPressed = false;
-                    if (!leftPressed && !rightPressed) gameModel.stopPlayer();
+                    if (!leftPressed && !rightPressed)
+                        gameModel.stopPlayer();
                     break;
                 case KeyEvent.VK_RIGHT:
                     rightPressed = false;
-                    if (!leftPressed && !rightPressed) gameModel.stopPlayer();
+                    if (!leftPressed && !rightPressed)
+                        gameModel.stopPlayer();
                     break;
                 case KeyEvent.VK_A:
                     p2LeftPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed) gameModel.stopPlayer2();
+                    if (!p2LeftPressed && !p2RightPressed)
+                        gameModel.stopPlayer2();
                     break;
                 case KeyEvent.VK_D:
                     p2RightPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed) gameModel.stopPlayer2();
+                    if (!p2LeftPressed && !p2RightPressed)
+                        gameModel.stopPlayer2();
                     break;
             }
         }

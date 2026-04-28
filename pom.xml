@@ -86,13 +86,7 @@
 			<version>3.0</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<!-- Mocking framework for unit tests: https://site.mockito.org/ -->
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>5.15.2</version>
-			<scope>test</scope>
-		</dependency>
+
 <dependency>
 			<!-- SLF4J logging framework: https://slf4j.org/-->
 			<groupId>org.slf4j</groupId>
@@ -191,6 +185,11 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/view/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

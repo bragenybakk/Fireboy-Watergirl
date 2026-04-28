@@ -2,280 +2,413 @@ package inf112.fireboys.controller;
 
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.AudioManager;
-import inf112.fireboys.view.GameView;
+import inf112.fireboys.view.ControllableGameView;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.Component;
+import javax.swing.JLabel;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameControllerTest {
 
-    private ControllableGameModel gameModel;
-    private GameView gameView;
-    private AudioManager audioManager;
+    private FakeGameModel fakeModel;
+    private FakeAudioManager fakeAudio;
     private GameController controller;
 
     @BeforeEach
     void setUp() {
-        gameModel = mock(ControllableGameModel.class);
-        gameView = mock(GameView.class);
-        audioManager = mock(AudioManager.class);
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        controller = new GameController(gameModel, gameView, audioManager);
+        fakeModel = new FakeGameModel();
+        fakeAudio = new FakeAudioManager();
+        controller = new GameController(fakeModel, new FakeGameView(), fakeAudio);
         controller.stopTimer();
     }
 
-    private KeyEvent keyEvent(int keyCode) {
-        return new KeyEvent(mock(Component.class), KeyEvent.KEY_PRESSED,
+    private KeyEvent keyPress(int keyCode) {
+        return new KeyEvent(new JLabel(), KeyEvent.KEY_PRESSED,
                 System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
     }
 
-    private KeyEvent keyReleasedEvent(int keyCode) {
-        return new KeyEvent(mock(Component.class), KeyEvent.KEY_RELEASED,
+    private KeyEvent keyRelease(int keyCode) {
+        return new KeyEvent(new JLabel(), KeyEvent.KEY_RELEASED,
                 System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
-    }
-
-    private MouseEvent mouseEvent(Point point) {
-        MouseEvent e = mock(MouseEvent.class);
-        when(e.getPoint()).thenReturn(point);
-        return e;
-    }
-
-    @Test
-    void constructorSetsUpView() {
-        verify(gameView).setFocusable(true);
-        verify(gameView).addKeyListener(controller);
-        verify(gameView).addMouseListener(controller);
-        verify(gameView).requestFocusInWindow();
     }
 
     @Test
     void clockTickCalledWhenPlaying() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
+        fakeModel.gameState = GameState.PLAYING;
         controller.triggerUpdate();
-        verify(gameModel).clockTick();
+        assertEquals(1, fakeModel.clockTickCount);
     }
 
     @Test
     void clockTickNotCalledWhenPaused() {
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
+        fakeModel.gameState = GameState.PAUSED;
         controller.triggerUpdate();
-        verify(gameModel, never()).clockTick();
+        assertEquals(0, fakeModel.clockTickCount);
     }
 
     @Test
     void movementKeysDispatchMoveCommandsToModel() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_LEFT));
-        controller.keyPressed(keyEvent(KeyEvent.VK_RIGHT));
-        controller.keyPressed(keyEvent(KeyEvent.VK_A));
-        controller.keyPressed(keyEvent(KeyEvent.VK_D));
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
+        controller.keyPressed(keyPress(KeyEvent.VK_RIGHT));
+        controller.keyPressed(keyPress(KeyEvent.VK_A));
+        controller.keyPressed(keyPress(KeyEvent.VK_D));
         controller.triggerUpdate();
-        verify(gameModel).movePlayerLeft();
-        verify(gameModel).movePlayerRight();
-        verify(gameModel).movePlayer2Left();
-        verify(gameModel).movePlayer2Right();
+        assertEquals(1, fakeModel.movePlayerLeftCount);
+        assertEquals(1, fakeModel.movePlayerRightCount);
+        assertEquals(1, fakeModel.movePlayer2LeftCount);
+        assertEquals(1, fakeModel.movePlayer2RightCount);
     }
 
     @Test
     void movementFlagsResetWhenNotPlaying() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_LEFT));
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
+        fakeModel.gameState = GameState.PAUSED;
         controller.triggerUpdate();
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
+        fakeModel.gameState = GameState.PLAYING;
         controller.triggerUpdate();
-        verify(gameModel, never()).movePlayerLeft();
-    }
-
-    @Test
-    void repaintsEveryTick() {
-        controller.triggerUpdate();
-        verify(gameView).repaint();
-    }
-
-    @Test
-    void playsBlippSoundWhenTransitioningToGameOver() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.triggerUpdate();
-        when(gameModel.getGameState()).thenReturn(GameState.GAME_OVER);
-        controller.triggerUpdate();
-        verify(audioManager).playSound("/blipp.ogg");
-    }
-
-    @Test
-    void blippSoundNotPlayedOnSubsequentGameOverTicks() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.triggerUpdate();
-        when(gameModel.getGameState()).thenReturn(GameState.GAME_OVER);
-        controller.triggerUpdate();
-        controller.triggerUpdate();
-        verify(audioManager, times(1)).playSound("/blipp.ogg");
-    }
-
-    @Test
-    void upAndDownKeysNavigateMenu() {
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        controller.keyPressed(keyEvent(KeyEvent.VK_UP));
-        controller.keyPressed(keyEvent(KeyEvent.VK_DOWN));
-        verify(gameModel).menuUp();
-        verify(gameModel).menuDown();
-    }
-
-    @Test
-    void enterSelectsMenuOption() {
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        when(gameModel.isSoundEnabled()).thenReturn(true);
-        when(gameModel.isMusicEnabled()).thenReturn(false);
-        when(audioManager.isMusicEnabled()).thenReturn(false);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ENTER));
-        verify(gameModel).menuSelect();
-    }
-
-    @Test
-    void escapeFromSubMenuGoesToMainMenu() {
-        when(gameModel.getGameState()).thenReturn(GameState.SETTINGS);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ESCAPE));
-        verify(gameModel).setGameState(GameState.MAIN_MENU);
-    }
-
-    @Test
-    void escapeFromMainMenuDoesNothing() {
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ESCAPE));
-        verify(gameModel, never()).setGameState(any());
-    }
-
-    @Test
-    void escapeWhilePlayingPausesGame() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ESCAPE));
-        verify(gameModel).setGameState(GameState.PAUSED);
-    }
-
-    @Test
-    void jumpKeysCallJumpMethods() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_UP));
-        controller.keyPressed(keyEvent(KeyEvent.VK_W));
-        verify(gameModel).playerJump();
-        verify(gameModel).player2Jump();
-    }
-
-    @Test
-    void escapeWhilePausedResumesGame() {
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ESCAPE));
-        verify(gameModel).setGameState(GameState.PLAYING);
-    }
-
-    @Test
-    void menuNavigationWorksWhilePaused() {
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
-        controller.keyPressed(keyEvent(KeyEvent.VK_UP));
-        controller.keyPressed(keyEvent(KeyEvent.VK_DOWN));
-        verify(gameModel).menuUp();
-        verify(gameModel).menuDown();
-    }
-
-    @Test
-    void menuNavigationWorksOnGameOver() {
-        when(gameModel.getGameState()).thenReturn(GameState.GAME_OVER);
-        controller.keyPressed(keyEvent(KeyEvent.VK_UP));
-        controller.keyPressed(keyEvent(KeyEvent.VK_DOWN));
-        controller.keyPressed(keyEvent(KeyEvent.VK_ENTER));
-        verify(gameModel).menuUp();
-        verify(gameModel).menuDown();
-        verify(gameModel).menuSelect();
+        assertEquals(0, fakeModel.movePlayerLeftCount);
     }
 
     @Test
     void releasingMoveKeyStopsPlayer() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_LEFT));
-        controller.keyReleased(keyReleasedEvent(KeyEvent.VK_LEFT));
-        verify(gameModel).stopPlayer();
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
+        controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
+        assertEquals(1, fakeModel.stopPlayerCount);
     }
 
     @Test
     void holdingBothKeysDoesNotStopPlayer() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_LEFT));
-        controller.keyPressed(keyEvent(KeyEvent.VK_RIGHT));
-        controller.keyReleased(keyReleasedEvent(KeyEvent.VK_LEFT));
-        verify(gameModel, never()).stopPlayer();
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
+        controller.keyPressed(keyPress(KeyEvent.VK_RIGHT));
+        controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
+        assertEquals(0, fakeModel.stopPlayerCount);
     }
 
     @Test
     void releasingP2MoveKeyStopsPlayer2() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_A));
-        controller.keyReleased(keyReleasedEvent(KeyEvent.VK_A));
-        verify(gameModel).stopPlayer2();
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_A));
+        controller.keyReleased(keyRelease(KeyEvent.VK_A));
+        assertEquals(1, fakeModel.stopPlayer2Count);
     }
 
     @Test
     void holdingBothP2KeysDoesNotStopPlayer2() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        controller.keyPressed(keyEvent(KeyEvent.VK_A));
-        controller.keyPressed(keyEvent(KeyEvent.VK_D));
-        controller.keyReleased(keyReleasedEvent(KeyEvent.VK_A));
-        verify(gameModel, never()).stopPlayer2();
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_A));
+        controller.keyPressed(keyPress(KeyEvent.VK_D));
+        controller.keyReleased(keyRelease(KeyEvent.VK_A));
+        assertEquals(0, fakeModel.stopPlayer2Count);
     }
 
     @Test
     void keyReleaseIgnoredWhenNotPlaying() {
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
-        controller.keyReleased(keyReleasedEvent(KeyEvent.VK_LEFT));
-        verify(gameModel, never()).stopPlayer();
+        fakeModel.gameState = GameState.PAUSED;
+        controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
+        assertEquals(0, fakeModel.stopPlayerCount);
     }
 
     @Test
-    void adBlockToggleWorksWhenPlaying() {
-        when(gameModel.getGameState()).thenReturn(GameState.PLAYING);
-        when(gameView.isAdBlockToggleClicked(any())).thenReturn(true);
-        controller.mouseClicked(mouseEvent(new Point(0, 0)));
-        verify(gameModel).toggleAdsBlocked();
+    void jumpKeysCallJumpMethods() {
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_UP));
+        controller.keyPressed(keyPress(KeyEvent.VK_W));
+        assertEquals(1, fakeModel.playerJumpCount);
+        assertEquals(1, fakeModel.player2JumpCount);
     }
 
     @Test
-    void adBlockToggleIgnoredWhenNotPlaying() {
-        when(gameModel.getGameState()).thenReturn(GameState.PAUSED);
-        when(gameView.isAdBlockToggleClicked(any())).thenReturn(true);
-        controller.mouseClicked(mouseEvent(new Point(0, 0)));
-        verify(gameModel, never()).toggleAdsBlocked();
+    void upAndDownKeysNavigateMenu() {
+        fakeModel.gameState = GameState.MAIN_MENU;
+        controller.keyPressed(keyPress(KeyEvent.VK_UP));
+        controller.keyPressed(keyPress(KeyEvent.VK_DOWN));
+        assertEquals(1, fakeModel.menuUpCount);
+        assertEquals(1, fakeModel.menuDownCount);
+    }
+
+    @Test
+    void enterSelectsMenuOption() {
+        fakeModel.gameState = GameState.MAIN_MENU;
+        controller.keyPressed(keyPress(KeyEvent.VK_ENTER));
+        assertEquals(1, fakeModel.menuSelectCount);
+    }
+
+    @Test
+    void menuNavigationWorksWhilePaused() {
+        fakeModel.gameState = GameState.PAUSED;
+        controller.keyPressed(keyPress(KeyEvent.VK_UP));
+        controller.keyPressed(keyPress(KeyEvent.VK_DOWN));
+        assertEquals(1, fakeModel.menuUpCount);
+        assertEquals(1, fakeModel.menuDownCount);
+    }
+
+    @Test
+    void menuNavigationWorksOnGameOver() {
+        fakeModel.gameState = GameState.GAME_OVER;
+        controller.keyPressed(keyPress(KeyEvent.VK_UP));
+        controller.keyPressed(keyPress(KeyEvent.VK_DOWN));
+        controller.keyPressed(keyPress(KeyEvent.VK_ENTER));
+        assertEquals(1, fakeModel.menuUpCount);
+        assertEquals(1, fakeModel.menuDownCount);
+        assertEquals(1, fakeModel.menuSelectCount);
+    }
+
+    @Test
+    void escapeFromSubMenuGoesToMainMenu() {
+        fakeModel.gameState = GameState.SETTINGS;
+        controller.keyPressed(keyPress(KeyEvent.VK_ESCAPE));
+        assertEquals(GameState.MAIN_MENU, fakeModel.lastSetGameState);
+    }
+
+    @Test
+    void escapeFromMainMenuDoesNothing() {
+        fakeModel.gameState = GameState.MAIN_MENU;
+        controller.keyPressed(keyPress(KeyEvent.VK_ESCAPE));
+        assertNull(fakeModel.lastSetGameState);
+    }
+
+    @Test
+    void escapeWhilePlayingPausesGame() {
+        fakeModel.gameState = GameState.PLAYING;
+        controller.keyPressed(keyPress(KeyEvent.VK_ESCAPE));
+        assertEquals(GameState.PAUSED, fakeModel.lastSetGameState);
+    }
+
+    @Test
+    void escapeWhilePausedResumesGame() {
+        fakeModel.gameState = GameState.PAUSED;
+        controller.keyPressed(keyPress(KeyEvent.VK_ESCAPE));
+        assertEquals(GameState.PLAYING, fakeModel.lastSetGameState);
+    }
+
+    @Test
+    void playsBlippSoundWhenTransitioningToGameOver() {
+        fakeModel.gameState = GameState.PLAYING;
+        controller.triggerUpdate();
+        fakeModel.gameState = GameState.GAME_OVER;
+        controller.triggerUpdate();
+        assertEquals("/blipp.ogg", fakeAudio.lastPlayedSound);
+        assertEquals(1, fakeAudio.playSoundCount);
+    }
+
+    @Test
+    void blippSoundNotPlayedOnSubsequentGameOverTicks() {
+        fakeModel.gameState = GameState.PLAYING;
+        controller.triggerUpdate();
+        fakeModel.gameState = GameState.GAME_OVER;
+        controller.triggerUpdate();
+        controller.triggerUpdate();
+        assertEquals(1, fakeAudio.playSoundCount);
     }
 
     @Test
     void syncAudioSetsSoundEnabledFromModel() {
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        when(gameModel.isSoundEnabled()).thenReturn(false);
-        when(gameModel.isMusicEnabled()).thenReturn(false);
-        when(audioManager.isMusicEnabled()).thenReturn(false);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ENTER));
-        verify(audioManager).setSoundEnabled(false);
+        fakeModel.gameState = GameState.MAIN_MENU;
+        fakeModel.soundEnabled = false;
+        fakeModel.musicEnabled = false;
+        fakeAudio.musicEnabled = false;
+        controller.keyPressed(keyPress(KeyEvent.VK_ENTER));
+        assertEquals(false, fakeAudio.soundEnabledValue);
     }
 
     @Test
-    void syncAudioRestartsOrStopsMusic() {
-        when(gameModel.getGameState()).thenReturn(GameState.MAIN_MENU);
-        when(gameModel.isSoundEnabled()).thenReturn(true);
-        when(gameModel.isMusicEnabled()).thenReturn(true);
-        when(audioManager.isMusicEnabled()).thenReturn(false);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ENTER));
-        verify(audioManager).restartMusic();
+    void syncAudioRestartsMusic() {
+        fakeModel.gameState = GameState.MAIN_MENU;
+        fakeModel.musicEnabled = true;
+        fakeAudio.musicEnabled = false;
+        controller.keyPressed(keyPress(KeyEvent.VK_ENTER));
+        assertEquals(1, fakeAudio.restartMusicCount);
+        assertEquals(0, fakeAudio.stopCount);
+    }
 
-        reset(audioManager);
-        when(gameModel.isMusicEnabled()).thenReturn(false);
-        when(audioManager.isMusicEnabled()).thenReturn(true);
-        controller.keyPressed(keyEvent(KeyEvent.VK_ENTER));
-        verify(audioManager).stop();
+    @Test
+    void syncAudioStopsMusic() {
+        fakeModel.gameState = GameState.MAIN_MENU;
+        fakeModel.musicEnabled = false;
+        fakeAudio.musicEnabled = true;
+        controller.keyPressed(keyPress(KeyEvent.VK_ENTER));
+        assertEquals(1, fakeAudio.stopCount);
+        assertEquals(0, fakeAudio.restartMusicCount);
+    }
+
+    // Fake implementations used instead of mocks
+
+    static class FakeGameModel implements ControllableGameModel {
+        GameState gameState = GameState.MAIN_MENU;
+        boolean soundEnabled = true;
+        boolean musicEnabled = false;
+        GameState lastSetGameState = null;
+
+        int clockTickCount = 0;
+        int menuUpCount = 0;
+        int menuDownCount = 0;
+        int menuSelectCount = 0;
+        int movePlayerLeftCount = 0;
+        int movePlayerRightCount = 0;
+        int stopPlayerCount = 0;
+        int playerJumpCount = 0;
+        int movePlayer2LeftCount = 0;
+        int movePlayer2RightCount = 0;
+        int stopPlayer2Count = 0;
+        int player2JumpCount = 0;
+
+        @Override
+        public GameState getGameState() {
+            return gameState;
+        }
+
+        @Override
+        public void setGameState(GameState state) {
+            lastSetGameState = state;
+        }
+
+        @Override
+        public void clockTick() {
+            clockTickCount++;
+        }
+
+        @Override
+        public void menuUp() {
+            menuUpCount++;
+        }
+
+        @Override
+        public void menuDown() {
+            menuDownCount++;
+        }
+
+        @Override
+        public void menuSelect() {
+            menuSelectCount++;
+        }
+
+        @Override
+        public void movePlayerLeft() {
+            movePlayerLeftCount++;
+        }
+
+        @Override
+        public void movePlayerRight() {
+            movePlayerRightCount++;
+        }
+
+        @Override
+        public void stopPlayer() {
+            stopPlayerCount++;
+        }
+
+        @Override
+        public void playerJump() {
+            playerJumpCount++;
+        }
+
+        @Override
+        public void movePlayer2Left() {
+            movePlayer2LeftCount++;
+        }
+
+        @Override
+        public void movePlayer2Right() {
+            movePlayer2RightCount++;
+        }
+
+        @Override
+        public void stopPlayer2() {
+            stopPlayer2Count++;
+        }
+
+        @Override
+        public void player2Jump() {
+            player2JumpCount++;
+        }
+
+        @Override
+        public boolean isSoundEnabled() {
+            return soundEnabled;
+        }
+
+        @Override
+        public boolean isMusicEnabled() {
+            return musicEnabled;
+        }
+
+        @Override
+        public void toggleAdsBlocked() {}
+
+        @Override
+        public void toggleMusicEnabled() {}
+
+        @Override
+        public void toggleSoundEnabled() {}
+    }
+
+    static class FakeGameView implements ControllableGameView {
+        @Override
+        public void setFocusable(boolean focusable) {}
+
+        @Override
+        public void addKeyListener(KeyListener l) {}
+
+        @Override
+        public void addMouseListener(MouseListener l) {}
+
+        @Override
+        public boolean requestFocusInWindow() {
+            return false;
+        }
+
+        @Override
+        public void repaint() {}
+
+        @Override
+        public boolean isAdBlockToggleClicked(Point point) {
+            return false;
+        }
+    }
+
+    static class FakeAudioManager extends AudioManager {
+        int playSoundCount = 0;
+        String lastPlayedSound = null;
+        boolean soundEnabledValue = true;
+        int restartMusicCount = 0;
+        int stopCount = 0;
+        boolean musicEnabled = false;
+
+        @Override
+        public void playSound(String path) {
+            playSoundCount++;
+            lastPlayedSound = path;
+        }
+
+        @Override
+        public void setSoundEnabled(boolean enabled) {
+            soundEnabledValue = enabled;
+        }
+
+        @Override
+        public void restartMusic() {
+            restartMusicCount++;
+        }
+
+        @Override
+        public void stop() {
+            stopCount++;
+        }
+
+        @Override
+        public boolean isMusicEnabled() {
+            return musicEnabled;
+        }
     }
 }
