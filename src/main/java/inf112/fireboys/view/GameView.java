@@ -8,6 +8,7 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
+import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Button;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.LaserWall;
@@ -506,6 +507,13 @@ public class GameView extends JPanel {
             return;
         }
         if (entity instanceof LaserWall) return;
+        if (entity instanceof Box) {
+            BufferedImage boxSprite = theme.getBox();
+            if (boxSprite != null) {
+                g2.drawImage(boxSprite, x, y, w, h, null);
+                return;
+            }
+        }
         BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {
             int tileSize = Math.max(8, (int) (8 * scale));

@@ -20,6 +20,8 @@ public interface Theme {
 
     BufferedImage getWallTile();
 
+    BufferedImage getBox();
+
     BufferedImage getDoor();
 
     BufferedImage getOpenDoor();
