@@ -34,6 +34,8 @@ public class GameReader {
         List<Player> players = new ArrayList<>();
         List<IEnemy> enemies = new ArrayList<>();
         List<Decoration> decorations = new ArrayList<>();
+        List<Pool> pools = new ArrayList<>();
+        List<Gem> gems = new ArrayList<>();
         double boardWidth = 0;
         double boardHeight = 0;
         InputStream is = GameReader.class.getClassLoader().getResourceAsStream(fileName);
@@ -74,18 +76,24 @@ public class GameReader {
                     entities.add(new Box(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
                             sc.nextDouble(), sc.nextDouble()));
                     break;
-                case "POOL":
+                case "POOL": {
                     String type = sc.next();
                     ElementState elementType = ElementState.valueOf(type);
-                    entities.add(new Pool(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
-                            sc.nextDouble(), elementType));
+                    Pool pool = new Pool(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
+                            sc.nextDouble(), elementType);
+                    entities.add(pool);
+                    pools.add(pool);
                     break;
-                case "GEM":
+                }
+                case "GEM": {
                     String gemType = sc.next();
                     ElementState gemElement = ElementState.valueOf(gemType);
-                    entities.add(new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
-                            sc.nextDouble(), gemElement));
+                    Gem gem = new Gem(new Position(sc.nextDouble(), sc.nextDouble()), sc.nextDouble(),
+                            sc.nextDouble(), gemElement);
+                    entities.add(gem);
+                    gems.add(gem);
                     break;
+                }
                 case "BOOST_PLATFORM":
                 case "GRAVITY_POTION":
                 case "JUMP_PAD":
@@ -120,6 +128,6 @@ public class GameReader {
             }
         }
         sc.close();
-        return new Board(boardWidth, boardHeight, players, entities, enemies, decorations);
+        return new Board(boardWidth, boardHeight, players, entities, enemies, decorations, pools, gems);
     }
 }

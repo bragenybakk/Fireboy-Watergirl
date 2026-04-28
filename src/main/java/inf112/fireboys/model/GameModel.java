@@ -27,6 +27,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private List<Player> players;
     private List<StaticEntity> entities;
     private List<IEnemy> enemies;
+    private int collectedGems = 0;
     private final double GRAVITY = 0.1;
     private final double FRICTION = 0.9;
     // Menu fields
@@ -66,6 +67,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.players = board.players();
         this.entities = board.entities();
         this.enemies = board.enemies();
+        this.collectedGems = 0;
     }
 
     /** Advances the game by one frame — runs physics, collisions, and win/death checks. */
@@ -179,9 +181,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private boolean isInPoolWater(IMovable movable, ElementState requiredElement) {
         double centerX = movable.getPos().x() + movable.getWidth() / 2.0;
         double bottomY = movable.getPos().y() + movable.getHeight();
-        for (IStaticEntity entity : entities) {
-            if (!(entity instanceof Pool pool))
-                continue;
+        for (Pool pool : board.pools()) {
             if (requiredElement != null && pool.getElement() != requiredElement)
                 continue;
             if (pool.footIsInWater(centerX, bottomY))
@@ -192,10 +192,9 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handlePoolInteraction(Player player) {
         double centerX = player.getPos().x() + player.getWidth() / 2.0;
-        double bottomY = player.getPos().y() + player.getHeight();
-        for (IStaticEntity entity : entities) {
-            if (!(entity instanceof Pool pool))
-                continue;
+        double topY = player.getPos().y();
+        double bottomY = topY + player.getHeight();
+        for (Pool pool : board.pools()) {
             if (player.getElementState() != pool.getElement()) {
                 if (pool.footIsInWater(centerX, bottomY)) {
                     player.kill();
@@ -210,10 +209,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         for (StaticEntity entity : entities) {
             if (!(entity instanceof Box box))
                 continue;
-            for (IStaticEntity poolEntity : entities) {
-                if (poolEntity instanceof Pool pool) {
-                    sinkOnPoolFloor(box, pool);
-                }
+            for (Pool pool : board.pools()) {
+                sinkOnPoolFloor(box, pool);
             }
         }
     }
@@ -241,7 +238,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     if (entity instanceof IMovable movable) {
                         handlePush(player, movable);
                     }
-                    entity.whenContact(player);
+                    if (entity instanceof Gem gem) {
+                        boolean wasCollected = gem.isCollected();
+                        gem.whenContact(player);
+                        if (!wasCollected && gem.isCollected()) collectedGems++;
+                    } else {
+                        entity.whenContact(player);
+                    }
                 }
             }
             if (savedVelocityY < 0 && player.getPos().y() <= yBeforeCollisions) {
@@ -556,6 +559,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             this.players = board.players();
             this.entities = board.entities();
             this.enemies = new ArrayList<>(board.enemies());
+            this.collectedGems = 0;
             setGameState(GameState.PLAYING);
         } catch (Exception e) {
             e.printStackTrace();
@@ -595,40 +599,17 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private boolean areAllGemsCollected() {
-        if (entities == null)
-            return true;
-        for (StaticEntity entity : entities) {
-            if (entity instanceof Gem gem && !gem.isCollected()) {
-                return false;
-            }
-        }
-        return true;
+        return collectedGems >= board.gems().size();
     }
 
     /** Returns the total number of gems in the current level. */
     public int getTotalGems() {
-        if (entities == null)
-            return 0;
-        int count = 0;
-        for (StaticEntity entity : entities) {
-            if (entity instanceof Gem) {
-                count++;
-            }
-        }
-        return count;
+        return board == null ? 0 : board.gems().size();
     }
 
     /** Returns the number of gems collected so far in the current level. */
     public int getCollectedGems() {
-        if (entities == null)
-            return 0;
-        int count = 0;
-        for (StaticEntity entity : entities) {
-            if (entity instanceof Gem gem && gem.isCollected()) {
-                count++;
-            }
-        }
-        return count;
+        return collectedGems;
     }
 
     /** Returns true if any player is standing on a boost platform without a boost already charged. */
@@ -955,18 +936,16 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         double eW = entity.getWidth();
         double eH = entity.getHeight();
         if (entity instanceof Wall) {
-            for (StaticEntity poolEntity : board.entities()) {
-                if (poolEntity instanceof Pool pool) {
-                    double playerMidX = movableEntity.getPos().x() + movableEntity.getWidth() / 2;
-                    if (playerMidX >= pool.getPos().x() && playerMidX <= pool.getPos().x() + pool.getWidth()) {
-                        if (Math.abs(pool.getPos().y() - entity.getPos().y()) < 5) {
-                            double basinDepth = pool.getDepthAt(playerMidX);
-                            double newTop = pool.getPos().y() + basinDepth;
-                            if (newTop > eY) {
-                                double bottomY = eY + eH;
-                                eY = newTop;
-                                eH = Math.max(0, bottomY - newTop);
-                            }
+            double playerMidX = movableEntity.getPos().x() + movableEntity.getWidth() / 2;
+            for (Pool pool : board.pools()) {
+                if (playerMidX >= pool.getPos().x() && playerMidX <= pool.getPos().x() + pool.getWidth()) {
+                    if (Math.abs(pool.getPos().y() - entity.getPos().y()) < 5) {
+                        double basinDepth = pool.getDepthAt(playerMidX);
+                        double newTop = pool.getPos().y() + basinDepth;
+                        if (newTop > eY) {
+                            double bottomY = eY + eH;
+                            eY = newTop;
+                            eH = Math.max(0, bottomY - newTop);
                         }
                     }
                 }
