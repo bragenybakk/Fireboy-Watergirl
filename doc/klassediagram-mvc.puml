@@ -89,7 +89,7 @@ GameModel "1" *-- "*" StaticEntity
 note bottom of StaticEntity
   Subklasser:
   Wall, Door, Box, Pool, Gem,
-  Button, Lever,
+  Button,
   BoostPlatform, MovingPlatform
 end note
 

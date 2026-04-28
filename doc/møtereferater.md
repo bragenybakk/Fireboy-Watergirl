@@ -9,7 +9,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Plan:**
 - Oppgavefordeling: Oscar – Spillbrett, Petter – GIT, Brage – Meny++, Magnus – Player.
-- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper, spaker og fiender med skudd.
+- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper og fiender med skudd.
 - Få kjennskap til Git (teste branches, commit, pull/push).
 
 **Til neste møte:**
@@ -76,7 +76,46 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-<!-- TODO: Legg til møtereferater fra slutten av februar og mars her. -->
+<!-- TODO: Legg til flere møtereferater fra slutten av februar og mars her. -->
+
+## YYYY-MM-DD — Femte møte: justering av roller, sprites og videre planer
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Bakgrunn for rolle-justering:**
+Etter noen ukers arbeid så vi at den opprinnelige fordelingen fra 23.01
+(spillbrett / Git / meny / spiller) ikke fanget opp alle ansvarsområder
+prosjektet trenger. Spesielt manglet det tydelig eierskap for testing,
+møteplanlegging og dokumentasjon.
+
+**Avgjort på møtet:**
+Vi går bort fra kode-spesifikke roller (Oscar–spillbrett, Petter–Git,
+Brage–meny, Magnus–spiller). Alle skal kunne plukke opp issues og kode i
+alle deler av prosjektet — slik slipper vi å vente på at én person er
+ferdig med sin del før noen andre kan begynne. Det øker fremdriften og
+sprer kunnskap om kodebasen.
+
+I stedet får hver person et **ansvarsområde**: den ansvarlige sjekker over
+merge requests som går på sitt område, men selve kodingen kan alle gjøre.
+
+- **Petter** — *Teamlead + GitLab-ansvarlig.* Han håndterer allerede
+  fysiske møter og Git, så det var naturlig å formalisere det.
+- **Magnus** — *Referat / møte / rapport-ansvarlig.* Vi trengte noen som
+  passet på at møtereferater og innleveringsrapporter blir holdt oppdatert.
+- **Brage** — *Test-ansvarlig.* Vi så at testdekning fort kunne gli unna
+  hvis ingen hadde det som hovedansvar.
+- **Oscar** — *Arkitekturansvarlig + level-design.* Holder MVC-strukturen
+  ren og lager nivåer.
+
+**Også gjort på møtet:**
+- Begynte å jobbe med sprites for spiller, plattformer og andre elementer
+  i spillet. Vi kom et stykke på vei og fortsetter dette arbeidet videre.
+
+**Planer videre:**
+- Legge til tid-taking per nivå.
+- Implementere fiender.
+- Fortsette spritearbeidet.
+
+---
 
 ## YYYY-MM-DD — Møte (placeholder)
 **Til stede:** *(fyll inn)*
