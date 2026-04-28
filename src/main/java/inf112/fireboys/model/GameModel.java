@@ -82,7 +82,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         handleEnemyCollisions();
         updateDoorOpenStates();
         tickWinDelay();
-        checkButtonEffects();
+        checkButton();
     }
 
     private void updateDoorOpenStates() {
