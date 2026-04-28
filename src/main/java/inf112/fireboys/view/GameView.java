@@ -47,7 +47,7 @@ import java.io.IOException;
  * Draws menus, game entities, players, and enemies based on the current game
  * state.
  */
-public class GameView extends JPanel {
+public class GameView extends JPanel implements ControllableGameView {
     private static final Color ENEMY_PATROL = new Color(0x8B0000);
     private static final Color ENEMY_ALERT = new Color(0xFF8C00);
     private static final Color ENEMY_CHASE = new Color(0xFF0000);
