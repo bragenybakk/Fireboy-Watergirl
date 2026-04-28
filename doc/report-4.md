@@ -28,10 +28,13 @@ Vi har fire områdebaserte roller:
 | Brage | Test-ansvarlig | Sørger for testdekning, at testene faktisk fanger feil, og at de kan kjøres uten skjerm. |
 | Oscar | Arkitekturansvarlig + level-design | Holder kodebasen ryddig (MVC, interfaces, refactoring) og lager nivåer. |
 
-Roller og hovedansvarsområder ble fordelt på første møte og justert etter
-behov underveis — se [`møtereferater.md`](./m%C3%B8tereferater.md). Alle
-bidrar til alle deler av prosjektet; rollene betyr bare at én person har et
-særlig ansvar for at sitt område blir fulgt opp.
+Roller og hovedansvarsområder ble fordelt på
+[første møte (23.01)](./m%C3%B8tereferater.md#2026-01-23--første-møte)
+og [justert på sjette møte (26.02)](./m%C3%B8tereferater.md#2026-02-26--sjette-møte)
+etter at vi så behov for tydelige ansvarsområder for testing,
+møteplanlegging og dokumentasjon. Alle bidrar til alle deler av prosjektet;
+rollene betyr bare at én person har et særlig ansvar for at sitt område
+blir fulgt opp.
 
 **Petter** fungerer som teamlead i tillegg til å være GitLab-ansvarlig —
 det henger naturlig sammen siden han allerede planlegger fysiske møter og
@@ -43,8 +46,9 @@ det trengs.
 for siste sprint.
 
 ## Prosjektmetodikk
-**Kanban via GitLab Issue Board** — fra møte 12.02 og fremover. Detaljer i
-[`prosess.md`](./prosess.md).
+**Kanban via GitLab Issue Board** — fra
+[fjerde møte (12.02)](./m%C3%B8tereferater.md#2026-02-12--fjerde-møte)
+og fremover. Detaljer i [`prosess.md`](./prosess.md).
 
 **Hva fungerer:**
 - Issues er små nok til å plukkes og fullføres innen en uke.
@@ -57,15 +61,18 @@ for siste sprint.
 - Vi har ikke hatt faste sprint-grenser annet enn innleveringene, så små
   oppgaver kunne flyte i ukevis.
 
-**Konklusjon:** Metodikken fungerer for oss. Vi ville ikke gjort dette
-annerledes hvis vi startet på nytt.
+**Konklusjon:** Selve Kanban-metodikken fungerer godt for oss og er noe vi
+ville beholdt. Det vi *ville* gjort annerledes er å ha tydeligere
+fremgangsmåter for Git-arbeidsflyten og rollene fra dag én — se
+retrospektivet under.
 
 ## Gruppedynamikk
 Tonen i gruppen er god. Ingen større uenigheter har oppstått.
-Oppmøte-statistikken (se [`møtereferater.md`](./m%C3%B8tereferater.md)) viser
-3 av 5 logged møter med 4/4, og to med 3/4 — bra fremmøte. Diskusjoner
-foregår åpent, og avgjørelser tas i fellesskap (f.eks. valg av kanban,
-engelske commit-meldinger 29.01).
+Oppmøte-statistikken (se [`møtereferater.md`](./m%C3%B8tereferater.md))
+viser at de fleste møtene har vært 4/4, med kun et par på 3/4 — bra
+fremmøte gjennom hele semesteret. Diskusjoner foregår åpent, og
+avgjørelser tas i fellesskap (f.eks. valg av Kanban, og
+[engelske commit-meldinger på 29.01](./m%C3%B8tereferater.md#2026-01-29--andre-møte)).
 
 ## Kommunikasjon
 - **Discord** — primært verktøy for alt som ikke er kode. Fungerer godt.
@@ -78,8 +85,9 @@ Kommunikasjonen har vært et av de sterkeste områdene i prosjektet.
 ## Commit-fordeling
 Vi forventer noe skjevhet fordi rollene er ulike (test- og arkitektur-
 ansvarlig committer mer enn rolle-ansvarlig for møter), men ingen i gruppen
-har vært "passive". Etter gruppeleder-møtet 13.04 ble vi mer bevisste på å
-balansere bidragene.
+har vært "passive". Etter
+[gruppeleder-møtet 13.04](./m%C3%B8tereferater.md#2026-04-13--tredje-møte-med-gruppeleder)
+ble vi mer bevisste på å balansere bidragene.
 
 ## Retrospektiv
 
@@ -100,8 +108,6 @@ balansere bidragene.
   teller ikke view-kode på testdekningskravet siden den er godt adskilt fra
   forretningslogikken — så *effektiv* dekning (eksklusiv `view` og `app`)
   er **82.9 %**, godt over 75 %-kravet.
-- Møtereferater for slutten av februar og mars ble aldri skrevet ned —
-  bare januar/februar og gruppeleder-møtet 13.04 er logget.
 
 ### For hele prosjektet
 **Hva har vi gjort bra**
@@ -114,10 +120,21 @@ balansere bidragene.
   prosess-overhead.
 
 **Hva ville vi gjort annerledes hvis vi startet på nytt**
+- **Definert ordentlige roller (av den typen vi endte opp med) fra start
+  istedenfor de kode-spesifikke områdene.** Først da
+  [vi justerte rollene 26.02](./m%C3%B8tereferater.md#2026-02-26--sjette-møte)
+  fikk testing, møteplanlegging og dokumentasjon tydelig eierskap. De
+  første ukene led litt av at ingen følte seg ansvarlig for disse
+  områdene.
+- **Hatt en tydelig Git-fremgangsmåte fra dag én.** Alle var nye til Git i
+  starten, og det var ganske kaotisk — uklart hvordan issues skulle
+  plukkes/lages, hvordan merges skulle skje, hvordan commit-meldinger
+  skulle se ut. Vi burde laget et eget `git-fremgangsmate.md`-dokument med
+  regler for issue-flyt, branch-navngivning, commit-meldinger og MR-er,
+  slik at alle gjorde det samme. Dette ble bedre utover prosjektet, men
+  starten kunne vært mye smidigere.
 - **Konfigurert JaCoCo-eksklusjoner for view/app fra første uke** slik at
   coverage-tallet hele tiden reflekterte det vi faktisk testet (modellen).
-- **Skrive møtereferater i sanntid.** Vi forsøkte å huske i etterkant, og
-  det fungerte dårlig.
 - **Definert UI-grensen tydeligere fra start.** Vi mistet flere uker på å
   skille modell-state fra view-state etter at koden hadde grodd seg fast.
 - **Brukt mer pair programming på vanskelige biter** (kollisjoner,
@@ -125,13 +142,15 @@ balansere bidragene.
 
 ### Tre forbedringspunkter for siste sprint (planlagt og utført)
 1. ✅ Fikse open-door-animasjon og win-fade.
-2. ✅ Oppdatere all dokumentasjon (brukerhistorier, prosess, roller, arkitektur).
+2. ✅ Oppdatere all dokumentasjon (brukerhistorier, prosess, arkitektur, kilder).
 3. ✅ Øke testdekning over 75 %. Effektiv dekning (eksklusiv `view`/`app`)
    er **82.9 %**.
 
 ## Møtereferater
-Se [`møtereferater.md`](./m%C3%B8tereferater.md). Inkluderer alle 5 logged
-møter, inklusive møte med gruppeleder 13.04.2026.
+Se [`møtereferater.md`](./m%C3%B8tereferater.md). Inkluderer alle ni
+team-møter (23.01–20.04) og to gruppeleder-møter
+([05.03](./m%C3%B8tereferater.md#2026-03-05--andre-møte-med-gruppeleder),
+[13.04](./m%C3%B8tereferater.md#2026-04-13--tredje-møte-med-gruppeleder)).
 
 ---
 
@@ -155,8 +174,10 @@ som dekker hvilket krav.
 - Open-door-animasjon og win-fade.
 
 ### Hvorfor disse prioriteringene
-- **MVP først, alltid.** Vi tok ikke fatt på noe stretch goal før alle
-  10 MVP-krav var implementert.
+- **MVP-kravene først.** Vi prioriterte de 10 MVP-kravene før vi tok fatt
+  på rene polish-oppgaver. Noe stretch-funksjonalitet (co-op og
+  element-system) ble bygget tidlig fordi den er sentral for konseptet —
+  men polish-ting som open-door-animasjon og win-fade lå urørt til slutt.
 - **Funksjonalitet før polish.** Open-door-animasjon og win-fade ble lagt
   til helt på slutten fordi det var "kirsebær på toppen", ikke kjernekrav.
 - **Vi tok ikke på alt.** Vi vurderte å lage en level editor og skuddmekanikk
@@ -262,11 +283,6 @@ test coverage." Vår view er ren `Graphics2D`-rendering uten egen tilstand —
 den leser kun fra `ViewableGameModel` og kaller `theme.getX()`. `app`-pakken
 inneholder bare `Main.java` (entry point). Begge er triviell glue uten
 forretningslogikk.
-
-JaCoCo kan konfigureres til å ekskludere disse pakkene fra coverage-
-rapporten ved å legge til `<excludes>` i `<execution id="default-report">`
-i `pom.xml`. Dette er ikke gjort i koden ennå (den endringen tilhører en
-egen branch utenfor scope for denne dokumentasjonsoppdateringen).
 
 ## Hva vi trenger hjelp med
 Ingenting akutt. Hvis vi hadde fortsatt etter siste innlevering, ville vi

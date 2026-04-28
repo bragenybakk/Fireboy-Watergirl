@@ -9,7 +9,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Plan:**
 - Oppgavefordeling: Oscar – Spillbrett, Petter – GIT, Brage – Meny++, Magnus – Player.
-- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper og fiender med skudd.
+- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper og fiender med skudd. *(Vi gikk senere bort fra «fiender med skudd» og endte med fiender som kun patruljerer.)*
 - Få kjennskap til Git (teste branches, commit, pull/push).
 
 **Til neste møte:**
@@ -21,7 +21,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 ---
 
 ## 2026-01-29 — Andre møte
-**Til stede:** Petter, Brage, Oscar, Magnus (3/4)
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
 - Fått til noe visuelt ✓
@@ -39,7 +39,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 ---
 
 ## 2026-02-05 — Tredje møte
-**Til stede:** Petter, Brage, Oscar, Magnus (3/4)
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
 - Fungerende og interaktiv meny ✓
@@ -150,6 +150,8 @@ Korte referater fra teammøter og møter med gruppeleder.
 - Legge til lyd/musikk.
 - Skrive flere tester.
 
+*Ingen møter i påskeuken (29.03–06.04).
+
 ---
 
 ## 2026-04-02 — Åttende møte
@@ -182,3 +184,27 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Plan videre:**
 - Jobbe mot siste innlevering og holde oversikt over hvilke krav som mangler og hva som er gjort. Markerer med **FSR (Final sprint requirements)** — krav hentet fra semesteroppgaven.
+
+---
+
+## 2026-04-20 — Niende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført siden forrige møte:**
+- Tid-taking per nivå med beste tid lagret ✓
+- Theme abstract factory (`CastleTheme` / `NullTheme`) ✓
+- Bevegelige plattformer, boost-plater, bokser ✓
+- Helkropps-sprites for Fireboy og Watergirl ✓
+- Redesign av menyer med konsistent stil ✓
+
+**Under møtet:**
+- Diskuterte siste polish-oppgaver: open-door-animasjon og win-fade når
+  begge spillere når sine dører.
+- Gikk gjennom hvilke FSR-krav som fortsatt mangler.
+- Fordelte siste oppgaver: dokumentasjon, retrospektiv-rapport, regenerere
+  klassediagram.
+
+**Til neste møte / innlevering:**
+- Implementere open-door-animasjon og win-fade.
+- Skrive ferdig `report-4.md` og oppdatere all dokumentasjon.
+- Sjekke testdekning og dokumentere view/app-eksklusjon.

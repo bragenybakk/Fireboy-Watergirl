@@ -38,7 +38,7 @@ Vi har plukket elementer fra Agile / XP underveis:
 ## Versjonskontroll
 - Branch per issue.
 - Engelske commit-meldinger (besluttet på møte 2026-01-29).
-- Hver innlevering tagges (`oblig-1`, `oblig-2`, ...).
+- Hver innlevering tagges på den aktuelle commit-en (`V1`, `v2`, `v3`).
 
 ## Erfaringer
 - Tydelig oppgavefordeling i issue board gir god fremdrift.
