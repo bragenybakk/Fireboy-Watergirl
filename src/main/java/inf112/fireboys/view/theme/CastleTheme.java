@@ -62,6 +62,11 @@ public class CastleTheme implements Theme {
     }
 
     @Override
+    public BufferedImage getBox() {
+        return castleTiles.getBox();
+    }
+
+    @Override
     public BufferedImage getDoor() {
         return castleTiles.getDoor();
     }

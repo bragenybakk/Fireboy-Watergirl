@@ -42,7 +42,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private boolean soundEnabled = true;
     // Level file names
     private List<String> levelNames = null;
-    private int unlockedLevelCount = 1;
+    private int unlockedLevelCount = 99;
     // Time tracking
     private int levelTicks = 0;
     private final Map<String, Integer> levelBestTicks = new HashMap<>();
@@ -82,6 +82,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         handleEnemyCollisions();
         updateDoorOpenStates();
         tickWinDelay();
+        checkButton();
     }
 
     private void updateDoorOpenStates() {
@@ -462,6 +463,17 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
         String chosen = levelNames.get(idx);
         loadLevel(chosen + ".txt");
+    }
+
+    private void checkButton() {
+        List<StaticEntity> toAdd = new ArrayList<>();
+        for (StaticEntity entity : entities) {
+            if (entity instanceof Button button && button.isPressed() && !button.isTrapSpawned()) {
+                toAdd.add(new LaserWall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight()));
+                button.markTrapSpawned();
+            }
+        }
+        entities.addAll(toAdd);
     }
 
     private boolean allDoorsHavePlayer() {

@@ -165,8 +165,8 @@ public class GameStateNavigationTest {
         GameModel model = new GameModel();
         model.setGameState(GameState.LEVEL_SELECT);
         model.menuDown();
-        assertEquals(0, model.getSelectedMenuOption(),
-                "Only first level should be selectable at start");
+        assertEquals(1, model.getSelectedMenuOption(),
+                "All levels should be selectable");
         model.loadLevel("level1.txt");
         model.getPlayers().get(0).setPos(new Position(15, 105));
         model.clockTick();

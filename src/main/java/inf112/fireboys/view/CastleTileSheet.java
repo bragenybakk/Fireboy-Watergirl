@@ -15,6 +15,7 @@ public class CastleTileSheet {
     private static final int OPEN_DOOR_X = 256, OPEN_DOOR_Y = 208, OPEN_DOOR_W = 64, OPEN_DOOR_H = 80;
     private static final int TORCH_X = 96, TORCH_Y = 288, TORCH_W = 32, TORCH_H = 32;
     private static final int WINDOW_X = 96, WINDOW_Y = 256, WINDOW_W = 32, WINDOW_H = 32;
+    private static final int BOX_X = 34, BOX_Y = 66, BOX_W = 26, BOX_H = 27;
     private BufferedImage sheet;
     public CastleTileSheet(String path) {
         try {
@@ -42,6 +43,10 @@ public class CastleTileSheet {
 
     public BufferedImage getWindow() {
         return getSprite(WINDOW_X, WINDOW_Y, WINDOW_W, WINDOW_H);
+    }
+
+    public BufferedImage getBox() {
+        return getSprite(BOX_X, BOX_Y, BOX_W, BOX_H);
     }
 
     public BufferedImage getSprite(int x, int y, int width, int height) {
