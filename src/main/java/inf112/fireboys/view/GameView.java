@@ -20,6 +20,7 @@ import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 import inf112.fireboys.view.theme.CastleTheme;
 import inf112.fireboys.view.theme.Theme;
+import inf112.fireboys.view.theme.ThemeFactory;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -70,12 +71,12 @@ public class GameView extends JPanel implements ControllableGameView {
     private final Map<IEnemy, Integer> enemyAnimTick = new HashMap<>();
 
     public GameView(ViewableGameModel viewableGameModel) {
-        this(viewableGameModel, new CastleTheme());
+        this(viewableGameModel, CastleTheme::new);
     }
 
-    public GameView(ViewableGameModel viewableGameModel, Theme theme) {
+    public GameView(ViewableGameModel viewableGameModel, ThemeFactory factory) {
         this.viewableGameModel = viewableGameModel;
-        this.theme = theme;
+        this.theme = factory.create();
         this.setSize(windowWidth, windowHeight);
         this.setFont(font);
         this.setBackground(theme.getBackgroundColor());
