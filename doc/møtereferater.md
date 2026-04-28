@@ -9,7 +9,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Plan:**
 - Oppgavefordeling: Oscar – Spillbrett, Petter – GIT, Brage – Meny++, Magnus – Player.
-- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper, spaker og fiender med skudd.
+- Planlegge spill-idé: Watergirl & Fireboy-type spill — platformer med to spillere og hindringer, knapper og fiender med skudd. *(Vi gikk senere bort fra «fiender med skudd» og endte med fiender som kun patruljerer.)*
 - Få kjennskap til Git (teste branches, commit, pull/push).
 
 **Til neste møte:**
@@ -21,7 +21,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 ---
 
 ## 2026-01-29 — Andre møte
-**Til stede:** Petter, Brage, Oscar, Magnus (3/4)
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
 - Fått til noe visuelt ✓
@@ -39,7 +39,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 ---
 
 ## 2026-02-05 — Tredje møte
-**Til stede:** Petter, Brage, Oscar, Magnus (3/4)
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
 - Fungerende og interaktiv meny ✓
@@ -103,6 +103,14 @@ Korte referater fra teammøter og møter med gruppeleder.
 - Merget nivå-opprettingsarbeid inn i main.
 - Oppgraderte til Java 25.
 - Diskuterte videre plan for spillmekanikker.
+- **Justering av roller:** vi gikk bort fra kode-spesifikke roller
+  (Oscar–spillbrett, Petter–Git, Brage–meny, Magnus–spiller) — alle skal
+  kunne plukke hvilken som helst issue og kode i hele kodebasen, slik at
+  ingen blir flaskehalser. I stedet fikk hver person et ansvarsområde for
+  *review* av merge requests innenfor sitt område: Petter (teamlead +
+  GitLab), Magnus (referat/møte/rapport), Brage (test), Oscar
+  (arkitektur + level-design). Begrunnelsen var at vi så behov for tydelig
+  eierskap på testing, møteplanlegging og dokumentasjon.
 
 **Til neste møte:**
 - Fikse double-jump-bug.
@@ -129,26 +137,42 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Fullført fra forrige møte:**
 - Double-jump-bug fikset ✓
-- Menynavigasjon til level select fungerer ✓
+- Menynavigasjon til level select ✓
+- Første versjon av dør, fiender og dyttbare bokser ✓
+- Back-to-menu og første enhetstester ✓
 
 **Under møtet:**
-- Gikk gjennom gjenstående krav fra semesteroppgaven.
-- Diskuterte hvilke features som trengs for siste innlevering (gems, pools, fiender, sprites).
+- Gikk gjennom gjenstående krav.
+- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+- Planla pool-systemet og karaktersprites.
 - Fordelte oppgaver for neste sprint.
 
 **Til neste møte:**
-- Starte arbeid med pools og gems.
-- Begynne på karaktersprites.
+- Pool-system med element-tilstand.
+- Karaktersprites for Fireboy og Watergirl.
+- Gems.
+
+*Ingen møter i påskeuken (29.03–06.04).
 
 ---
 
 ## 2026-04-07 — Åttende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
+**Fullført fra forrige møte:**
+- Karaktersprites for Fireboy og Watergirl ✓
+- Pool-system med element-kill ✓
+- Gems med elementtilstand og poengsystem ✓
+- Fiender med patrol-bevegelse ✓
+- Tidsmåling og death/reset-skjerm ✓
+- Flere tester ✓
+- How to Play-skjerm og reklamebanner ✓
+
 **Under møtet:**
 - Gikk gjennom kravlisten for siste innlevering.
 - Markerte gjenstående krav med FSR (Final Sprint Requirements).
-- Fordelte oppgaver: pools/gems, fiender, sprites, temaer, moving platforms, tidsregistrering.
+- Fordelte oppgaver: levels med gem-gating, lyd, temaer, moving
+  platforms, settings, to-spiller-styring.
 
 **Til neste møte:**
 - Ferdigstille alle FSR-krav.
@@ -167,3 +191,32 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Plan videre:**
 - Jobbe mot siste innlevering og holde oversikt over hvilke krav som mangler og hva som er gjort. Markerer med **FSR (Final sprint requirements)** — krav hentet fra semesteroppgaven.
+
+---
+
+## 2026-04-20 — Niende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført siden forrige møte:**
+- Levels-system med gem-gating ✓
+- Tid-taking per nivå med beste tid lagret ✓
+- Lyd (bakgrunnsmusikk og lydeffekter) ✓
+- Castle tileset og dekorasjoner ✓
+- Boost-plater med flamme-sprites ✓
+- Settings-skjerm ✓
+- Spiller 2 (Fireboy) med WASD-kontroller ✓
+- Theme abstract factory ✓
+- Helkropps-sprites og redesign av menyer ✓
+- Bevegelige plattformer ✓
+
+**Under møtet:**
+- Diskuterte siste polish-oppgaver: open-door-animasjon og win-fade når
+  begge spillere når sine dører.
+- Gikk gjennom hvilke FSR-krav som fortsatt mangler.
+- Fordelte siste oppgaver: dokumentasjon, retrospektiv-rapport, regenerere
+  klassediagram.
+
+**Til neste møte / innlevering:**
+- Implementere open-door-animasjon og win-fade.
+- Skrive ferdig `report-4.md` og oppdatere all dokumentasjon.
+- Sjekke testdekning og dokumentere view/app-eksklusjon.

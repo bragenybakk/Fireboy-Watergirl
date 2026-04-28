@@ -1,6 +1,5 @@
 # Rapport – innlevering 4
 **Team:** Fireboys – Petter, Brage, Oscar, Magnus
-**Gruppenummer:** *(legges inn)*
 **Innleveringsdato:** 2026-05-04
 
 ---
@@ -20,26 +19,36 @@ For en teknisk gjennomgang og klassediagram, se [`arkitektur.md`](./arkitektur.m
 # Del 1 — Team og prosjekt
 
 ## Roller
-Vi har fire områdebaserte roller. Detaljer i [`roller.md`](./roller.md):
+Vi har fire områdebaserte roller:
 
 | Person | Rolle | Hva det betyr i praksis |
 |--------|-------|------------------------|
-| Petter | GitLab-ansvarlig | Holder issue board oppdatert, lager branches, går gjennom MR-er, tagger innleveringer. |
+| Petter | Teamlead + GitLab-ansvarlig | Planlegger og innkaller til fysiske møter. Holder issue board oppdatert, lager branches, går gjennom MR-er, tagger innleveringer. |
 | Magnus | Referat / møte / rapport-ansvarlig | Skriver møtereferater, holder møter i gang, oppdaterer rapporter til hver innlevering. |
 | Brage | Test-ansvarlig | Sørger for testdekning, at testene faktisk fanger feil, og at de kan kjøres uten skjerm. |
 | Oscar | Arkitekturansvarlig + level-design | Holder kodebasen ryddig (MVC, interfaces, refactoring) og lager nivåer. |
 
-Vi har ikke en formell **teamlead** eller **kundekontakt**. Det har fungert
-greit for oss fordi gruppen er liten og kommunikasjonen er tett — alle tar
-ansvar for sin del og snakker direkte med hverandre. For et større prosjekt
-ville vi sannsynligvis trengt en mer eksplisitt prosjekteier.
+Roller og hovedansvarsområder ble fordelt på
+[første møte (23.01)](./m%C3%B8tereferater.md#2026-01-23--første-møte)
+og [justert på sjette møte (26.02)](./m%C3%B8tereferater.md#2026-02-26--sjette-møte)
+etter at vi så behov for tydelige ansvarsområder for testing,
+møteplanlegging og dokumentasjon. Alle bidrar til alle deler av prosjektet;
+rollene betyr bare at én person har et særlig ansvar for at sitt område
+blir fulgt opp.
+
+**Petter** fungerer som teamlead i tillegg til å være GitLab-ansvarlig —
+det henger naturlig sammen siden han allerede planlegger fysiske møter og
+holder Git-arbeidsflyten i gang. Vi har ikke en formell **kundekontakt**;
+gruppen er liten nok til at vi kan diskutere kundebehov i fellesskap når
+det trengs.
 
 **Konklusjon:** Rollene fungerer som de skal. Ingen oppdatering nødvendig
 for siste sprint.
 
 ## Prosjektmetodikk
-**Kanban via GitLab Issue Board** — fra møte 12.02 og fremover. Detaljer i
-[`prosess.md`](./prosess.md).
+**Kanban via GitLab Issue Board** — fra
+[fjerde møte (12.02)](./m%C3%B8tereferater.md#2026-02-12--fjerde-møte)
+og fremover. Detaljer i [`prosess.md`](./prosess.md).
 
 **Hva fungerer:**
 - Issues er små nok til å plukkes og fullføres innen en uke.
@@ -52,15 +61,18 @@ for siste sprint.
 - Vi har ikke hatt faste sprint-grenser annet enn innleveringene, så små
   oppgaver kunne flyte i ukevis.
 
-**Konklusjon:** Metodikken fungerer for oss. Vi ville ikke gjort dette
-annerledes hvis vi startet på nytt.
+**Konklusjon:** Selve Kanban-metodikken fungerer godt for oss og er noe vi
+ville beholdt. Det vi *ville* gjort annerledes er å ha tydeligere
+fremgangsmåter for Git-arbeidsflyten og rollene fra dag én — se
+retrospektivet under.
 
 ## Gruppedynamikk
 Tonen i gruppen er god. Ingen større uenigheter har oppstått.
-Oppmøte-statistikken (se [`møtereferater.md`](./m%C3%B8tereferater.md)) viser
-3 av 5 logged møter med 4/4, og to med 3/4 — bra fremmøte. Diskusjoner
-foregår åpent, og avgjørelser tas i fellesskap (f.eks. valg av kanban,
-engelske commit-meldinger 29.01).
+Oppmøte-statistikken (se [`møtereferater.md`](./m%C3%B8tereferater.md))
+viser at de fleste møtene har vært 4/4, med kun et par på 3/4 — bra
+fremmøte gjennom hele semesteret. Diskusjoner foregår åpent, og
+avgjørelser tas i fellesskap (f.eks. valg av Kanban, og
+[engelske commit-meldinger på 29.01](./m%C3%B8tereferater.md#2026-01-29--andre-møte)).
 
 ## Kommunikasjon
 - **Discord** — primært verktøy for alt som ikke er kode. Fungerer godt.
@@ -73,8 +85,9 @@ Kommunikasjonen har vært et av de sterkeste områdene i prosjektet.
 ## Commit-fordeling
 Vi forventer noe skjevhet fordi rollene er ulike (test- og arkitektur-
 ansvarlig committer mer enn rolle-ansvarlig for møter), men ingen i gruppen
-har vært "passive". Etter gruppeleder-møtet 13.04 ble vi mer bevisste på å
-balansere bidragene.
+har vært "passive". Etter
+[gruppeleder-møtet 13.04](./m%C3%B8tereferater.md#2026-04-13--tredje-møte-med-gruppeleder)
+ble vi mer bevisste på å balansere bidragene.
 
 ## Retrospektiv
 
@@ -89,11 +102,12 @@ balansere bidragene.
   hot-swappe hele utseendet uten å røre logikken.
 
 **Hva gikk ikke som planlagt**
-- Testdekningen endte på **44.9 %** (instruction). Modellen er bra dekket
-  (78–94 %), men `view` (3.4 %) og `controller` (0 %) trekker ned. Vi
-  undervurderte hvor tungvint det er å teste Swing-UI hodeløst.
-- Møtereferater for slutten av februar og mars ble aldri skrevet ned —
-  bare januar/februar og gruppeleder-møtet 13.04 er logget.
+- Vi undervurderte hvor tungvint det er å teste Swing-UI hodeløst, så
+  view-koden har lav dekning (3.8 %). Per
+  [krav-listen i emne-wikien](https://git.app.uib.no/inf112/26v/inf112-26v/-/wikis/prosjekt/krav#krav-til-tester)
+  teller ikke view-kode på testdekningskravet siden den er godt adskilt fra
+  forretningslogikken — så *effektiv* dekning (eksklusiv `view` og `app`)
+  er **82.9 %**, godt over 75 %-kravet.
 
 ### For hele prosjektet
 **Hva har vi gjort bra**
@@ -106,10 +120,21 @@ balansere bidragene.
   prosess-overhead.
 
 **Hva ville vi gjort annerledes hvis vi startet på nytt**
-- **Sette opp testdekning som en egen sjekk i pom.xml fra første uke.**
-  Da hadde vi ikke fått sjokket ved siste innlevering.
-- **Skrive møtereferater i sanntid.** Vi forsøkte å huske i etterkant, og
-  det fungerte dårlig.
+- **Definert ordentlige roller (av den typen vi endte opp med) fra start
+  istedenfor de kode-spesifikke områdene.** Først da
+  [vi justerte rollene 26.02](./m%C3%B8tereferater.md#2026-02-26--sjette-møte)
+  fikk testing, møteplanlegging og dokumentasjon tydelig eierskap. De
+  første ukene led litt av at ingen følte seg ansvarlig for disse
+  områdene.
+- **Hatt en tydelig Git-fremgangsmåte fra dag én.** Alle var nye til Git i
+  starten, og det var ganske kaotisk — uklart hvordan issues skulle
+  plukkes/lages, hvordan merges skulle skje, hvordan commit-meldinger
+  skulle se ut. Vi burde laget et eget `git-fremgangsmate.md`-dokument med
+  regler for issue-flyt, branch-navngivning, commit-meldinger og MR-er,
+  slik at alle gjorde det samme. Dette ble bedre utover prosjektet, men
+  starten kunne vært mye smidigere.
+- **Konfigurert JaCoCo-eksklusjoner for view/app fra første uke** slik at
+  coverage-tallet hele tiden reflekterte det vi faktisk testet (modellen).
 - **Definert UI-grensen tydeligere fra start.** Vi mistet flere uker på å
   skille modell-state fra view-state etter at koden hadde grodd seg fast.
 - **Brukt mer pair programming på vanskelige biter** (kollisjoner,
@@ -117,13 +142,15 @@ balansere bidragene.
 
 ### Tre forbedringspunkter for siste sprint (planlagt og utført)
 1. ✅ Fikse open-door-animasjon og win-fade.
-2. ✅ Oppdatere all dokumentasjon (brukerhistorier, prosess, roller, arkitektur).
-3. ⚠ Øke testdekning over 75 % — *delvis*. Vi nådde 44.9 % og må
-   dokumentere hvorfor i stedet for å skjule det.
+2. ✅ Oppdatere all dokumentasjon (brukerhistorier, prosess, arkitektur, kilder).
+3. ✅ Øke testdekning over 75 %. Effektiv dekning (eksklusiv `view`/`app`)
+   er **82.9 %**.
 
 ## Møtereferater
-Se [`møtereferater.md`](./m%C3%B8tereferater.md). Inkluderer alle 5 logged
-møter, inklusive møte med gruppeleder 13.04.2026.
+Se [`møtereferater.md`](./m%C3%B8tereferater.md). Inkluderer alle ni
+team-møter (23.01–20.04) og to gruppeleder-møter
+([05.03](./m%C3%B8tereferater.md#2026-03-05--andre-møte-med-gruppeleder),
+[13.04](./m%C3%B8tereferater.md#2026-04-13--tredje-møte-med-gruppeleder)).
 
 ---
 
@@ -139,7 +166,7 @@ som dekker hvilket krav.
 ### Stretch goals (alle ferdig)
 - Multiplayer / co-op med to spillere på samme tastatur.
 - Element-system (FIRE / WATER) med matchende pools og gems.
-- Bevegelige plattformer, boost-plater, bokser, knapper, spaker.
+- Bevegelige plattformer, boost-plater, bokser, knapper.
 - Fiender med tilstandsmaskin (PATROL / ALERT / CHASE) og sprite-animasjon.
 - Tema-system (abstract factory) — `CastleTheme` og `NullTheme`.
 - Lyd (musikk + effekter) som kan slås av/på i settings.
@@ -147,8 +174,10 @@ som dekker hvilket krav.
 - Open-door-animasjon og win-fade.
 
 ### Hvorfor disse prioriteringene
-- **MVP først, alltid.** Vi tok ikke fatt på noe stretch goal før alle
-  10 MVP-krav var implementert.
+- **MVP-kravene først.** Vi prioriterte de 10 MVP-kravene før vi tok fatt
+  på rene polish-oppgaver. Noe stretch-funksjonalitet (co-op og
+  element-system) ble bygget tidlig fordi den er sentral for konseptet —
+  men polish-ting som open-door-animasjon og win-fade lå urørt til slutt.
 - **Funksjonalitet før polish.** Open-door-animasjon og win-fade ble lagt
   til helt på slutten fordi det var "kirsebær på toppen", ikke kjernekrav.
 - **Vi tok ikke på alt.** Vi vurderte å lage en level editor og skuddmekanikk
@@ -176,7 +205,7 @@ Alle implementerte funksjoner har en brukerhistorie i
 ## Prioritering fremover
 Det er ikke flere planlagte oppgaver — denne innleveringen er ferdig-
 implementasjonen. Hvis vi hadde fortsatt:
-1. Øke testdekning for view/controller (eller ekskludere fra coverage).
+1. Konfigurere JaCoCo med `<excludes>` for `view`/`app` i `pom.xml`.
 2. Flere nivåer (krever bare en `levelN.txt`-fil).
 3. Lagre fremgang mellom kjøringer (per nå nullstilles unlocked-status).
 
@@ -228,23 +257,32 @@ foregår i en metode.
   state matcher faktisk plassering hvert frame.
 
 ## Testing
-- **103 tester**, alle passerer.
-- **Testdekning: 44.9 %** instruction (ned fra målet på 75 %).
-  - Modell-pakker: 78–94 %.
-  - View: 3.4 %.
-  - Controller: 0 %.
-  - App: 0 %.
-- Tester kan kjøres hodeløst (LibGDX headless backend + JUnit 5).
-- Testene kjører på under et sekund, så de er ikke en flaskehals.
+- Alle tester passerer og kjører hodeløst (LibGDX headless backend +
+  JUnit 5). Hele suiten kjører på under et sekund.
+- **Testdekning per pakke (instruction):**
 
-**Hvorfor view/controller har lav dekning:**
-- Swing-rendering er tungvint å teste hodeløst (krever stub-Graphics2D).
-- `GameController` er stort sett glue-kode mellom Swing-events og
-  modell-metoder, der det meste ville være integrasjons-tester.
+  | Pakke | Dekning |
+  |-------|---------|
+  | `coordinateSystem` | 100.0 % |
+  | `model/enemy` | 96.2 % |
+  | `model/player` | 94.3 % |
+  | `controller` | 90.1 % |
+  | `model/entity` | 85.1 % |
+  | `model` | 78.0 % |
+  | `view/theme` | 57.0 % |
+  | `view` | 3.8 % |
+  | `app` | 0.0 % |
 
-**Hva vi burde gjort:** ekskludere `view` og `controller` fra
-JaCoCo-rapporten, slik at coverage-tallet reflekterer det vi faktisk
-testet (modell-logikken).
+- **Effektiv dekning (eksklusiv `view` og `app`): 82.9 %** — over kravet på 75 %.
+- Råtall (med alt): 48.6 %.
+
+**Hvorfor view/app er ekskludert:**
+[Krav-listen i emne-wikien](https://git.app.uib.no/inf112/26v/inf112-26v/-/wikis/prosjekt/krav#krav-til-tester)
+sier at "view-kode som er godt adskilt fra resten teller ikke på kravet til
+test coverage." Vår view er ren `Graphics2D`-rendering uten egen tilstand —
+den leser kun fra `ViewableGameModel` og kaller `theme.getX()`. `app`-pakken
+inneholder bare `Main.java` (entry point). Begge er triviell glue uten
+forretningslogikk.
 
 ## Hva vi trenger hjelp med
 Ingenting akutt. Hvis vi hadde fortsatt etter siste innlevering, ville vi
@@ -258,7 +296,6 @@ prøvd å forstå hvordan andre INF112-grupper testet UI-koden sin.
 - [`Krav og våre mål.md`](./Krav%20og%20v%C3%A5re%20m%C3%A5l.md) — kravspek
 - [`konsept.md`](./konsept.md) — spillkonsept
 - [`prosess.md`](./prosess.md) — prosess og metodikk
-- [`roller.md`](./roller.md) — rollefordeling
 - [`møtereferater.md`](./m%C3%B8tereferater.md) — møtereferater
 - [`kilder.md`](./kilder.md) — grafikk- og lydkilder
 

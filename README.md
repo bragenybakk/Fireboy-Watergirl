@@ -3,7 +3,6 @@
 ## Team og prosjektinfo
 - **Prosjekt:** Fireboy & Watergirl (inspirert av Fireboy and Watergirl (2009))
 - **Teamnavn:** Fireboys
-- **Gruppenummer:** *(legges inn)*
 - **Teammedlemmer:** Petter, Brage, Oscar, Magnus
 
 ## Kort beskrivelse av spillet
@@ -61,6 +60,5 @@ Se `doc/`-mappen for utviklingsrapporter og øvrig prosjektdokumentasjon:
 - [`Krav og våre mål.md`](doc/Krav%20og%20v%C3%A5re%20m%C3%A5l.md) — krav og MVP
 - [`konsept.md`](doc/konsept.md) — konsept
 - [`prosess.md`](doc/prosess.md) — prosess og metodikk
-- [`roller.md`](doc/roller.md) — rollefordeling
 - [`møtereferater.md`](doc/m%C3%B8tereferater.md) — møtereferater
-- [`oblig1.md`](doc/oblig1.md), [`oblig2.md`](doc/oblig2.md), [`oblig3.md`](doc/oblig3.md), [`oblig4.md`](doc/oblig4.md) — innleveringsrapporter
+- [`report-4.md`](doc/report-4.md) — innleveringsrapport

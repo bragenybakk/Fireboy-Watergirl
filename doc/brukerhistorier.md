@@ -173,17 +173,17 @@ en meny, slik at jeg har full kontroll uten å bruke mus.
 
 ---
 
-## Historie 10: Interaktive elementer (bokser, knapper, spaker)
-**Som spiller** vil jeg kunne dytte bokser og bruke knapper/spaker, slik at
+## Historie 10: Interaktive elementer (bokser, knapper)
+**Som spiller** vil jeg kunne dytte bokser og bruke knapper, slik at
 brettene kan ha mer enn bare hopping og løping.
 
 **Akseptansekriterier:**
 - Bokser kan dyttes; tunge bokser krever mer fart.
-- Knapper og spaker kan trykkes på.
+- Knapper kan trykkes på.
 - Bevegelige plattformer bærer spilleren.
 
 **Arbeidsoppgaver:**
-- `Box`, `Button`, `Lever`, `MovingPlatform`, `BoostPlatform`-entiteter.
+- `Box`, `Button`, `MovingPlatform`, `BoostPlatform`-entiteter.
 - `handlePush` regner ut force = `playerVelocity / boxWeight`.
 - `carryPlayersOnMovingPlatforms` flytter spilleren med plattformen.
 

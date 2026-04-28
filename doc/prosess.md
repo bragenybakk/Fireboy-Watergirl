@@ -10,8 +10,8 @@ Vi har plukket elementer fra Agile / XP underveis:
 - **Iterativ utvikling** — små inkrementer fra møte til møte.
 - **Code review** via merge requests før noe merges til `main`.
 - **Felles eierskap** — alle kan jobbe i alle deler av kodebasen, men
-  rolleansvaret (se [`roller.md`](./roller.md)) gjør at en person følger
-  opp at sitt område blir tatt vare på.
+  rolleansvaret (se [`report-4.md`](./report-4.md)) gjør at en person
+  følger opp at sitt område blir tatt vare på.
 
 ## Møter
 - **Ukentlige team-møter** (typisk torsdag) hvor vi går gjennom hva som er
@@ -27,18 +27,18 @@ Vi har plukket elementer fra Agile / XP underveis:
 
 ## Arbeidsfordeling
 - Oppgaver opprettes som issues i GitLab.
-- En person plukker en issue og lager en branch (`<issue-nr>-kort-beskrivelse`).
-- Når oppgaven er ferdig: merge request → reviewer om nødvendig → merge til `main`.
-- Hovedansvar per område fra første møte:
-  - Oscar — spillbrett / verden / level-design
-  - Petter — Git / infrastruktur
-  - Brage — meny / UI
-  - Magnus — spiller / fysikk
+- Alle kan plukke opp hvilken som helst issue og kode i alle deler av
+  prosjektet. Slik slipper vi flaskehalser der noen må vente på at andre
+  blir ferdige.
+- Når oppgaven er ferdig: merge request → reviewer (typisk den som har
+  ansvarsområdet for koden som endres) → merge til `main`.
+- Ansvarsområdene (se [`report-4.md`](./report-4.md)) styrer kun hvem som
+  går gjennom merge requests for sitt område, ikke hvem som koder hva.
 
 ## Versjonskontroll
 - Branch per issue.
 - Engelske commit-meldinger (besluttet på møte 2026-01-29).
-- Hver innlevering tagges (`oblig-1`, `oblig-2`, ...).
+- Hver innlevering tagges på den aktuelle commit-en (`V1`, `v2`, `v3`).
 
 ## Erfaringer
 - Tydelig oppgavefordeling i issue board gir god fremdrift.
