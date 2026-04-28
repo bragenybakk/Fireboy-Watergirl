@@ -81,33 +81,32 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 **Fullført fra forrige møte:**
 - Hoppelogikk og kollisjon mot vegger fungerer ✓
-- Sprites lagret i én felles fil ✓
 
 **Under møtet:**
-- Diskuterte hvordan vi skulle representere Fireboy og Watergirl som separate karakterer.
-- Startet arbeid med å laste inn karaktersprites fra spritesheet.
-- Planlagt strukturen for elementbaserte farer (pools).
+- Jobbet med brett-logikk og bevegelse.
+- Startet arbeid med nivålasting fra fil.
 
 **Til neste møte:**
-- Implementere vann- og ildpytter med elementtilstand.
-- Få karakterene til å se ut som Fireboy og Watergirl.
+- Få nivålasting til å fungere.
+- Rydde opp i kodestrukturen.
 
 ---
 
 ## 2026-02-26 — Sjette møte
-**Til stede:** Petter, Brage, Oscar (3/4)
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
-- Karaktersprites for Fireboy og Watergirl lastet inn ✓
-- Grunnleggende pool-system på plass ✓
+- Fungerende brett-logikk og bevegelse ✓
+- Nivålasting fra fil på plass ✓
 
 **Under møtet:**
-- Implementerte gem-system med elementtilstand (røde gems til Fireboy, blå til Watergirl).
-- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+- Merget nivå-opprettingsarbeid inn i main.
+- Oppgraderte til Java 25.
+- Diskuterte videre plan for spillmekanikker.
 
 **Til neste møte:**
-- Fullføre gem-innsamling og poengsum.
-- Legge til dør som åpnes når alle gems er samlet.
+- Fikse double-jump-bug.
+- Forbedre menynavigasjon.
 
 ---
 
@@ -126,36 +125,30 @@ Korte referater fra teammøter og møter med gruppeleder.
 ---
 
 ## 2026-03-12 — Sjuende møte
-**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+**Til stede:** Petter, Brage, Oscar (3/4)
 
 **Fullført fra forrige møte:**
-- Gem-innsamling med poengsum fungerer ✓
-- Dør som åpnes ved fullføring av brett ✓
+- Double-jump-bug fikset ✓
+- Menynavigasjon til level select fungerer ✓
 
 **Under møtet:**
-- Lagt til støtte for flere nivåer via `levels.txt`.
-- Startet arbeid med fiender.
-- Diskuterte og begynte å skrive tester for modellen.
+- Gikk gjennom gjenstående krav fra semesteroppgaven.
+- Diskuterte hvilke features som trengs for siste innlevering (gems, pools, fiender, sprites).
+- Fordelte oppgaver for neste sprint.
 
 **Til neste møte:**
-- Fullføre fiender med bevegelseslogikk.
-- Legge til lyd/musikk.
-- Skrive flere tester.
+- Starte arbeid med pools og gems.
+- Begynne på karaktersprites.
 
 ---
 
 ## 2026-04-02 — Åttende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
-**Fullført fra forrige møte:**
-- Fiender med enkel patrol-bevegelse ✓
-- Bakgrunnsmusikk og lydavstemming implementert ✓
-- Tester for kjernefysikk skrevet ✓
-
 **Under møtet:**
 - Gikk gjennom kravlisten for siste innlevering.
 - Markerte gjenstående krav med FSR (Final Sprint Requirements).
-- Fordelte oppgaver for siste sprint.
+- Fordelte oppgaver: pools/gems, fiender, sprites, temaer, moving platforms, tidsregistrering.
 
 **Til neste møte:**
 - Ferdigstille alle FSR-krav.
