@@ -142,7 +142,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-04-02 — Åttende møte
+## 2026-04-07 — Åttende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Under møtet:**
