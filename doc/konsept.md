@@ -1,7 +1,7 @@
 # Konsept
 
 ## Spillidé
-Fireboys er et 2D-plattformspill inspirert av Fireboy and Watergirl. Spilleren må navigere et nivå med hindringer og interaktive objekter.
+Fireboy & Watergirl er et 2D-plattformspill inspirert av originalspillet Fireboy and Watergirl. Spilleren må navigere et nivå med hindringer og interaktive objekter.
 
 ## Kjerneelementer
 - Menysystem med hovedmeny, level select og settings.

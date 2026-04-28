@@ -6,7 +6,7 @@
 ---
 
 ## Kort om prosjektet
-Fireboys er et 2D co-op platformer-spill inspirert av *Fireboy and Watergirl*.
+Fireboy & Watergirl er et 2D co-op platformer-spill inspirert av *Fireboy and Watergirl*.
 To spillere styrer hver sin karakter (FIRE og WATER) gjennom brett med
 hindringer, gems og fiender, og må samarbeide for å nå hver sin dør.
 

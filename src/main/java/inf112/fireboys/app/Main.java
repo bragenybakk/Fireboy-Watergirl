@@ -11,7 +11,7 @@ import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.GameView;
 
 public class Main {
-	public static final String GAME_TITLE = "Fireboy and Watergirl";
+	public static final String GAME_TITLE = "Fireboy & Watergirl";
 	public static void main(String[] args) {
 		AudioManager audio = new AudioManager();
 		audio.playMusic("/Dentaneosuchus Hunt.mp3");
