@@ -26,17 +26,9 @@ public class SpriteSheet {
         return charSheet.getSubimage(1, 2, 274, 469);
     }
 
-    public BufferedImage getFireboyBody() {
-        return null;
-    }
-
     public BufferedImage getWatergirlHead() {
         if (charSheet == null) return null;
         return charSheet.getSubimage(275, 50, 268, 421);
-    }
-
-    public BufferedImage getWatergirlBody() {
-        return null;
     }
 
     public BufferedImage getBlueGem() {

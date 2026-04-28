@@ -43,7 +43,7 @@ public class CastleTheme implements Theme {
 
     @Override
     public BufferedImage getPlayerBody(ElementState element) {
-        return element == ElementState.FIRE ? spriteSheet.getFireboyBody() : spriteSheet.getWatergirlBody();
+        return null;
     }
 
     @Override

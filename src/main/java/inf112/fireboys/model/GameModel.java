@@ -35,7 +35,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private String[] mainMenuOptions = { "START GAME", "How to Play", "Settings", "Exit" };
     private String[] pauseMenuOptions = { "Resume", "Main Menu" };
     private String[] gameOverMenuOptions = { "Respawn", "Main Menu" };
-    private boolean testModeSinglePlayer = false;
     private String currentLevelFileName = null;
     private boolean adsBlocked = false;
     private boolean musicEnabled = true;
@@ -512,13 +511,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             this.levelTicks = 0;
             this.winDelayTicks = 0;
             this.board = GameReader.loadLevel(levelFileName);
-            List<Player> allPlayers = board.players();
-            if (testModeSinglePlayer && !allPlayers.isEmpty()) {
-                this.players = new ArrayList<>();
-                this.players.add(allPlayers.get(0));
-            } else {
-                this.players = allPlayers;
-            }
+            this.players = board.players();
             this.entities = board.entities();
             this.enemies = new ArrayList<>(board.enemies());
             setGameState(GameState.PLAYING);
