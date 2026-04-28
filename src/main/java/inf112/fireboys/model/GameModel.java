@@ -89,9 +89,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void updateDoorOpenStates() {
-        for (StaticEntity entity : entities) {
-            if (!(entity instanceof Door door))
-                continue;
+        for (Door door : board.doors()) {
             boolean hasPlayer = false;
             for (Player player : players) {
                 if (playerIsAtDoor(door, player)) {
@@ -118,10 +116,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void tickMovingEntities() {
-        for (StaticEntity entity : entities) {
-            if (entity instanceof MovingPlatform mp) {
-                mp.tick();
-            }
+        for (MovingPlatform mp : board.movingPlatforms()) {
+            mp.tick();
         }
     }
 
@@ -131,9 +127,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 continue;
             double playerBottom = player.getPos().y() + player.getHeight();
             double playerCenterX = player.getPos().x() + player.getWidth() / 2.0;
-            for (StaticEntity entity : entities) {
-                if (!(entity instanceof MovingPlatform mp))
-                    continue;
+            for (MovingPlatform mp : board.movingPlatforms()) {
                 double platLeft = mp.getPos().x();
                 double platRight = platLeft + mp.getWidth();
                 double platTop = mp.getPos().y();
@@ -152,10 +146,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         for (Player player : players) {
             applyGravity(player);
         }
-        for (IStaticEntity entity : entities) {
-            if (entity instanceof IMovable movable) {
-                applyGravity(movable);
-            }
+        for (StaticEntity e : board.movables()) {
+            applyGravity((IMovable) e);
         }
         for (IEnemy enemy : enemies) {
             applyGravity(enemy);
@@ -266,20 +258,18 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private void handleEntityCollisions() {
         handleBoxPoolInteractions();
         resolveWallCollisions();
-        for (StaticEntity entity : entities) {
-            if (entity instanceof IMovable movable) {
-                for (StaticEntity otherEntity : entities) {
-                    if (entity != otherEntity && otherEntity instanceof IMovable
-                            && checkCollision(otherEntity, movable)) {
-                        if (entity instanceof Box && otherEntity instanceof Box) {
-                            transferBoxPush((Box) entity, (Box) otherEntity);
-                        }
-                        Position prevPos = movable.getPos();
-                        otherEntity.whenContact(movable);
-                        if (isInsideWall(movable, entity, otherEntity)) {
-                            movable.setPos(prevPos);
-                            movable.setVelocityX(0);
-                        }
+        for (StaticEntity entity : board.movables()) {
+            IMovable movable = (IMovable) entity;
+            for (StaticEntity otherEntity : board.movables()) {
+                if (entity != otherEntity && checkCollision(otherEntity, movable)) {
+                    if (entity instanceof Box && otherEntity instanceof Box) {
+                        transferBoxPush((Box) entity, (Box) otherEntity);
+                    }
+                    Position prevPos = movable.getPos();
+                    otherEntity.whenContact(movable);
+                    if (isInsideWall(movable, entity, otherEntity)) {
+                        movable.setPos(prevPos);
+                        movable.setVelocityX(0);
                     }
                 }
             }
@@ -288,16 +278,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private void resolveWallCollisions() {
-        for (StaticEntity entity : entities) {
-            if (entity instanceof IMovable movable) {
-                boolean inPool = (movable instanceof Box) && isInPoolWater(movable, null);
-                for (StaticEntity otherEntity : entities) {
-                    if (entity != otherEntity && !(otherEntity instanceof IMovable)
-                            && checkCollision(otherEntity, movable)) {
-                        if (inPool && otherEntity instanceof Wall)
-                            continue;
-                        otherEntity.whenContact(movable);
-                    }
+        for (StaticEntity entity : board.movables()) {
+            IMovable movable = (IMovable) entity;
+            boolean inPool = (movable instanceof Box) && isInPoolWater(movable, null);
+            for (StaticEntity otherEntity : entities) {
+                if (entity != otherEntity && !(otherEntity instanceof IMovable)
+                        && checkCollision(otherEntity, movable)) {
+                    if (inPool && otherEntity instanceof Wall)
+                        continue;
+                    otherEntity.whenContact(movable);
                 }
             }
         }
@@ -520,9 +509,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     private boolean allDoorsHavePlayer() {
-        for (StaticEntity entity : entities) {
-            if (!(entity instanceof Door door))
-                continue;
+        for (Door door : board.doors()) {
             boolean hasPlayer = false;
             for (Player player : players) {
                 if (playerIsAtDoor(door, player)) {
@@ -885,13 +872,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 keepInsideBounds(p);
             }
         }
-        if (entities != null) {
-            for (StaticEntity e : entities) {
-                if (e instanceof IMovable movable) {
-                    moveObj(movable);
-                    keepInsideBounds(movable);
-                }
-            }
+        for (StaticEntity e : board.movables()) {
+            IMovable movable = (IMovable) e;
+            moveObj(movable);
+            keepInsideBounds(movable);
         }
         if (enemies != null) {
             for (IEnemy enemy : enemies) {
