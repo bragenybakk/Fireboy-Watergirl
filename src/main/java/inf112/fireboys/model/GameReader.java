@@ -6,6 +6,7 @@ import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.enemy.Enemy;
 import inf112.fireboys.model.entity.Box;
+import inf112.fireboys.model.entity.Button;
 import inf112.fireboys.model.entity.Door;
 import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
@@ -46,6 +47,14 @@ public class GameReader {
                     boardWidth = sc.nextDouble();
                     boardHeight = sc.nextDouble();
                     break;
+                case "BUTTON": {
+                    double bx = sc.nextDouble(), by = sc.nextDouble();
+                    double bw = sc.nextDouble(), bh = sc.nextDouble();
+                    double tx = sc.nextDouble(), ty = sc.nextDouble();
+                    double tw = sc.nextDouble(), th = sc.nextDouble();
+                    entities.add(new Button(new Position(bx, by), bw, bh, new Position(tx, ty), tw, th));
+                    break;
+                }
                 case "DOOR":
                     entities.add(new Door(new Position(sc.nextDouble(), sc.nextDouble()),
                             sc.nextDouble(), sc.nextDouble()));

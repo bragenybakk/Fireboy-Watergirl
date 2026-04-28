@@ -76,53 +76,98 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-<!-- TODO: Legg til flere møtereferater fra slutten av februar og mars her. -->
-
-## YYYY-MM-DD — Femte møte: justering av roller, sprites og videre planer
+## 2026-02-19 — Femte møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
-**Bakgrunn for rolle-justering:**
-Etter noen ukers arbeid så vi at den opprinnelige fordelingen fra 23.01
-(spillbrett / Git / meny / spiller) ikke fanget opp alle ansvarsområder
-prosjektet trenger. Spesielt manglet det tydelig eierskap for testing,
-møteplanlegging og dokumentasjon.
+**Fullført fra forrige møte:**
+- Hoppelogikk og kollisjon mot vegger fungerer ✓
+- Sprites lagret i én felles fil ✓
 
-**Avgjort på møtet:**
-Vi går bort fra kode-spesifikke roller (Oscar–spillbrett, Petter–Git,
-Brage–meny, Magnus–spiller). Alle skal kunne plukke opp issues og kode i
-alle deler av prosjektet — slik slipper vi å vente på at én person er
-ferdig med sin del før noen andre kan begynne. Det øker fremdriften og
-sprer kunnskap om kodebasen.
+**Under møtet:**
+- Diskuterte hvordan vi skulle representere Fireboy og Watergirl som separate karakterer.
+- Startet arbeid med å laste inn karaktersprites fra spritesheet.
+- Planlagt strukturen for elementbaserte farer (pools).
 
-I stedet får hver person et **ansvarsområde**: den ansvarlige sjekker over
-merge requests som går på sitt område, men selve kodingen kan alle gjøre.
-
-- **Petter** — *Teamlead + GitLab-ansvarlig.* Han håndterer allerede
-  fysiske møter og Git, så det var naturlig å formalisere det.
-- **Magnus** — *Referat / møte / rapport-ansvarlig.* Vi trengte noen som
-  passet på at møtereferater og innleveringsrapporter blir holdt oppdatert.
-- **Brage** — *Test-ansvarlig.* Vi så at testdekning fort kunne gli unna
-  hvis ingen hadde det som hovedansvar.
-- **Oscar** — *Arkitekturansvarlig + level-design.* Holder MVC-strukturen
-  ren og lager nivåer.
-
-**Også gjort på møtet:**
-- Begynte å jobbe med sprites for spiller, plattformer og andre elementer
-  i spillet. Vi kom et stykke på vei og fortsetter dette arbeidet videre.
-
-**Planer videre:**
-- Legge til tid-taking per nivå.
-- Implementere fiender.
-- Fortsette spritearbeidet.
+**Til neste møte:**
+- Implementere vann- og ildpytter med elementtilstand.
+- Få karakterene til å se ut som Fireboy og Watergirl.
 
 ---
 
-## YYYY-MM-DD — Møte (placeholder)
-**Til stede:** *(fyll inn)*
+## 2026-02-26 — Sjette møte
+**Til stede:** Petter, Brage, Oscar (3/4)
 
-**Under møtet:** *(fyll inn)*
+**Fullført fra forrige møte:**
+- Karaktersprites for Fireboy og Watergirl lastet inn ✓
+- Grunnleggende pool-system på plass ✓
 
-**Til neste møte:** *(fyll inn)*
+**Under møtet:**
+- Implementerte gem-system med elementtilstand (røde gems til Fireboy, blå til Watergirl).
+- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+- **Justering av roller:** vi gikk bort fra kode-spesifikke roller
+  (Oscar–spillbrett, Petter–Git, Brage–meny, Magnus–spiller) — alle skal
+  kunne plukke hvilken som helst issue og kode i hele kodebasen, slik at
+  ingen blir flaskehalser. I stedet fikk hver person et ansvarsområde for
+  *review* av merge requests innenfor sitt område: Petter (teamlead +
+  GitLab), Magnus (referat/møte/rapport), Brage (test), Oscar
+  (arkitektur + level-design). Begrunnelsen var at vi så behov for tydelig
+  eierskap på testing, møteplanlegging og dokumentasjon.
+
+**Til neste møte:**
+- Fullføre gem-innsamling og poengsum.
+- Legge til dør som åpnes når alle gems er samlet.
+
+---
+
+## 2026-03-05 — Andre møte med gruppeleder
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Notater fra møtet:**
+- Bra fremdrift generelt, men bør jobbe mer strukturert med issues og branches.
+- Mer fokus på testing — skrive tester underveis, ikke bare til slutt.
+- Tenk på MVC-skillet: modellen skal ikke inneholde visningslogikk.
+
+**Plan videre:**
+- Rydde opp i kodestrukturen og sørge for tydeligere skille mellom lag.
+- Begynne å skrive enhetstester for modellen.
+
+---
+
+## 2026-03-12 — Sjuende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført fra forrige møte:**
+- Gem-innsamling med poengsum fungerer ✓
+- Dør som åpnes ved fullføring av brett ✓
+
+**Under møtet:**
+- Lagt til støtte for flere nivåer via `levels.txt`.
+- Startet arbeid med fiender.
+- Diskuterte og begynte å skrive tester for modellen.
+
+**Til neste møte:**
+- Fullføre fiender med bevegelseslogikk.
+- Legge til lyd/musikk.
+- Skrive flere tester.
+
+---
+
+## 2026-04-02 — Åttende møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+
+**Fullført fra forrige møte:**
+- Fiender med enkel patrol-bevegelse ✓
+- Bakgrunnsmusikk og lydavstemming implementert ✓
+- Tester for kjernefysikk skrevet ✓
+
+**Under møtet:**
+- Gikk gjennom kravlisten for siste innlevering.
+- Markerte gjenstående krav med FSR (Final Sprint Requirements).
+- Fordelte oppgaver for siste sprint.
+
+**Til neste møte:**
+- Ferdigstille alle FSR-krav.
+- Skrive rapport og oppdatere dokumentasjon.
 
 ---
 

@@ -42,6 +42,11 @@ public class NullTheme implements Theme {
     }
 
     @Override
+    public BufferedImage getBox() {
+        return null;
+    }
+
+    @Override
     public BufferedImage getOpenDoor() {
         return null;
     }

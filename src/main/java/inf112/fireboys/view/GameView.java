@@ -8,7 +8,10 @@ import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
+import inf112.fireboys.model.entity.Box;
+import inf112.fireboys.model.entity.Button;
 import inf112.fireboys.model.entity.Door;
+import inf112.fireboys.model.entity.LaserWall;
 import inf112.fireboys.model.entity.Gem;
 import inf112.fireboys.model.entity.BoostPlatform;
 import inf112.fireboys.model.entity.Pool;
@@ -44,7 +47,7 @@ import java.io.IOException;
  * Draws menus, game entities, players, and enemies based on the current game
  * state.
  */
-public class GameView extends JPanel {
+public class GameView extends JPanel implements ControllableGameView {
     private static final Color ENEMY_PATROL = new Color(0x8B0000);
     private static final Color ENEMY_ALERT = new Color(0xFF8C00);
     private static final Color ENEMY_CHASE = new Color(0xFF0000);
@@ -495,6 +498,22 @@ public class GameView extends JPanel {
                 return;
             }
         }
+        if (entity instanceof Button button) {
+            g2.setColor(button.isPressed() ? new Color(0, 80, 200) : new Color(0, 140, 255));
+            g2.fillRect(x, y, w, h);
+            g2.setColor(Color.BLACK);
+            g2.drawRect(x, y, w, h);
+            drawLaser(g2, button, scale, diff_X, diff_Y);
+            return;
+        }
+        if (entity instanceof LaserWall) return;
+        if (entity instanceof Box) {
+            BufferedImage boxSprite = theme.getBox();
+            if (boxSprite != null) {
+                g2.drawImage(boxSprite, x, y, w, h, null);
+                return;
+            }
+        }
         BufferedImage wallTile = theme.getWallTile();
         if (entity instanceof Wall && wallTile != null) {
             int tileSize = Math.max(8, (int) (8 * scale));
@@ -512,6 +531,24 @@ public class GameView extends JPanel {
         g2.fillRect(x, y, w, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, w, h);
+    }
+
+    private void drawLaser(Graphics2D g2, Button button, double scale, int diff_X, int diff_Y) {
+        int tx = (int) (diff_X + button.getTrapPos().x() * scale);
+        int ty = (int) (diff_Y + button.getTrapPos().y() * scale);
+        int tw = Math.max(2, (int) (button.getTrapWidth() * scale));
+        int th = (int) (button.getTrapHeight() * scale);
+
+        if (button.isPressed()) {
+            g2.setColor(new Color(255, 30, 30, 25));
+            g2.fillRect(tx - 1, ty, tw + 2, th);
+            g2.setColor(new Color(255, 80, 80, 255));
+            g2.fillRect(tx, ty, tw, th);
+        }
+
+        g2.setColor(Color.WHITE);
+        g2.fillRect(tx, ty, tw, 1);
+        g2.fillRect(tx, ty + th - 1, tw, 1);
     }
 
     private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
