@@ -52,7 +52,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     public double getWinFadeProgress() {
         return Math.min(1.0, (double) winDelayTicks / WIN_DELAY_TICKS);
     }
-    // Constructor for menu only (no board)
+    /** Creates an empty game model used to show the main menu before any level is loaded. */
     public GameModel() {
         this.board = null;
         this.players = null;
@@ -60,6 +60,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.enemies = null;
     }
 
+    /** Creates a game model with an already-loaded board. */
     public GameModel(Board board) {
         this.board = board;
         this.players = board.players();
@@ -67,6 +68,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.enemies = board.enemies();
     }
 
+    /** Advances the game by one frame — runs physics, collisions, and win/death checks. */
     public void clockTick() {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
@@ -192,6 +194,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return false;
     }
 
+    /** Returns the combined score of all players. */
     @Override
     public int getScore() {
         if (players == null || players.isEmpty())
@@ -306,11 +309,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     // ============ Menu methods ============
+    /** Returns the current game state (e.g. PLAYING, PAUSED, MAIN_MENU). */
     @Override
     public GameState getGameState() {
         return gameState;
     }
 
+    /** Sets the game state and resets menu selection. Also loads level names when entering level select. */
     @Override
     public void setGameState(GameState state) {
         this.gameState = state;
@@ -326,11 +331,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Returns the index of the currently highlighted menu option. */
     @Override
     public int getSelectedMenuOption() {
         return selectedMenuOption;
     }
 
+    /** Returns the menu options for the current game state. */
     @Override
     public String[] getMenuOptions() {
         if (gameState == GameState.PAUSED) {
@@ -350,25 +357,30 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return mainMenuOptions;
     }
 
+    /** Returns the list of players in the current level. */
     @Override
     public List<Player> getPlayers() {
         return players;
     }
 
+    /** Returns the list of static entities (walls, doors, gems, etc.) in the current level. */
     public List<StaticEntity> getStaticEntities() {
         return entities;
     }
 
+    /** Returns the list of enemies in the current level. */
     @Override
     public List<IEnemy> getEnemies() {
         return enemies;
     }
 
+    /** Returns the current board (level layout). */
     @Override
     public Board getBoard() {
         return this.board;
     }
 
+    /** Moves the menu selection up by one. */
     @Override
     public void menuUp() {
         if (selectedMenuOption > 0) {
@@ -376,6 +388,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Moves the menu selection down by one. */
     @Override
     public void menuDown() {
         int maxIndex = mainMenuOptions.length - 1;
@@ -505,6 +518,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     // =============== LEVEL READER / LOADER ===============
 
+    /** Loads the level from the given file name and starts the game. */
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
@@ -520,6 +534,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Returns the list of available level names read from levels.txt. */
     @Override
     public List<String> getLevelNames() {
         if (levelNames == null) {
@@ -533,6 +548,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return levelNames;
     }
 
+    /** Returns the number of levels the player has unlocked. */
     @Override
     public int getUnlockedLevelCount() {
         return unlockedLevelCount;
@@ -561,6 +577,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return true;
     }
 
+    /** Returns the total number of gems in the current level. */
     public int getTotalGems() {
         if (entities == null)
             return 0;
@@ -573,6 +590,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return count;
     }
 
+    /** Returns the number of gems collected so far in the current level. */
     public int getCollectedGems() {
         if (entities == null)
             return 0;
@@ -585,6 +603,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return count;
     }
 
+    /** Returns true if any player is standing on a boost platform without a boost already charged. */
     @Override
     public boolean isPlayerOnBoostPlateWithoutCharge() {
         if (players == null || players.isEmpty() || entities == null) {
@@ -635,11 +654,13 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Returns how many ticks have passed since the current level started. */
     @Override
     public int getElapsedTicks() {
         return levelTicks;
     }
 
+    /** Returns a map from level name to the player's best completion time in ticks. */
     @Override
     public Map<String, Integer> getLevelBestTicks() {
         return levelBestTicks;
@@ -694,37 +715,44 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
+    /** Reloads the current level from scratch. */
     public void resetLevel() {
         if (currentLevelFileName != null) {
             loadLevel(currentLevelFileName);
         }
     }
 
+    /** Returns true if the ad blocker is enabled. */
     @Override
     public boolean isAdsBlocked() {
         return adsBlocked;
     }
 
+    /** Toggles the ad blocker on or off. */
     @Override
     public void toggleAdsBlocked() {
         adsBlocked = !adsBlocked;
     }
 
+    /** Returns true if background music is enabled. */
     @Override
     public boolean isMusicEnabled() {
         return musicEnabled;
     }
 
+    /** Returns true if sound effects are enabled. */
     @Override
     public boolean isSoundEnabled() {
         return soundEnabled;
     }
 
+    /** Toggles background music on or off. */
     @Override
     public void toggleMusicEnabled() {
         musicEnabled = !musicEnabled;
     }
 
+    /** Toggles sound effects on or off. */
     @Override
     public void toggleSoundEnabled() {
         soundEnabled = !soundEnabled;
@@ -747,12 +775,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                 .findFirst().orElse(null);
     }
 
+    /** Moves Watergirl to the left. */
     public void movePlayerLeft() {
         Player p = getWatergirl();
         if (p != null)
             p.setVelocityX(-0.7);
     }
 
+    /** Moves Watergirl to the right. */
     public void movePlayerRight() {
         Player p = getWatergirl();
         if (p != null)
@@ -773,12 +803,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         p.setOnGroundFALSE();
     }
 
+    /** Stops Watergirl's horizontal movement. */
     public void stopPlayer() {
         Player p = getWatergirl();
         if (p != null)
             p.setVelocityX(0);
     }
 
+    /** Moves Fireboy to the left. */
     @Override
     public void movePlayer2Left() {
         Player p = getFireboy();
@@ -786,6 +818,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             p.setVelocityX(-0.7);
     }
 
+    /** Moves Fireboy to the right. */
     @Override
     public void movePlayer2Right() {
         Player p = getFireboy();
@@ -793,6 +826,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             p.setVelocityX(0.7);
     }
 
+    /** Stops Fireboy's horizontal movement. */
     @Override
     public void stopPlayer2() {
         Player p = getFireboy();
