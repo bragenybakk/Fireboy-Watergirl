@@ -1,8 +1,6 @@
 package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
-import inf112.fireboys.model.enemy.IEnemy;
-import inf112.fireboys.model.player.IPlayer;
 
 /**
  * Abstract base class for static entities (buttons, doors, levers, pools,
@@ -108,11 +106,7 @@ public abstract class StaticEntity implements IStaticEntity {
         } else if (side == CollisionSide.TOP) {
             movableEntity.setPos(new Position(pos.x(), this.getPos().y() - movableEntity.getHeight()));
             movableEntity.setVelocityY(0);
-            if (movableEntity instanceof IPlayer player) {
-                player.setOnGroundTRUE();
-            } else if (movableEntity instanceof IEnemy enemy) {
-                enemy.setOnGroundTRUE();
-            }
+            movableEntity.setOnGroundTRUE();
         } else if (side == CollisionSide.BOTTOM) {
             movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
             movableEntity.setVelocityY(0);
