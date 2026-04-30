@@ -170,9 +170,9 @@ public class GameStateNavigationTest {
         model.loadLevel("level1.txt");
         model.getPlayers().get(0).setPos(new Position(15, 105));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(70, 75));
+        model.getPlayers().get(0).setPos(new Position(15, 75));
         model.clockTick();
-        model.getPlayers().get(0).setPos(new Position(45, 60));
+        model.getPlayers().get(0).setPos(new Position(45, 45));
         model.clockTick();
         model.getPlayers().get(0).setPos(new Position(43, 90));
         model.clockTick();
@@ -182,11 +182,11 @@ public class GameStateNavigationTest {
         model.clockTick();
         model.getPlayers().get(1).setPos(new Position(85, 75));
         model.clockTick();
-        model.getPlayers().get(1).setPos(new Position(62, 60));
+        model.getPlayers().get(1).setPos(new Position(62, 45));
         model.clockTick();
-        for (int i = 0; i < 70; i++) {
-            model.getPlayers().get(0).setPos(new Position(34, 55));
-            model.getPlayers().get(1).setPos(new Position(52, 55));
+        for (int i = 0; i < 100; i++) {
+            model.getPlayers().get(0).setPos(new Position(34, 45));
+            model.getPlayers().get(1).setPos(new Position(52, 45));
             model.getPlayers().get(0).setVelocityY(0);
             model.getPlayers().get(1).setVelocityY(0);
             model.clockTick();

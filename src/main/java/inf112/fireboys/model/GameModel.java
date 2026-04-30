@@ -28,7 +28,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private List<StaticEntity> entities;
     private List<IEnemy> enemies;
     private int collectedGems = 0;
-    private final double GRAVITY = 0.1;
+    private final double GRAVITY = 0.049;
     private final double FRICTION = 0.9;
     // Menu fields
     private GameState gameState = GameState.MAIN_MENU;
@@ -76,6 +76,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             return;
         }
         levelTicks++;
+        resetButtonStates();
         tickMovingEntities();
         carryPlayersOnMovingPlatforms();
         applyGravityAll();
@@ -209,6 +210,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handlePlayerCollisions() {
         for (Player player : players) {
+            player.setOnGroundFALSE();
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
             handlePoolInteraction(player);
@@ -489,14 +491,32 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         loadLevel(chosen + ".txt");
     }
 
-    private void checkButton() {
-        List<StaticEntity> toAdd = new ArrayList<>();
+    /** Clears the pressed flag on all buttons before collisions run, so that the flag reflects only what is on the button this tick. */
+    private void resetButtonStates() {
         for (StaticEntity entity : entities) {
-            if (entity instanceof Button button && button.isPressed() && !button.isTrapSpawned()) {
-                toAdd.add(new LaserWall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight()));
-                button.markTrapSpawned();
+            if (entity instanceof Button button) {
+                button.resetPressed();
             }
         }
+    }
+
+    /** Adds the laser barrier while someone is on the button, removes it when no one is. */
+    private void checkButton() {
+        List<StaticEntity> toAdd = new ArrayList<>();
+        List<StaticEntity> toRemove = new ArrayList<>();
+        for (StaticEntity entity : entities) {
+            if (!(entity instanceof Button button))
+                continue;
+            if (button.isPressed() && button.getLaserWall() == null) {
+                LaserWall laser = new LaserWall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight());
+                button.setLaserWall(laser);
+                toAdd.add(laser);
+            } else if (!button.isPressed() && button.getLaserWall() != null) {
+                toRemove.add(button.getLaserWall());
+                button.setLaserWall(null);
+            }
+        }
+        entities.removeAll(toRemove);
         entities.addAll(toAdd);
     }
 
@@ -539,6 +559,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
             this.entities = board.entities();
             this.enemies = new ArrayList<>(board.enemies());
             this.collectedGems = 0;
+            checkButton();
             setGameState(GameState.PLAYING);
         } catch (Exception e) {
             e.printStackTrace();
