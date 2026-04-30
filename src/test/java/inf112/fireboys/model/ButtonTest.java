@@ -50,36 +50,26 @@ public class ButtonTest {
     }
 
     @Test
-    void trapNotSpawnedInitially() {
-        assertFalse(makeButton().isTrapSpawned(),
-                "Trap should not be spawned from start");
-    }
-
-    @Test
-    void markTrapSpawnedWorks() {
+    void resetPressedClearsFlag() {
         Button button = makeButton();
-        button.markTrapSpawned();
-        assertTrue(button.isTrapSpawned(),
-                "Trap should be marked as spawned after markTrapSpawned()");
+        Player player = new Player(new Position(2, 2.5), ElementState.WATER);
+        button.whenContact(player);
+        button.resetPressed();
+        assertFalse(button.isPressed(),
+                "resetPressed should clear the pressed flag");
     }
 
     @Test
-    void laserWallNotPresentBeforeButtonPressed() {
-        Board board = readButtonLevel();
-        GameModel model = new GameModel(board);
-        model.setGameState(GameState.PLAYING);
-        for (StaticEntity e : model.getStaticEntities()) {
-            assertFalse(e instanceof LaserWall,
-                    "LaserWall should not exist before button is pressed");
-        }
+    void laserWallNullInitially() {
+        assertNull(makeButton().getLaserWall(),
+                "Button should not have a laser wall reference before one is set");
     }
 
     @Test
-    void laserWallSpawnedAfterButtonPressed() {
+    void laserWallSpawnedWhenNothingOnButton() {
         Board board = readButtonLevel();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        model.getPlayers().get(0).setPos(new Position(22, 82));
         model.clockTick();
         boolean hasLaser = false;
         for (StaticEntity e : model.getStaticEntities()) {
@@ -89,23 +79,28 @@ public class ButtonTest {
             }
         }
         assertTrue(hasLaser,
-                "LaserWall should be spawned after button is pressed");
+                "Laser wall should be present when nothing is on the button");
     }
 
     @Test
-    void laserWallOnlySpawnedOnce() {
+    void laserWallRemovedWhilePlayerOnButton() {
         Board board = readButtonLevel();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        model.getPlayers().get(0).setPos(new Position(22, 82));
-        for (int i = 0; i < 5; i++)
+        // First tick spawns the laser (button not pressed yet)
+        model.clockTick();
+        // Place the player on top of the button and tick — laser should be removed
+        for (int i = 0; i < 3; i++) {
+            model.getPlayers().get(0).setPos(new Position(22, 82));
+            model.getPlayers().get(0).setVelocityY(0);
             model.clockTick();
+        }
         int laserCount = 0;
         for (StaticEntity e : model.getStaticEntities()) {
             if (e instanceof LaserWall)
                 laserCount++;
         }
-        assertEquals(1, laserCount,
-                "Only one LaserWall should be spawned even after multiple clockticks");
+        assertEquals(0, laserCount,
+                "Laser wall should be removed while a player is on the button");
     }
 }

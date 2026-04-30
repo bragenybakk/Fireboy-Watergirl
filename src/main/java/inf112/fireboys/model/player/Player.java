@@ -21,7 +21,7 @@ public class Player implements IPlayer {
     private boolean alive;
     private int score = 0;
     private boolean jumpBoostCharged = false;
-    private static final double JUMP_IMPULSE_NORMAL = -1.8;
+    private static final double JUMP_IMPULSE_NORMAL = -1.26;
     private static final double JUMP_IMPULSE_BOOSTED = JUMP_IMPULSE_NORMAL * 1.5;
     /**
      * Constructs a Player with the given position and element state.

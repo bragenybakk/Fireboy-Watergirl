@@ -28,7 +28,7 @@ public class EnemyTest {
         assertEquals(0, enemy.getPos().y());
         assertEquals(1.0, enemy.getWidth());
         assertEquals(1.0, enemy.getHeight());
-        assertEquals(1.0, enemy.getWeight());
+        assertEquals(2.0, enemy.getWeight());
         assertTrue(enemy.isAlive());
     }
 

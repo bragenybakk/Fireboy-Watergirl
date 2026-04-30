@@ -135,8 +135,12 @@ ble vi mer bevisste på å balansere bidragene.
   starten kunne vært mye smidigere.
 - **Konfigurert JaCoCo-eksklusjoner for view/app fra første uke** slik at
   coverage-tallet hele tiden reflekterte det vi faktisk testet (modellen).
-- **Definert UI-grensen tydeligere fra start.** Vi mistet flere uker på å
-  skille modell-state fra view-state etter at koden hadde grodd seg fast.
+- **Brukt et grid-system for level-design.** Vi spesifiserer nivåer med rå
+  doubles for hver entitet (`WALL 30 55 40 4`), noe som gjør det tungvint å
+  plassere ting jevnt og pent — vi må regne ut piksel-koordinater manuelt
+  hver gang. Et tile-/grid-basert system (f.eks. en ASCII-rute der hvert
+  tegn er en blokk) ville gjort level-design mye raskere og mer visuelt.
+  Hvis vi hadde fortsatt utviklingen er dette første ting vi ville lagt om.
 - **Brukt mer pair programming på vanskelige biter** (kollisjoner,
   fiende-AI). Når én person sitter alene blir det flaskehalser.
 

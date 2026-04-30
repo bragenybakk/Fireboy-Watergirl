@@ -500,10 +500,7 @@ public class GameView extends JPanel implements ControllableGameView {
             }
         }
         if (entity instanceof Button button) {
-            g2.setColor(button.isPressed() ? new Color(0, 80, 200) : new Color(0, 140, 255));
-            g2.fillRect(x, y, w, h);
-            g2.setColor(Color.BLACK);
-            g2.drawRect(x, y, w, h);
+            drawButton(g2, button, x, y, w, h);
             drawLaser(g2, button, scale, diff_X, diff_Y);
             return;
         }
@@ -534,22 +531,74 @@ public class GameView extends JPanel implements ControllableGameView {
         g2.drawRect(x, y, w, h);
     }
 
+    /** Draws a clearly recognizable physical button with metal frame and a colored cap. */
+    private void drawButton(Graphics2D g2, Button button, int x, int y, int w, int h) {
+        boolean pressed = button.isPressed();
+        int arc = Math.max(2, Math.min(h / 2 + 1, 6));
+        // Dark metal base
+        g2.setColor(new Color(40, 40, 50));
+        g2.fillRoundRect(x, y, Math.max(1, w), Math.max(1, h), arc, arc);
+        // Inner frame
+        g2.setColor(new Color(80, 80, 95));
+        g2.fillRoundRect(x + 1, y + 1, Math.max(1, w - 2), Math.max(1, h - 2),
+                Math.max(1, arc - 1), Math.max(1, arc - 1));
+        // Colored cap — sunken when pressed, raised when not
+        Color cap = pressed ? new Color(180, 40, 40) : new Color(255, 80, 80);
+        Color highlight = pressed ? new Color(120, 20, 20) : new Color(255, 160, 160);
+        int inset = Math.max(1, Math.min(w, h) / 5);
+        int capX = x + inset;
+        int capY = y + inset + (pressed ? 1 : 0);
+        int capW = Math.max(1, w - 2 * inset);
+        int capH = Math.max(1, h - 2 * inset - (pressed ? 1 : 0));
+        int capArc = Math.max(1, arc - inset);
+        g2.setColor(cap);
+        g2.fillRoundRect(capX, capY, capW, capH, capArc, capArc);
+        // Top highlight strip for raised look
+        if (!pressed) {
+            g2.setColor(highlight);
+            g2.fillRoundRect(capX, capY, capW, Math.max(1, capH / 3), capArc, capArc);
+        }
+        // Black outline
+        g2.setColor(Color.BLACK);
+        g2.drawRoundRect(x, y, Math.max(1, w), Math.max(1, h), arc, arc);
+    }
+
+    /** Draws a laser barrier with visible emitters at both ends. Beam glows red when active. */
     private void drawLaser(Graphics2D g2, Button button, double scale, int diff_X, int diff_Y) {
         int tx = (int) (diff_X + button.getTrapPos().x() * scale);
         int ty = (int) (diff_Y + button.getTrapPos().y() * scale);
         int tw = Math.max(2, (int) (button.getTrapWidth() * scale));
         int th = (int) (button.getTrapHeight() * scale);
-
-        if (button.isPressed()) {
-            g2.setColor(new Color(255, 30, 30, 25));
-            g2.fillRect(tx - 1, ty, tw + 2, th);
-            g2.setColor(new Color(255, 80, 80, 255));
-            g2.fillRect(tx, ty, tw, th);
+        boolean active = !button.isPressed();
+        // Beam (only when active)
+        if (active) {
+            g2.setColor(new Color(255, 60, 60, 80));
+            g2.fillRect(tx - 2, ty + 2, tw + 4, th - 4);
+            g2.setColor(new Color(255, 30, 30));
+            g2.fillRect(tx, ty + 2, tw, th - 4);
+            g2.setColor(new Color(255, 200, 200));
+            int coreInset = Math.max(0, tw / 3);
+            g2.fillRect(tx + coreInset, ty + 2, Math.max(1, tw - 2 * coreInset), th - 4);
         }
-
-        g2.setColor(Color.WHITE);
-        g2.fillRect(tx, ty, tw, 1);
-        g2.fillRect(tx, ty + th - 1, tw, 1);
+        // Emitter caps (top and bottom) — visible at all times so the laser path is clear
+        int capH = Math.max(2, th / 8);
+        int capPad = Math.max(1, tw / 4);
+        Color emitterBody = new Color(70, 70, 80);
+        Color emitterLight = active ? new Color(255, 80, 80) : new Color(120, 120, 130);
+        // Top emitter
+        g2.setColor(emitterBody);
+        g2.fillRect(tx - capPad, ty, tw + 2 * capPad, capH);
+        g2.setColor(emitterLight);
+        g2.fillRect(tx, ty + capH - 1, tw, 1);
+        // Bottom emitter
+        g2.setColor(emitterBody);
+        g2.fillRect(tx - capPad, ty + th - capH, tw + 2 * capPad, capH);
+        g2.setColor(emitterLight);
+        g2.fillRect(tx, ty + th - capH, tw, 1);
+        // Outline
+        g2.setColor(Color.BLACK);
+        g2.drawRect(tx - capPad, ty, tw + 2 * capPad, capH);
+        g2.drawRect(tx - capPad, ty + th - capH, tw + 2 * capPad, capH);
     }
 
     private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
