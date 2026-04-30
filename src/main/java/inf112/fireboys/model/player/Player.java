@@ -19,7 +19,6 @@ public class Player implements IPlayer {
     private double weight;
     private boolean isOnGround;
     private boolean alive;
-    private int score = 0;
     private boolean jumpBoostCharged = false;
     private static final double JUMP_IMPULSE_NORMAL = -1.26;
     private static final double JUMP_IMPULSE_BOOSTED = JUMP_IMPULSE_NORMAL * 1.5;
@@ -123,16 +122,6 @@ public class Player implements IPlayer {
     /** Kills this player. */
     public void kill() {
         this.alive = false;
-    }
-
-    /** Adds the given number of points to this player's score. */
-    public void addScore(int points) {
-        this.score += points;
-    }
-
-    /** Returns the current score of this player. */
-    public int getScore() {
-        return score;
     }
 
     /** Charges a jump boost so the next jump will be stronger. */

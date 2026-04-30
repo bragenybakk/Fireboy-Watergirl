@@ -133,7 +133,9 @@ public class MovingPlatformTest {
         pl.add(player);
         List<StaticEntity> ents = new ArrayList<>();
         ents.add(mp);
-        Board board = new Board(100, 100, pl, ents, new ArrayList<>());
+        List<MovingPlatform> mps = List.of(mp);
+        Board board = new Board(100, 100, pl, ents, new ArrayList<>(),
+                List.of(), List.of(), List.of(), mps, List.of(), List.of());
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
 
@@ -169,7 +171,9 @@ public class MovingPlatformTest {
         List<Player> pl = new ArrayList<>();
         List<StaticEntity> ents = new ArrayList<>();
         ents.add(verticalMp);
-        Board board = new Board(100, 100, pl, ents, new ArrayList<>());
+        List<MovingPlatform> mps = List.of(verticalMp);
+        Board board = new Board(100, 100, pl, ents, new ArrayList<>(),
+                List.of(), List.of(), List.of(), mps, List.of(), List.of());
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
 

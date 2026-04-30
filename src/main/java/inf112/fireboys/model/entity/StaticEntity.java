@@ -95,5 +95,21 @@ public abstract class StaticEntity implements IStaticEntity {
         return CollisionSide.NONE;
     }
 
-    protected abstract void contactAction(IMovable movableEntity, CollisionSide side);
+    protected void contactAction(IMovable movableEntity, CollisionSide side) {
+        Position pos = movableEntity.getPos();
+        if (side == CollisionSide.LEFT) {
+            movableEntity.setPos(new Position(this.getPos().x() - movableEntity.getWidth(), pos.y()));
+            movableEntity.setVelocityX(0);
+        } else if (side == CollisionSide.RIGHT) {
+            movableEntity.setPos(new Position(this.getPos().x() + this.getWidth(), pos.y()));
+            movableEntity.setVelocityX(0);
+        } else if (side == CollisionSide.TOP) {
+            movableEntity.setPos(new Position(pos.x(), this.getPos().y() - movableEntity.getHeight()));
+            movableEntity.setVelocityY(0);
+            movableEntity.setOnGroundTRUE();
+        } else if (side == CollisionSide.BOTTOM) {
+            movableEntity.setPos(new Position(pos.x(), this.getPos().y() + this.getHeight()));
+            movableEntity.setVelocityY(0);
+        }
+    }
 }

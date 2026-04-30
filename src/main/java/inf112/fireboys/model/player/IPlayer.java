@@ -42,18 +42,6 @@ public interface IPlayer extends IMovable {
      */
     void kill();
 
-    /**
-     * @return the player's current score
-     */
-    int getScore();
-
-    /**
-     * Adds the specified number of points to the player's score.
-     * 
-     * @param i
-     */
-    void addScore(int i);
-
     void grantJumpBoost();
 
     boolean hasJumpBoost();

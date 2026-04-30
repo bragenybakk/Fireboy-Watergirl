@@ -136,13 +136,6 @@ public class GameModelTest {
     }
 
     @Test
-    void testGetScoreInitiallyZero() {
-        Board board = readGameEasy();
-        GameModel model = new GameModel(board);
-        assertEquals(0, model.getScore());
-    }
-
-    @Test
     void testGetGemsOnBoardWithoutGems() {
         Board board = readGameEasy();
         GameModel model = new GameModel(board);
