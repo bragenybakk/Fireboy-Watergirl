@@ -2,7 +2,7 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 
-/** A pressure button that toggles a laser barrier — laser is on when nothing is on the button, off while something is. */
+/** A pressure button that toggles a laser barrier — laser is off until something stands on the button, on while it does. */
 public class Button extends Wall {
     private boolean isPressed = false;
     private LaserWall laserWall = null;

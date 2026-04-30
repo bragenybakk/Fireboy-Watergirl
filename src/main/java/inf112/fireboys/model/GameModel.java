@@ -210,6 +210,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
 
     private void handlePlayerCollisions() {
         for (Player player : players) {
+            player.setOnGroundFALSE();
             double savedVelocityY = player.getVelocityY();
             double yBeforeCollisions = player.getPos().y();
             handlePoolInteraction(player);
@@ -499,20 +500,20 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Adds the laser barrier when no one is on the button, removes it while someone is. */
+    /** Adds the laser barrier while someone is on the button, removes it when no one is. */
     private void checkButton() {
         List<StaticEntity> toAdd = new ArrayList<>();
         List<StaticEntity> toRemove = new ArrayList<>();
         for (StaticEntity entity : entities) {
             if (!(entity instanceof Button button))
                 continue;
-            if (button.isPressed() && button.getLaserWall() != null) {
-                toRemove.add(button.getLaserWall());
-                button.setLaserWall(null);
-            } else if (!button.isPressed() && button.getLaserWall() == null) {
+            if (button.isPressed() && button.getLaserWall() == null) {
                 LaserWall laser = new LaserWall(button.getTrapPos(), button.getTrapWidth(), button.getTrapHeight());
                 button.setLaserWall(laser);
                 toAdd.add(laser);
+            } else if (!button.isPressed() && button.getLaserWall() != null) {
+                toRemove.add(button.getLaserWall());
+                button.setLaserWall(null);
             }
         }
         entities.removeAll(toRemove);

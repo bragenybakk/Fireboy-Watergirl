@@ -66,7 +66,7 @@ public class ButtonTest {
     }
 
     @Test
-    void laserWallSpawnedWhenNothingOnButton() {
+    void laserWallAbsentWhenNothingOnButton() {
         Board board = readButtonLevel();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
@@ -78,18 +78,18 @@ public class ButtonTest {
                 break;
             }
         }
-        assertTrue(hasLaser,
-                "Laser wall should be present when nothing is on the button");
+        assertFalse(hasLaser,
+                "Laser wall should be absent when nothing is on the button");
     }
 
     @Test
-    void laserWallRemovedWhilePlayerOnButton() {
+    void laserWallSpawnedWhilePlayerOnButton() {
         Board board = readButtonLevel();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        // First tick spawns the laser (button not pressed yet)
+        // First tick — button not pressed yet, no laser
         model.clockTick();
-        // Place the player on top of the button and tick — laser should be removed
+        // Place the player on top of the button and tick — laser should appear
         for (int i = 0; i < 3; i++) {
             model.getPlayers().get(0).setPos(new Position(22, 82));
             model.getPlayers().get(0).setVelocityY(0);
@@ -100,7 +100,7 @@ public class ButtonTest {
             if (e instanceof LaserWall)
                 laserCount++;
         }
-        assertEquals(0, laserCount,
-                "Laser wall should be removed while a player is on the button");
+        assertEquals(1, laserCount,
+                "Laser wall should be spawned while a player is on the button");
     }
 }

@@ -569,7 +569,7 @@ public class GameView extends JPanel implements ControllableGameView {
         int ty = (int) (diff_Y + button.getTrapPos().y() * scale);
         int tw = Math.max(2, (int) (button.getTrapWidth() * scale));
         int th = (int) (button.getTrapHeight() * scale);
-        boolean active = !button.isPressed();
+        boolean active = button.isPressed();
         // Beam (only when active)
         if (active) {
             g2.setColor(new Color(255, 60, 60, 80));
