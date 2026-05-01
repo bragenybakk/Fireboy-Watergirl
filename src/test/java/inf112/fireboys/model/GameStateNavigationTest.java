@@ -126,7 +126,7 @@ public class GameStateNavigationTest {
         model.loadLevel("level1.txt");
         model.setGameState(GameState.PLAYING);
         Position startPos = model.getPlayers().get(0).getPos();
-        model.movePlayerRight();
+        model.moveRight(ElementState.WATER);
         model.clockTick();
         assertNotEquals(startPos, model.getPlayers().get(0).getPos(),
                 "Player should have moved from start position");

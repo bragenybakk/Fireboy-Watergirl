@@ -50,7 +50,7 @@ public class GameModelTest {
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         Position initialPosition = model.getPlayers().get(0).getPos();
-        model.playerJump();
+        model.jump(ElementState.WATER);
         for (int i = 0; i < 10; i++) {
             model.clockTick();
         }
@@ -63,7 +63,7 @@ public class GameModelTest {
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         Position initialPosition = model.getPlayers().get(0).getPos();
-        model.movePlayerLeft();
+        model.moveLeft(ElementState.WATER);
         model.clockTick();
         assertTrue(model.getPlayers().get(0).getPos().x() < initialPosition.x(), "Player should have moved left");
     }
@@ -74,7 +74,7 @@ public class GameModelTest {
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         Position initialPosition = model.getPlayers().get(0).getPos();
-        model.movePlayerRight();
+        model.moveRight(ElementState.WATER);
         model.clockTick();
         assertTrue(model.getPlayers().get(0).getPos().x() > initialPosition.x(), "Player should have moved right");
     }
@@ -84,8 +84,8 @@ public class GameModelTest {
         Board board = readGameEasy();
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
-        model.movePlayerLeft();
-        model.stopPlayer();
+        model.moveLeft(ElementState.WATER);
+        model.stop(ElementState.WATER);
         assertEquals(0.0, model.getPlayers().get(0).getVelocityX(), 0.001);
     }
 
@@ -236,7 +236,7 @@ public class GameModelTest {
         model.setGameState(GameState.PLAYING);
         Player fireboy = model.getPlayers().get(1);
         Position initialPos = fireboy.getPos();
-        model.movePlayer2Left();
+        model.moveLeft(ElementState.FIRE);
         model.clockTick();
         assertTrue(fireboy.getPos().x() < initialPos.x());
     }
@@ -248,7 +248,7 @@ public class GameModelTest {
         model.setGameState(GameState.PLAYING);
         Player fireboy = model.getPlayers().get(1);
         Position initialPos = fireboy.getPos();
-        model.movePlayer2Right();
+        model.moveRight(ElementState.FIRE);
         model.clockTick();
         assertTrue(fireboy.getPos().x() > initialPos.x());
     }
@@ -259,8 +259,8 @@ public class GameModelTest {
         GameModel model = new GameModel(board);
         model.setGameState(GameState.PLAYING);
         Player fireboy = model.getPlayers().get(1);
-        model.movePlayer2Left();
-        model.stopPlayer2();
+        model.moveLeft(ElementState.FIRE);
+        model.stop(ElementState.FIRE);
         assertEquals(0.0, fireboy.getVelocityX(), 0.001);
     }
 
@@ -274,7 +274,7 @@ public class GameModelTest {
             model.clockTick();
         }
         Position posBeforeJump = fireboy.getPos();
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         for (int i = 0; i < 10; i++) {
             model.clockTick();
         }

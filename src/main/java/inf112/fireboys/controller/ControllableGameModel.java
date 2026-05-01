@@ -1,5 +1,6 @@
 package inf112.fireboys.controller;
 
+import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 
 /**
@@ -42,25 +43,17 @@ public interface ControllableGameModel {
      */
     void clockTick();
 
-    /**
-     * Moves the player to the right.
-     */
-    void movePlayerRight();
+    /** Moves the given player left. */
+    void moveLeft(ElementState element);
 
-    /**
-     * Moves the player to the left.
-     */
-    void movePlayerLeft();
+    /** Moves the given player right. */
+    void moveRight(ElementState element);
 
-    /**
-     * Stops the player's horizontal movement.
-     */
-    void stopPlayer();
+    /** Stops the given player's horizontal movement. */
+    void stop(ElementState element);
 
-    /**
-     * Makes the player jump if on the ground.
-     */
-    void playerJump();
+    /** Makes the given player jump if on the ground. */
+    void jump(ElementState element);
 
     /**
      * Toggles the ad blocker on or off.
@@ -91,23 +84,4 @@ public interface ControllableGameModel {
      */
     boolean isSoundEnabled();
 
-    /**
-     * Moves player 2 (Fireboy) to the right.
-     */
-    void movePlayer2Right();
-
-    /**
-     * Moves player 2 (Fireboy) to the left.
-     */
-    void movePlayer2Left();
-
-    /**
-     * Stops player 2's (Fireboy) horizontal movement.
-     */
-    void stopPlayer2();
-
-    /**
-     * Makes player 2 (Fireboy) jump if on the ground.
-     */
-    void player2Jump();
 }
