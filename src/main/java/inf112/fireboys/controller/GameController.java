@@ -25,6 +25,16 @@ public class GameController implements KeyListener, MouseListener {
     private boolean rightPressed = false;
     private boolean p2LeftPressed = false;
     private boolean p2RightPressed = false;
+    /**
+     * Creates the controller, wires input listeners to the view, and starts the 60 FPS game loop.
+     *
+     * @param gameModel
+     *            the model to update on each tick and input event
+     * @param gameView
+     *            the view to attach listeners to and repaint each frame
+     * @param audioManager
+     *            the audio manager for playing music and sound effects
+     */
     public GameController(ControllableGameModel gameModel, ControllableGameView gameView, AudioManager audioManager) {
         this.gameModel = gameModel;
         this.gameView = gameView;

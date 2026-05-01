@@ -23,24 +23,40 @@ public class SpriteSheet {
         }
     }
 
-    /** Returns the Fireboy head sprite. */
+    /**
+     * Returns the Fireboy head sprite.
+     *
+     * @return the Fireboy head image, or null if the sheet was not loaded
+     */
     public BufferedImage getFireboyHead() {
         if (charSheet == null) return null;
         return charSheet.getSubimage(1, 2, 274, 469);
     }
 
-    /** Returns the Watergirl head sprite. */
+    /**
+     * Returns the Watergirl head sprite.
+     *
+     * @return the Watergirl head image, or null if the sheet was not loaded
+     */
     public BufferedImage getWatergirlHead() {
         if (charSheet == null) return null;
         return charSheet.getSubimage(275, 50, 268, 421);
     }
 
-    /** Returns the blue (water) gem sprite. */
+    /**
+     * Returns the blue (water) gem sprite.
+     *
+     * @return the blue gem image, or null if the sheet was not loaded
+     */
     public BufferedImage getBlueGem() {
         return getSprite(980, 1375, 70, 70);
     }
 
-    /** Returns the red (fire) gem sprite. */
+    /**
+     * Returns the red (fire) gem sprite.
+     *
+     * @return the red gem image, or null if the sheet was not loaded
+     */
     public BufferedImage getFireGem() {
         return getSprite(1095, 1375, 70, 70);
     }

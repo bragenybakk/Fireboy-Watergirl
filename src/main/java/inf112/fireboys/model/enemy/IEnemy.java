@@ -14,11 +14,15 @@ public interface IEnemy extends IMovable {
 
     /**
      * Returns the current FSM state of the enemy.
+     *
+     * @return the current enemy state
      */
     EnemyState getState();
 
     /**
-     * Checks if the enemy is alive.
+     * Returns true if the enemy is alive.
+     *
+     * @return true if alive, false if dead
      */
     boolean isAlive();
 
@@ -28,7 +32,9 @@ public interface IEnemy extends IMovable {
     void kill();
 
     /**
-     * Checks if the enemy is on the ground.
+     * Returns true if the enemy is on the ground.
+     *
+     * @return true if on the ground, false if airborne
      */
     boolean isOnGround();
 

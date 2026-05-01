@@ -28,7 +28,9 @@ public class MovingPlatform extends Wall {
         this.distance = distance;
     }
 
-    /** Advances the platform one step, updating its position and delta values. */
+    /**
+     * Advances the platform one step, updating its position and delta values.
+     */
     public void tick() {
         deltaX = dirX * speed * travelDir;
         deltaY = dirY * speed * travelDir;
@@ -43,12 +45,20 @@ public class MovingPlatform extends Wall {
         setPos(new Position(startPos.x() + dirX * distanceTraveled, startPos.y() + dirY * distanceTraveled));
     }
 
-    /** Returns how far the platform moved horizontally this tick. */
+    /**
+     * Returns how far the platform moved horizontally this tick.
+     *
+     * @return the horizontal displacement this tick
+     */
     public double getDeltaX() {
         return deltaX;
     }
 
-    /** Returns how far the platform moved vertically this tick. */
+    /**
+     * Returns how far the platform moved vertically this tick.
+     *
+     * @return the vertical displacement this tick
+     */
     public double getDeltaY() {
         return deltaY;
     }

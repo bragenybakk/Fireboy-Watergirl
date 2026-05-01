@@ -11,14 +11,22 @@ import inf112.fireboys.model.entity.IMovable;
 public interface IPlayer extends IMovable {
     /**
      * Returns the current element state of the player (FIRE or WATER).
+     *
+     * @return the element state of this player
      */
     ElementState getElementState();
 
+    /**
+     * Returns the spawn position of this player.
+     *
+     * @return the starting position
+     */
     Position getStartPos();
 
     /**
-     * 
-     * @return true if the player is on the ground, false otherwise
+     * Returns true if the player is on the ground.
+     *
+     * @return true if on the ground, false if airborne
      */
     boolean isOnGround();
 
@@ -33,7 +41,9 @@ public interface IPlayer extends IMovable {
     void setOnGroundFALSE();
 
     /**
-     * @return true if the player is alive, false otherwise
+     * Returns true if the player is alive.
+     *
+     * @return true if alive, false if dead
      */
     boolean isAlive();
 
@@ -42,11 +52,27 @@ public interface IPlayer extends IMovable {
      */
     void kill();
 
+    /**
+     * Charges a jump boost so the next jump will be stronger.
+     */
     void grantJumpBoost();
 
+    /**
+     * Returns true if this player has a jump boost ready.
+     *
+     * @return true if a jump boost is charged
+     */
     boolean hasJumpBoost();
 
+    /**
+     * Returns the jump impulse — stronger if a boost is charged.
+     *
+     * @return the jump impulse value to apply
+     */
     double getJumpImpulse();
 
+    /**
+     * Consumes the jump boost after it has been used.
+     */
     void consumeJumpBoost();
 }

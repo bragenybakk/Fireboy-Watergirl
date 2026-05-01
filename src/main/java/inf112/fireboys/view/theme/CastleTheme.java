@@ -20,6 +20,7 @@ public class CastleTheme implements Theme {
     private final BufferedImage redFlame;
     private final BufferedImage blueFlame;
 
+    /** Creates a CastleTheme by loading the default sprite sheet and tile sheet from resources. */
     public CastleTheme() {
         this.spriteSheet = new SpriteSheet("/spritesheet.png");
         this.castleTiles = new CastleTileSheet("/oppcastle-mod-tiles.png");

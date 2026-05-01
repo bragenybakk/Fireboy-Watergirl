@@ -68,10 +68,24 @@ public class GameView extends JPanel implements ControllableGameView {
     private SkeletonSpriteSheet skeletonSheet;
     // Per-enemy animation tick counter; incremented each draw call.
     private final Map<IEnemy, Integer> enemyAnimTick = new HashMap<>();
+    /**
+     * Creates a GameView with the default CastleTheme.
+     *
+     * @param viewableGameModel
+     *            the model to read game state from during rendering
+     */
     public GameView(ViewableGameModel viewableGameModel) {
         this(viewableGameModel, CastleTheme::new);
     }
 
+    /**
+     * Creates a GameView with a custom theme.
+     *
+     * @param viewableGameModel
+     *            the model to read game state from during rendering
+     * @param factory
+     *            the factory used to create the visual theme
+     */
     public GameView(ViewableGameModel viewableGameModel, ThemeFactory factory) {
         this.viewableGameModel = viewableGameModel;
         this.theme = factory.create();
