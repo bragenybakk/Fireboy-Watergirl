@@ -16,12 +16,20 @@ public class Gem extends StaticEntity {
         this.element = element;
     }
 
-    /** Returns the element type of this gem (FIRE or WATER). */
+    /**
+     * Returns the element type of this gem (FIRE or WATER).
+     *
+     * @return the element state of this gem
+     */
     public ElementState getElement() {
         return element;
     }
 
-    /** Returns true if this gem has already been collected. */
+    /**
+     * Returns true if this gem has already been collected.
+     *
+     * @return true if this gem has been collected
+     */
     public boolean isCollected() {
         return collected;
     }

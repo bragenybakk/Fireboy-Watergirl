@@ -33,6 +33,13 @@ public class SkeletonSpriteSheet {
     public static final int CONTENT_LEFT = 5;
     public static final int CONTENT_RIGHT = 40;
     private final BufferedImage sheet;
+
+    /**
+     * Loads the skeleton sprite sheet from the given resource path.
+     *
+     * @param path
+     *            the classpath resource path to the sprite sheet image
+     */
     public SkeletonSpriteSheet(String path) {
         BufferedImage loaded = null;
         try {
@@ -43,6 +50,15 @@ public class SkeletonSpriteSheet {
         this.sheet = loaded;
     }
 
+    /**
+     * Returns the sprite frame at the given row and column, or null if out of bounds.
+     *
+     * @param row
+     *            the animation row (use ROW_* constants)
+     * @param col
+     *            the frame column index within that row
+     * @return the sprite frame image, or null if out of bounds or sheet not loaded
+     */
     public BufferedImage getFrame(int row, int col) {
         if (sheet == null)
             return null;

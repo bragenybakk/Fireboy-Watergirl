@@ -22,9 +22,10 @@ public class Player implements IPlayer {
     private boolean jumpBoostCharged = false;
     private static final double JUMP_IMPULSE_NORMAL = -1.26;
     private static final double JUMP_IMPULSE_BOOSTED = JUMP_IMPULSE_NORMAL * 1.5;
+
     /**
      * Constructs a Player with the given position and element state.
-     * 
+     *
      * @param position
      *            the initial position of the player
      * @param elementState
@@ -43,106 +44,101 @@ public class Player implements IPlayer {
         this.alive = true;
     }
 
-    /** Returns the element type of this player (FIRE or WATER). */
+    @Override
     public ElementState getElementState() {
         return elementState;
     }
 
-    /** Returns the spawn position of this player. */
     @Override
     public Position getStartPos() {
         return startPos;
     }
 
-    /** Returns the current horizontal velocity. */
+    @Override
     public double getVelocityX() {
         return velocityX;
     }
 
-    /** Sets the horizontal velocity. */
+    @Override
     public void setVelocityX(double velocityX) {
         this.velocityX = velocityX;
     }
 
-    /** Returns the current vertical velocity. */
+    @Override
     public double getVelocityY() {
         return velocityY;
     }
 
-    /** Sets the vertical velocity. */
+    @Override
     public void setVelocityY(double velocityY) {
         this.velocityY = velocityY;
     }
 
-    /** Returns the current position of this player. */
+    @Override
     public Position getPos() {
         return position;
     }
 
-    /** Sets the position of this player. */
+    @Override
     public void setPos(Position pos) {
         this.position = pos;
     }
 
-    /** Returns the height of this player. */
+    @Override
     public double getHeight() {
         return height;
     }
 
-    /** Returns the width of this player. */
+    @Override
     public double getWidth() {
         return width;
     }
 
-    /** Returns the weight of this player, used in physics calculations. */
+    @Override
     public double getWeight() {
         return weight;
     }
 
-    /** Returns true if the player is currently standing on the ground. */
+    @Override
     public boolean isOnGround() {
         return isOnGround;
     }
 
-    /** Marks the player as standing on the ground. */
+    @Override
     public void setOnGroundTRUE() {
         this.isOnGround = true;
     }
 
-    /** Marks the player as airborne. */
+    @Override
     public void setOnGroundFALSE() {
         this.isOnGround = false;
     }
 
-    /** Returns true if the player is still alive. */
+    @Override
     public boolean isAlive() {
         return alive;
     }
 
-    /** Kills this player. */
+    @Override
     public void kill() {
         this.alive = false;
     }
 
-    /** Charges a jump boost so the next jump will be stronger. */
     @Override
     public void grantJumpBoost() {
         jumpBoostCharged = true;
     }
 
-    /** Returns true if this player has a jump boost ready. */
     @Override
     public boolean hasJumpBoost() {
         return jumpBoostCharged;
     }
 
-    /** Returns the jump impulse — stronger if a boost is charged. */
     @Override
     public double getJumpImpulse() {
         return jumpBoostCharged ? JUMP_IMPULSE_BOOSTED : JUMP_IMPULSE_NORMAL;
     }
 
-    /** Consumes the jump boost after it has been used. */
     @Override
     public void consumeJumpBoost() {
         jumpBoostCharged = false;

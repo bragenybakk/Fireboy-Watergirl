@@ -8,36 +8,43 @@ public class Box extends StaticEntity implements IMovable {
     private double velocityY;
     private double weight;
 
-    /** Creates a box at the given position with the given size and weight. */
+    /**
+     * Creates a box at the given position with the given size and weight.
+     *
+     * @param position
+     *            the initial position of the box
+     * @param width
+     *            the width of the box
+     * @param height
+     *            the height of the box
+     * @param weight
+     *            the weight, which affects how hard it is to push
+     */
     public Box(Position position, double width, double height, double weight) {
         super(position, width, height);
         this.weight = weight;
     }
 
-    /** Returns the weight of this box, which affects how hard it is to push. */
+    @Override
     public double getWeight() {
         return weight;
     }
 
-    /** Returns the current horizontal velocity of this box. */
     @Override
     public double getVelocityX() {
         return velocityX;
     }
 
-    /** Sets the horizontal velocity of this box. */
     @Override
     public void setVelocityX(double vx) {
         this.velocityX = vx;
     }
 
-    /** Returns the current vertical velocity of this box. */
     @Override
     public double getVelocityY() {
         return velocityY;
     }
 
-    /** Sets the vertical velocity of this box. */
     @Override
     public void setVelocityY(double vy) {
         this.velocityY = vy;

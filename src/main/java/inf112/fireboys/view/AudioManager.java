@@ -16,18 +16,40 @@ public class AudioManager {
     private String currentMusicPath = null;
     private volatile Player currentPlayer = null;
 
+    /**
+     * Returns true if music is currently playing.
+     *
+     * @return true if music is playing
+     */
     public boolean isMusicEnabled() {
         return playing;
     }
 
+    /**
+     * Returns true if sound effects are enabled.
+     *
+     * @return true if sound effects are enabled
+     */
     public boolean isSoundEnabled() {
         return soundEnabled;
     }
 
+    /**
+     * Enables or disables sound effects.
+     *
+     * @param enabled
+     *            true to enable, false to disable
+     */
     public void setSoundEnabled(boolean enabled) {
         this.soundEnabled = enabled;
     }
 
+    /**
+     * Starts looping background music from the given resource path.
+     *
+     * @param resourcePath
+     *            the classpath resource path to the music file
+     */
     public void playMusic(String resourcePath) {
         currentMusicPath = resourcePath;
         playing = true;
@@ -55,6 +77,9 @@ public class AudioManager {
         musicThread.start();
     }
 
+    /**
+     * Stops and restarts the current background music track from the beginning.
+     */
     public void restartMusic() {
         if (currentMusicPath != null) {
             stop();
@@ -62,6 +87,12 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Plays a one-shot sound effect on a background thread.
+     *
+     * @param resourcePath
+     *            the classpath resource path to the sound file (OGG format)
+     */
     public void playSound(String resourcePath) {
         if (!soundEnabled)
             return;
@@ -96,6 +127,9 @@ public class AudioManager {
         }, "sound-effect-thread").start();
     }
 
+    /**
+     * Stops background music and interrupts the music thread.
+     */
     public void stop() {
         playing = false;
         Player p = currentPlayer;

@@ -12,12 +12,21 @@ public class Door extends StaticEntity {
         this.isOpen = false;
     }
 
-    /** Returns true if a player is currently at this door. */
+    /**
+     * Returns true if a player is currently at this door.
+     *
+     * @return true if the door is open
+     */
     public boolean isOpen() {
         return isOpen;
     }
 
-    /** Sets whether this door is open or closed. */
+    /**
+     * Sets whether this door is open or closed.
+     *
+     * @param open
+     *            true to open the door, false to close it
+     */
     public void setOpen(boolean open) {
         this.isOpen = open;
     }
