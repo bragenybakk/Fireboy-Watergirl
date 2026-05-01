@@ -101,7 +101,7 @@ public class BoxChainPushTest {
         double boxBInitialX = boxB.getPos().x();
         // Push right for several ticks
         for (int i = 0; i < 30; i++) {
-            model.movePlayerRight();
+            model.moveRight(ElementState.WATER);
             model.clockTick();
         }
         assertTrue(boxB.getPos().x() > boxBInitialX,
@@ -115,7 +115,7 @@ public class BoxChainPushTest {
         // Push right for many ticks, box velocity should stay bounded
         double maxVelocity = 0;
         for (int i = 0; i < 60; i++) {
-            model.movePlayerRight();
+            model.moveRight(ElementState.WATER);
             model.clockTick();
             maxVelocity = Math.max(maxVelocity, Math.abs(boxA.getVelocityX()));
         }
@@ -129,10 +129,10 @@ public class BoxChainPushTest {
     void testPushVelocityIsBoundedByPlayerSpeed() {
         // Position player next to boxA, push for two ticks
         model.getPlayers().get(0).setPos(new Position(boxA.getPos().x() - 4, boxA.getPos().y()));
-        model.movePlayerRight();
+        model.moveRight(ElementState.WATER);
         model.clockTick();
         double velocityAfterTick1 = boxA.getVelocityX();
-        model.movePlayerRight();
+        model.moveRight(ElementState.WATER);
         model.clockTick();
         double velocityAfterTick2 = boxA.getVelocityX();
         // Second tick should not have significantly more velocity than first

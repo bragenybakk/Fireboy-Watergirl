@@ -67,7 +67,7 @@ public class BoostPlatformTest {
         Player p = new Player(PLAYER_POS, ElementState.FIRE);
         p.setOnGroundTRUE();
         GameModel model = modelWith(p, new BoostPlatform(PLATFORM_POS, 8, 2));
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }
@@ -79,12 +79,12 @@ public class BoostPlatformTest {
         GameModel model = modelWith(p,
                 new Wall(new Position(0, 30), 50, 8),
                 new BoostPlatform(PLATFORM_POS, 10, 2));
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         assertTrue(p.hasJumpBoost());
         p.setPos(new Position(5, 22));
         p.setOnGroundTRUE();
         double normalImpulse = new Player(new Position(0, 0), ElementState.FIRE).getJumpImpulse();
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         assertTrue(p.getVelocityY() < normalImpulse - 0.01);
         assertFalse(p.hasJumpBoost());
     }
@@ -96,15 +96,15 @@ public class BoostPlatformTest {
         GameModel model = modelWith(p,
                 new Wall(new Position(0, 30), 50, 8),
                 new BoostPlatform(PLATFORM_POS, 10, 2));
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         p.setPos(new Position(5, 22));
         p.setOnGroundTRUE();
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         assertFalse(p.hasJumpBoost());
         p.setVelocityY(0);
         p.setPos(PLAYER_POS);
         p.setOnGroundTRUE();
-        model.player2Jump();
+        model.jump(ElementState.FIRE);
         assertTrue(p.hasJumpBoost());
         assertEquals(0.0, p.getVelocityY(), 0.0001);
     }

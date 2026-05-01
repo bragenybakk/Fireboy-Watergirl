@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.ControllableGameView;
@@ -63,13 +64,13 @@ public class GameController implements KeyListener, MouseListener {
         previousState = currentState;
         if (currentState == GameState.PLAYING) {
             if (leftPressed)
-                gameModel.movePlayerLeft();
+                gameModel.moveLeft(ElementState.WATER);
             if (rightPressed)
-                gameModel.movePlayerRight();
+                gameModel.moveRight(ElementState.WATER);
             if (p2LeftPressed)
-                gameModel.movePlayer2Left();
+                gameModel.moveLeft(ElementState.FIRE);
             if (p2RightPressed)
-                gameModel.movePlayer2Right();
+                gameModel.moveRight(ElementState.FIRE);
             gameModel.clockTick();
         } else {
             leftPressed = false;
@@ -155,7 +156,7 @@ public class GameController implements KeyListener, MouseListener {
                 rightPressed = true;
                 break;
             case KeyEvent.VK_UP:
-                gameModel.playerJump();
+                gameModel.jump(ElementState.WATER);
                 break;
             // Fireboy: WASD
             case KeyEvent.VK_A:
@@ -165,7 +166,7 @@ public class GameController implements KeyListener, MouseListener {
                 p2RightPressed = true;
                 break;
             case KeyEvent.VK_W:
-                gameModel.player2Jump();
+                gameModel.jump(ElementState.FIRE);
                 break;
         }
     }
@@ -214,22 +215,22 @@ public class GameController implements KeyListener, MouseListener {
                 case KeyEvent.VK_LEFT:
                     leftPressed = false;
                     if (!leftPressed && !rightPressed)
-                        gameModel.stopPlayer();
+                        gameModel.stop(ElementState.WATER);
                     break;
                 case KeyEvent.VK_RIGHT:
                     rightPressed = false;
                     if (!leftPressed && !rightPressed)
-                        gameModel.stopPlayer();
+                        gameModel.stop(ElementState.WATER);
                     break;
                 case KeyEvent.VK_A:
                     p2LeftPressed = false;
                     if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stopPlayer2();
+                        gameModel.stop(ElementState.FIRE);
                     break;
                 case KeyEvent.VK_D:
                     p2RightPressed = false;
                     if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stopPlayer2();
+                        gameModel.stop(ElementState.FIRE);
                     break;
             }
         }
