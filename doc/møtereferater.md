@@ -4,7 +4,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-01-23 — Første møte
+## 2026-23-01 — Første møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Plan:**
@@ -20,7 +20,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-01-29 — Andre møte
+## 2026-29-01 — Andre møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -38,7 +38,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-05 — Tredje møte
+## 2026-05-02 — Tredje møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -53,7 +53,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-12 — Fjerde møte
+## 2026-12-02 — Fjerde møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -76,7 +76,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-19 — Femte møte
+## 2026-19-02 — Femte møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -118,7 +118,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-03-05 — Andre møte med gruppeleder
+## 2026-05-03 — Andre møte med gruppeleder
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Notater fra møtet:**
@@ -180,7 +180,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-04-13 — Tredje møte med gruppeleder
+## 2026-13-04 — Tredje møte med gruppeleder
 **Til stede:** Magnus, Petter, Brage (3/4)
 
 **Notater fra møtet:**
@@ -194,7 +194,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-04-20 — Niende møte
+## 2026-20-04 — Niende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført siden forrige møte:**

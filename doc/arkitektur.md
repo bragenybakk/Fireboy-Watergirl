@@ -1,7 +1,7 @@
 # Arkitektur
 
 En 2D co-op platformer (Fireboy & Watergirl) bygget med Java 25, Maven og
-Swing. Koden følger et **Modell–View–Kontroller**-mønster. De tre lagene
+Swing. Koden følger et **Modell–View–Controller**-mønster. De tre lagene
 snakker bare med hverandre gjennom grensesnitt.
 
 ## Pakkestruktur
@@ -45,20 +45,43 @@ All kommunikasjon går gjennom disse to grensesnittene:
 
 ## Klassediagram
 
-![MVC-klassediagram](klassediagram-mvc.png)
+```mermaid
+classDiagram
+    class GameController
+    class GameView
+    class GameModel
+    class ControllableGameModel {
+        <<interface>>
+    }
+    class ViewableGameModel {
+        <<interface>>
+    }
+    class Theme {
+        <<interface>>
+    }
+    class StaticEntity {
+        <<abstract>>
+    }
 
-## Detaljert klassehierarki
+    GameController --> ControllableGameModel
+    GameView --> ViewableGameModel
+    GameView --> Theme
+    GameModel ..|> ControllableGameModel
+    GameModel ..|> ViewableGameModel
 
-Diagrammet over viser de viktigste samarbeidende klassene. Diagrammet under
-zoomer inn på arve- og grensesnitt-hierarkiene, og viser hvordan
-`Theme`-fabrikken og `StaticEntity`-treet er bygget opp.
+    GameModel "1" *-- "*" Player
+    GameModel "1" *-- "*" Enemy
+    GameModel "1" *-- "*" StaticEntity
 
-![Klassehierarki](klassediagram-hierarki.png)
+    StaticEntity <|-- Wall
+    StaticEntity <|-- Door
+    StaticEntity <|-- Box
+    StaticEntity <|-- Pool
+    StaticEntity <|-- Gem
 
-> Diagrammene er generert fra PlantUML-kildene
-> [`klassediagram-mvc.puml`](klassediagram-mvc.puml) og
-> [`klassediagram-hierarki.puml`](klassediagram-hierarki.puml). Regenerer
-> ved å POST-e kilden til `https://kroki.io/plantuml/png`.
+    Theme <|.. CastleTheme
+    Theme <|.. NullTheme
+```
 
 ## Designmønstre
 

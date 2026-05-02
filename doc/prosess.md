@@ -6,7 +6,7 @@ brukerhistorier eller mindre tasks, og flyttes mellom kolonner (Open → In
 progress → Closed) etterhvert som arbeidet skjer. Vi har ikke faste sprint-
 lengder, men hver innlevering fungerer som en milepæl.
 
-Vi har plukket elementer fra Agile / XP underveis:
+Vi har plukket elementer fra Issue-board underveis:
 - **Iterativ utvikling** — små inkrementer fra møte til møte.
 - **Code review** via merge requests før noe merges til `main`.
 - **Felles eierskap** — alle kan jobbe i alle deler av kodebasen, men
@@ -14,9 +14,9 @@ Vi har plukket elementer fra Agile / XP underveis:
   følger opp at sitt område blir tatt vare på.
 
 ## Møter
-- **Ukentlige team-møter** (typisk torsdag) hvor vi går gjennom hva som er
+- **Jevnlige team-møter** hvor vi går gjennom hva som er
   gjort, tar avgjørelser, og planlegger neste uke.
-- **Møter med gruppeleder** ved behov, særlig før innleveringer.
+- **Møter med gruppeleder** etter fasste innleveringer.
 - Korte referater skrives ned i [`møtereferater.md`](./m%C3%B8tereferater.md).
 
 ## Kommunikasjon
@@ -42,9 +42,9 @@ Vi har plukket elementer fra Agile / XP underveis:
 
 ## Erfaringer
 - Tydelig oppgavefordeling i issue board gir god fremdrift.
-- Ukentlige møter gjør at ingen jobber for lenge på feil ting.
+- Jevnlige møter gjør at ingen jobber for lenge på feil ting.
 - Tidlig integrasjon av kode reduserer merge-konflikter.
-- Kontinuerlig oppdatering av dokumentasjon gjør innlevering enklere — men
+- Kontinuerlig oppdatering av dokumentasjon gjør innlevering enklere, men
   vi har slitt litt med å holde dokumentasjonen helt synkronisert med koden,
   så vi har en runde med dokumentopprydding mot hver innlevering.
 - Ikke bite over for mye enn hva vi rekker å implementere. Mange

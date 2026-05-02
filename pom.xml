@@ -258,7 +258,7 @@
 						</properties>
 						<!-- ignore Java module system while testing -->
 						<useModulePath>false</useModulePath>
-						<argLine></argLine>
+						<argLine>-Djava.awt.headless=true</argLine>
 					</configuration>
 				</plugin>
 				<plugin>

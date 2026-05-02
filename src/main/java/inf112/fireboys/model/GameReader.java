@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Scanner;
 
-/** Parses level files from the classpath and builds a Board with all game entities. */
+/**
+ * Parses level files from the classpath and builds a Board with all game
+ * entities.
+ */
 public class GameReader {
     /**
      * Reads a level file from the classpath and returns a Board.
