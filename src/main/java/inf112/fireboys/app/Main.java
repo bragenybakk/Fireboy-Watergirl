@@ -10,8 +10,16 @@ import inf112.fireboys.model.GameModel;
 import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.GameView;
 
+/** Entry point — wires together the model, view, controller, and audio, then opens the game window. */
 public class Main {
 	public static final String GAME_TITLE = "Fireboy & Watergirl";
+
+	/**
+	 * Starts the game: initialises audio, model, view, and controller, then shows the main window.
+	 *
+	 * @param args
+	 *            command-line arguments (not used)
+	 */
 	public static void main(String[] args) {
 		AudioManager audio = new AudioManager();
 		audio.playMusic("/Dentaneosuchus Hunt.mp3");

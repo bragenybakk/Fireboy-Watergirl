@@ -1,5 +1,6 @@
 package inf112.fireboys.controller;
 
+import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 
 /**
@@ -7,60 +8,80 @@ import inf112.fireboys.model.GameState;
  * Provides methods for player input, menu navigation, and game state changes.
  */
 public interface ControllableGameModel {
-    /** Sets the current game state. */
+    /**
+     * Sets the current game state.
+     *
+     * @param state
+     *            the new game state
+     */
     void setGameState(GameState state);
 
-    /** Returns the current game state. */
+    /**
+     * Returns the current game state.
+     *
+     * @return the current game state
+     */
     GameState getGameState();
 
-    /** Moves the menu selection up. */
+    /**
+     * Moves the menu selection up.
+     */
     void menuUp();
 
-    /** Moves the menu selection down. */
+    /**
+     * Moves the menu selection down.
+     */
     void menuDown();
 
-    /** Confirms the current menu selection. */
+    /**
+     * Confirms the current menu selection.
+     */
     void menuSelect();
 
-    /** Advances the game by one tick (physics, collisions, etc). */
+    /**
+     * Advances the game by one tick (physics, collisions, etc).
+     */
     void clockTick();
 
-    /** Moves the player to the right. */
-    void movePlayerRight();
+    /** Moves the given player left. */
+    void moveLeft(ElementState element);
 
-    /** Moves the player to the left. */
-    void movePlayerLeft();
+    /** Moves the given player right. */
+    void moveRight(ElementState element);
 
-    /** Stops the player's horizontal movement. */
-    void stopPlayer();
+    /** Stops the given player's horizontal movement. */
+    void stop(ElementState element);
 
-    /** Makes the player jump if on the ground. */
-    void playerJump();
+    /** Makes the given player jump if on the ground. */
+    void jump(ElementState element);
 
-    /** Toggles the ad blocker on or off. */
+    /**
+     * Toggles the ad blocker on or off.
+     */
     void toggleAdsBlocked();
 
-    /** Toggles music on or off. */
+    /**
+     * Toggles music on or off.
+     */
     void toggleMusicEnabled();
 
-    /** Toggles sound effects on or off. */
+    /**
+     * Toggles sound effects on or off.
+     */
     void toggleSoundEnabled();
 
-    /** Returns whether music is currently enabled. */
+    /**
+     * Returns whether music is currently enabled.
+     *
+     * @return true if music is enabled
+     */
     boolean isMusicEnabled();
 
-    /** Returns whether sound effects are currently enabled. */
+    /**
+     * Returns whether sound effects are currently enabled.
+     *
+     * @return true if sound effects are enabled
+     */
     boolean isSoundEnabled();
 
-    /** Moves player 2 (Fireboy) to the right. */
-    void movePlayer2Right();
-
-    /** Moves player 2 (Fireboy) to the left. */
-    void movePlayer2Left();
-
-    /** Stops player 2's (Fireboy) horizontal movement. */
-    void stopPlayer2();
-
-    /** Makes player 2 (Fireboy) jump if on the ground. */
-    void player2Jump();
 }

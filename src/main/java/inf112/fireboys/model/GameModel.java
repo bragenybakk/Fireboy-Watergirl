@@ -48,12 +48,15 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     private final Map<String, Integer> levelBestTicks = new HashMap<>();
     private static final int WIN_DELAY_TICKS = 60;
     private int winDelayTicks = 0;
-
     @Override
     public double getWinFadeProgress() {
         return Math.min(1.0, (double) winDelayTicks / WIN_DELAY_TICKS);
     }
-    /** Creates an empty game model used to show the main menu before any level is loaded. */
+
+    /**
+     * Creates an empty game model used to show the main menu before any level is
+     * loaded.
+     */
     public GameModel() {
         this.board = null;
         this.players = null;
@@ -70,7 +73,7 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         this.collectedGems = 0;
     }
 
-    /** Advances the game by one frame — runs physics, collisions, and win/death checks. */
+    @Override
     public void clockTick() {
         if (entities == null || players == null || gameState != GameState.PLAYING) {
             return;
@@ -156,7 +159,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Sinks a movable to the pool floor if it straddles it while falling. Returns true if it was placed on the floor. */
+    /**
+     * Sinks a movable to the pool floor if it straddles it while falling. Returns
+     * true if it was placed on the floor.
+     */
     private boolean sinkOnPoolFloor(IMovable movable, Pool pool) {
         double centerX = movable.getPos().x() + movable.getWidth() / 2.0;
         double topY = movable.getPos().y();
@@ -170,7 +176,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return false;
     }
 
-    /** Returns true if the movable's foot is below a pool surface. If requiredElement is non-null, only pools of that element count. */
+    /**
+     * Returns true if the movable's foot is below a pool surface. If
+     * requiredElement is non-null, only pools of that element count.
+     */
     private boolean isInPoolWater(IMovable movable, ElementState requiredElement) {
         double centerX = movable.getPos().x() + movable.getWidth() / 2.0;
         double bottomY = movable.getPos().y() + movable.getHeight();
@@ -227,7 +236,8 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
                     if (entity instanceof Gem gem) {
                         boolean wasCollected = gem.isCollected();
                         gem.whenContact(player);
-                        if (!wasCollected && gem.isCollected()) collectedGems++;
+                        if (!wasCollected && gem.isCollected())
+                            collectedGems++;
                     } else {
                         entity.whenContact(player);
                     }
@@ -323,13 +333,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
     }
 
     // ============ Menu methods ============
-    /** Returns the current game state (e.g. PLAYING, PAUSED, MAIN_MENU). */
     @Override
     public GameState getGameState() {
         return gameState;
     }
 
-    /** Sets the game state and resets menu selection. Also loads level names when entering level select. */
     @Override
     public void setGameState(GameState state) {
         this.gameState = state;
@@ -345,13 +353,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Returns the index of the currently highlighted menu option. */
     @Override
     public int getSelectedMenuOption() {
         return selectedMenuOption;
     }
 
-    /** Returns the menu options for the current game state. */
     @Override
     public String[] getMenuOptions() {
         if (gameState == GameState.PAUSED) {
@@ -371,30 +377,31 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return mainMenuOptions;
     }
 
-    /** Returns the list of players in the current level. */
     @Override
     public List<Player> getPlayers() {
         return players;
     }
 
-    /** Returns the list of static entities (walls, doors, gems, etc.) in the current level. */
+    /**
+     * Returns the list of static entities (walls, doors, gems, etc.) in the current
+     * level.
+     *
+     * @return the list of static entities
+     */
     public List<StaticEntity> getStaticEntities() {
         return entities;
     }
 
-    /** Returns the list of enemies in the current level. */
     @Override
     public List<IEnemy> getEnemies() {
         return enemies;
     }
 
-    /** Returns the current board (level layout). */
     @Override
     public Board getBoard() {
         return this.board;
     }
 
-    /** Moves the menu selection up by one. */
     @Override
     public void menuUp() {
         if (selectedMenuOption > 0) {
@@ -402,7 +409,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Moves the menu selection down by one. */
     @Override
     public void menuDown() {
         int maxIndex = mainMenuOptions.length - 1;
@@ -491,7 +497,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         loadLevel(chosen + ".txt");
     }
 
-    /** Clears the pressed flag on all buttons before collisions run, so that the flag reflects only what is on the button this tick. */
+    /**
+     * Clears the pressed flag on all buttons before collisions run, so that the
+     * flag reflects only what is on the button this tick.
+     */
     private void resetButtonStates() {
         for (StaticEntity entity : entities) {
             if (entity instanceof Button button) {
@@ -500,7 +509,10 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Adds the laser barrier while someone is on the button, removes it when no one is. */
+    /**
+     * Adds the laser barrier while someone is on the button, removes it when no one
+     * is.
+     */
     private void checkButton() {
         List<StaticEntity> toAdd = new ArrayList<>();
         List<StaticEntity> toRemove = new ArrayList<>();
@@ -545,10 +557,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return playerCenterX >= doorLeft && playerCenterX <= doorRight
                 && playerCenterY >= doorTop && playerCenterY <= doorBottom;
     }
-
     // =============== LEVEL READER / LOADER ===============
 
-    /** Loads the level from the given file name and starts the game. */
+    /**
+     * Loads the level from the given file name and starts the game.
+     *
+     * @param levelFileName
+     *            the level file name (e.g. "level1.txt")
+     */
     public void loadLevel(String levelFileName) {
         try {
             this.currentLevelFileName = levelFileName;
@@ -566,7 +582,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Returns the list of available level names read from levels.txt. */
     @Override
     public List<String> getLevelNames() {
         if (levelNames == null) {
@@ -580,7 +595,6 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return levelNames;
     }
 
-    /** Returns the number of levels the player has unlocked. */
     @Override
     public int getUnlockedLevelCount() {
         return unlockedLevelCount;
@@ -602,17 +616,14 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         return collectedGems >= board.gems().size();
     }
 
-    /** Returns the total number of gems in the current level. */
     public int getTotalGems() {
         return board == null ? 0 : board.gems().size();
     }
 
-    /** Returns the number of gems collected so far in the current level. */
     public int getCollectedGems() {
         return collectedGems;
     }
 
-    /** Returns true if any player is standing on a boost platform without a boost already charged. */
     @Override
     public boolean isPlayerOnBoostPlateWithoutCharge() {
         if (players == null || players.isEmpty() || entities == null) {
@@ -663,13 +674,11 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Returns how many ticks have passed since the current level started. */
     @Override
     public int getElapsedTicks() {
         return levelTicks;
     }
 
-    /** Returns a map from level name to the player's best completion time in ticks. */
     @Override
     public Map<String, Integer> getLevelBestTicks() {
         return levelBestTicks;
@@ -724,83 +733,72 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         }
     }
 
-    /** Reloads the current level from scratch. */
+    /**
+     * Reloads the current level from scratch.
+     */
     public void resetLevel() {
         if (currentLevelFileName != null) {
             loadLevel(currentLevelFileName);
         }
     }
 
-    /** Returns true if the ad blocker is enabled. */
     @Override
     public boolean isAdsBlocked() {
         return adsBlocked;
     }
 
-    /** Toggles the ad blocker on or off. */
     @Override
     public void toggleAdsBlocked() {
         adsBlocked = !adsBlocked;
     }
 
-    /** Returns true if background music is enabled. */
     @Override
     public boolean isMusicEnabled() {
         return musicEnabled;
     }
 
-    /** Returns true if sound effects are enabled. */
     @Override
     public boolean isSoundEnabled() {
         return soundEnabled;
     }
 
-    /** Toggles background music on or off. */
     @Override
     public void toggleMusicEnabled() {
         musicEnabled = !musicEnabled;
     }
 
-    /** Toggles sound effects on or off. */
     @Override
     public void toggleSoundEnabled() {
         soundEnabled = !soundEnabled;
     }
 
     // ============ Player controls ============
-    private Player getWatergirl() {
+    private Player getPlayerByElement(ElementState element) {
         if (players == null)
             return null;
-        return players.stream()
-                .filter(p -> p.getElementState() == ElementState.WATER)
-                .findFirst().orElse(null);
+        for (Player p : players) {
+            if (p.getElementState() == element)
+                return p;
+        }
+        return null;
     }
 
-    private Player getFireboy() {
-        if (players == null)
-            return null;
-        return players.stream()
-                .filter(p -> p.getElementState() == ElementState.FIRE)
-                .findFirst().orElse(null);
-    }
-
-    /** Moves Watergirl to the left. */
-    public void movePlayerLeft() {
-        Player p = getWatergirl();
+    private void moveLeft(Player p) {
         if (p != null)
             p.setVelocityX(-0.7);
     }
 
-    /** Moves Watergirl to the right. */
-    public void movePlayerRight() {
-        Player p = getWatergirl();
+    private void moveRight(Player p) {
         if (p != null)
             p.setVelocityX(0.7);
     }
 
-    @Override
-    public void playerJump() {
-        Player p = getWatergirl();
+    private void stop(Player p) {
+        if (p != null)
+            p.setVelocityX(0);
+    }
+
+    private void jump(Player p) {
         if (p == null || !p.isOnGround())
             return;
         if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
@@ -812,49 +810,24 @@ public class GameModel implements ControllableGameModel, ViewableGameModel {
         p.setOnGroundFALSE();
     }
 
-    /** Stops Watergirl's horizontal movement. */
-    public void stopPlayer() {
-        Player p = getWatergirl();
-        if (p != null)
-            p.setVelocityX(0);
-    }
-
-    /** Moves Fireboy to the left. */
     @Override
-    public void movePlayer2Left() {
-        Player p = getFireboy();
-        if (p != null)
-            p.setVelocityX(-0.7);
-    }
-
-    /** Moves Fireboy to the right. */
-    @Override
-    public void movePlayer2Right() {
-        Player p = getFireboy();
-        if (p != null)
-            p.setVelocityX(0.7);
-    }
-
-    /** Stops Fireboy's horizontal movement. */
-    @Override
-    public void stopPlayer2() {
-        Player p = getFireboy();
-        if (p != null)
-            p.setVelocityX(0);
+    public void moveLeft(ElementState element) {
+        moveLeft(getPlayerByElement(element));
     }
 
     @Override
-    public void player2Jump() {
-        Player p = getFireboy();
-        if (p == null || !p.isOnGround())
-            return;
-        if (isStandingOnBoostPlatform(p) && !p.hasJumpBoost()) {
-            p.grantJumpBoost();
-            return;
-        }
-        p.setVelocityY(p.getJumpImpulse());
-        p.consumeJumpBoost();
-        p.setOnGroundFALSE();
+    public void moveRight(ElementState element) {
+        moveRight(getPlayerByElement(element));
+    }
+
+    @Override
+    public void stop(ElementState element) {
+        stop(getPlayerByElement(element));
+    }
+
+    @Override
+    public void jump(ElementState element) {
+        jump(getPlayerByElement(element));
     }
 
     private void applyGravity(IMovable obj) {

@@ -15,6 +15,12 @@ public class GameReader {
     /**
      * Reads a level file from the classpath and returns a Board.
      * The fileName should be just the filename, e.g. "level1.txt".
+     *
+     * @param fileName
+     *            the classpath resource file name of the level
+     * @return the Board built from the level file
+     * @throws IOException
+     *             if the level file is not found on the classpath
      */
     public static Board loadLevel(String fileName) throws IOException {
         InputStream is = GameReader.class.getClassLoader().getResourceAsStream(fileName);

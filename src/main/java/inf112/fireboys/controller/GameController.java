@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.ControllableGameView;
@@ -25,6 +26,17 @@ public class GameController implements KeyListener, MouseListener {
     private boolean rightPressed = false;
     private boolean p2LeftPressed = false;
     private boolean p2RightPressed = false;
+    /**
+     * Creates the controller, wires input listeners to the view, and starts the 60
+     * FPS game loop.
+     *
+     * @param gameModel
+     *            the model to update on each tick and input event
+     * @param gameView
+     *            the view to attach listeners to and repaint each frame
+     * @param audioManager
+     *            the audio manager for playing music and sound effects
+     */
     public GameController(ControllableGameModel gameModel, ControllableGameView gameView, AudioManager audioManager) {
         this.gameModel = gameModel;
         this.gameView = gameView;
@@ -53,13 +65,13 @@ public class GameController implements KeyListener, MouseListener {
         previousState = currentState;
         if (currentState == GameState.PLAYING) {
             if (leftPressed)
-                gameModel.movePlayerLeft();
+                gameModel.moveLeft(ElementState.WATER);
             if (rightPressed)
-                gameModel.movePlayerRight();
+                gameModel.moveRight(ElementState.WATER);
             if (p2LeftPressed)
-                gameModel.movePlayer2Left();
+                gameModel.moveLeft(ElementState.FIRE);
             if (p2RightPressed)
-                gameModel.movePlayer2Right();
+                gameModel.moveRight(ElementState.FIRE);
             gameModel.clockTick();
         } else {
             leftPressed = false;
@@ -114,7 +126,6 @@ public class GameController implements KeyListener, MouseListener {
                 syncAudioWithModel();
                 break;
             case KeyEvent.VK_ESCAPE:
-                // Go back to main menu from submenu
                 if (gameModel.getGameState() != GameState.MAIN_MENU) {
                     gameModel.setGameState(GameState.MAIN_MENU);
                 }
@@ -145,9 +156,9 @@ public class GameController implements KeyListener, MouseListener {
                 rightPressed = true;
                 break;
             case KeyEvent.VK_UP:
-                gameModel.playerJump();
+                gameModel.jump(ElementState.WATER);
                 break;
-            // Fireboy: WASD
+            // Fireboy: WAD
             case KeyEvent.VK_A:
                 p2LeftPressed = true;
                 break;
@@ -155,44 +166,42 @@ public class GameController implements KeyListener, MouseListener {
                 p2RightPressed = true;
                 break;
             case KeyEvent.VK_W:
-                gameModel.player2Jump();
+                gameModel.jump(ElementState.FIRE);
+                break;
+        }
+    }
+
+    private void handleMenuNavigation(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
+                gameModel.menuUp();
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
+                gameModel.menuDown();
+                break;
+            case KeyEvent.VK_ENTER:
+                gameModel.menuSelect();
                 break;
         }
     }
 
     private void handlePauseInput(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.VK_ESCAPE:
-                gameModel.setGameState(GameState.PLAYING);
-                break;
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
-                gameModel.menuUp();
-                break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
-                gameModel.menuDown();
-                break;
-            case KeyEvent.VK_ENTER:
-                gameModel.menuSelect();
-                break;
+        if (keyCode == KeyEvent.VK_ESCAPE) {
+            gameModel.setGameState(GameState.PLAYING);
+            return;
         }
+        handleMenuNavigation(keyCode);
     }
 
     private void handleGameOverInput(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
-                gameModel.menuUp();
-                break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
-                gameModel.menuDown();
-                break;
-            case KeyEvent.VK_ENTER:
-                gameModel.menuSelect();
-                break;
-        }
+        handleMenuNavigation(keyCode);
+    }
+
+    private void stopIfNoKeyHeld(boolean left, boolean right, ElementState element) {
+        if (!left && !right)
+            gameModel.stop(element);
     }
 
     @Override
@@ -203,23 +212,19 @@ public class GameController implements KeyListener, MouseListener {
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     leftPressed = false;
-                    if (!leftPressed && !rightPressed)
-                        gameModel.stopPlayer();
+                    stopIfNoKeyHeld(leftPressed, rightPressed, ElementState.WATER);
                     break;
                 case KeyEvent.VK_RIGHT:
                     rightPressed = false;
-                    if (!leftPressed && !rightPressed)
-                        gameModel.stopPlayer();
+                    stopIfNoKeyHeld(leftPressed, rightPressed, ElementState.WATER);
                     break;
                 case KeyEvent.VK_A:
                     p2LeftPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stopPlayer2();
+                    stopIfNoKeyHeld(p2LeftPressed, p2RightPressed, ElementState.FIRE);
                     break;
                 case KeyEvent.VK_D:
                     p2RightPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stopPlayer2();
+                    stopIfNoKeyHeld(p2LeftPressed, p2RightPressed, ElementState.FIRE);
                     break;
             }
         }

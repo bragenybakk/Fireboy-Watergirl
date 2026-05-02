@@ -26,37 +26,73 @@ public class CastleTileSheet {
         }
     }
 
-    /** Returns the wall tile sprite. */
+    /**
+     * Returns the wall tile sprite.
+     *
+     * @return the wall tile image, or null if the sheet was not loaded
+     */
     public BufferedImage getWallTile() {
         return getSprite(WALL_TILE_X, WALL_TILE_Y, WALL_TILE_W, WALL_TILE_H);
     }
 
-    /** Returns the closed door sprite. */
+    /**
+     * Returns the closed door sprite.
+     *
+     * @return the closed door image, or null if the sheet was not loaded
+     */
     public BufferedImage getDoor() {
         return getSprite(DOOR_X, DOOR_Y, DOOR_W, DOOR_H);
     }
 
-    /** Returns the open door sprite. */
+    /**
+     * Returns the open door sprite.
+     *
+     * @return the open door image, or null if the sheet was not loaded
+     */
     public BufferedImage getOpenDoor() {
         return getSprite(OPEN_DOOR_X, OPEN_DOOR_Y, OPEN_DOOR_W, OPEN_DOOR_H);
     }
 
-    /** Returns the torch decoration sprite. */
+    /**
+     * Returns the torch decoration sprite.
+     *
+     * @return the torch image, or null if the sheet was not loaded
+     */
     public BufferedImage getTorch() {
         return getSprite(TORCH_X, TORCH_Y, TORCH_W, TORCH_H);
     }
 
-    /** Returns the window decoration sprite. */
+    /**
+     * Returns the window decoration sprite.
+     *
+     * @return the window image, or null if the sheet was not loaded
+     */
     public BufferedImage getWindow() {
         return getSprite(WINDOW_X, WINDOW_Y, WINDOW_W, WINDOW_H);
     }
 
-    /** Returns the box sprite. */
+    /**
+     * Returns the box sprite.
+     *
+     * @return the box image, or null if the sheet was not loaded
+     */
     public BufferedImage getBox() {
         return getSprite(BOX_X, BOX_Y, BOX_W, BOX_H);
     }
 
-    /** Returns a sub-image from the sheet at the given pixel coordinates and size. */
+    /**
+     * Returns a sub-image from the sheet at the given pixel coordinates and size.
+     *
+     * @param x
+     *            the x pixel coordinate within the sheet
+     * @param y
+     *            the y pixel coordinate within the sheet
+     * @param width
+     *            the width of the sub-image in pixels
+     * @param height
+     *            the height of the sub-image in pixels
+     * @return the sub-image, or null if out of bounds or sheet not loaded
+     */
     public BufferedImage getSprite(int x, int y, int width, int height) {
         if (sheet == null)
             return null;

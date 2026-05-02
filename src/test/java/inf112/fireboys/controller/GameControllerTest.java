@@ -1,5 +1,6 @@
 package inf112.fireboys.controller;
 
+import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
 import inf112.fireboys.view.AudioManager;
 import inf112.fireboys.view.ControllableGameView;
@@ -61,10 +62,10 @@ public class GameControllerTest {
         controller.keyPressed(keyPress(KeyEvent.VK_A));
         controller.keyPressed(keyPress(KeyEvent.VK_D));
         controller.triggerUpdate();
-        assertEquals(1, fakeModel.movePlayerLeftCount);
-        assertEquals(1, fakeModel.movePlayerRightCount);
-        assertEquals(1, fakeModel.movePlayer2LeftCount);
-        assertEquals(1, fakeModel.movePlayer2RightCount);
+        assertEquals(1, fakeModel.moveLeftWaterCount);
+        assertEquals(1, fakeModel.moveRightWaterCount);
+        assertEquals(1, fakeModel.moveLeftFireCount);
+        assertEquals(1, fakeModel.moveRightFireCount);
     }
 
     @Test
@@ -75,7 +76,7 @@ public class GameControllerTest {
         controller.triggerUpdate();
         fakeModel.gameState = GameState.PLAYING;
         controller.triggerUpdate();
-        assertEquals(0, fakeModel.movePlayerLeftCount);
+        assertEquals(0, fakeModel.moveLeftWaterCount);
     }
 
     @Test
@@ -83,7 +84,7 @@ public class GameControllerTest {
         fakeModel.gameState = GameState.PLAYING;
         controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
         controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
-        assertEquals(1, fakeModel.stopPlayerCount);
+        assertEquals(1, fakeModel.stopWaterCount);
     }
 
     @Test
@@ -92,7 +93,7 @@ public class GameControllerTest {
         controller.keyPressed(keyPress(KeyEvent.VK_LEFT));
         controller.keyPressed(keyPress(KeyEvent.VK_RIGHT));
         controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
-        assertEquals(0, fakeModel.stopPlayerCount);
+        assertEquals(0, fakeModel.stopWaterCount);
     }
 
     @Test
@@ -100,7 +101,7 @@ public class GameControllerTest {
         fakeModel.gameState = GameState.PLAYING;
         controller.keyPressed(keyPress(KeyEvent.VK_A));
         controller.keyReleased(keyRelease(KeyEvent.VK_A));
-        assertEquals(1, fakeModel.stopPlayer2Count);
+        assertEquals(1, fakeModel.stopFireCount);
     }
 
     @Test
@@ -109,14 +110,14 @@ public class GameControllerTest {
         controller.keyPressed(keyPress(KeyEvent.VK_A));
         controller.keyPressed(keyPress(KeyEvent.VK_D));
         controller.keyReleased(keyRelease(KeyEvent.VK_A));
-        assertEquals(0, fakeModel.stopPlayer2Count);
+        assertEquals(0, fakeModel.stopFireCount);
     }
 
     @Test
     void keyReleaseIgnoredWhenNotPlaying() {
         fakeModel.gameState = GameState.PAUSED;
         controller.keyReleased(keyRelease(KeyEvent.VK_LEFT));
-        assertEquals(0, fakeModel.stopPlayerCount);
+        assertEquals(0, fakeModel.stopWaterCount);
     }
 
     @Test
@@ -124,8 +125,8 @@ public class GameControllerTest {
         fakeModel.gameState = GameState.PLAYING;
         controller.keyPressed(keyPress(KeyEvent.VK_UP));
         controller.keyPressed(keyPress(KeyEvent.VK_W));
-        assertEquals(1, fakeModel.playerJumpCount);
-        assertEquals(1, fakeModel.player2JumpCount);
+        assertEquals(1, fakeModel.jumpWaterCount);
+        assertEquals(1, fakeModel.jumpFireCount);
     }
 
     @Test
@@ -254,14 +255,14 @@ public class GameControllerTest {
         int menuUpCount = 0;
         int menuDownCount = 0;
         int menuSelectCount = 0;
-        int movePlayerLeftCount = 0;
-        int movePlayerRightCount = 0;
-        int stopPlayerCount = 0;
-        int playerJumpCount = 0;
-        int movePlayer2LeftCount = 0;
-        int movePlayer2RightCount = 0;
-        int stopPlayer2Count = 0;
-        int player2JumpCount = 0;
+        int moveLeftWaterCount = 0;
+        int moveLeftFireCount = 0;
+        int moveRightWaterCount = 0;
+        int moveRightFireCount = 0;
+        int stopWaterCount = 0;
+        int stopFireCount = 0;
+        int jumpWaterCount = 0;
+        int jumpFireCount = 0;
 
         @Override
         public GameState getGameState() {
@@ -294,43 +295,27 @@ public class GameControllerTest {
         }
 
         @Override
-        public void movePlayerLeft() {
-            movePlayerLeftCount++;
+        public void moveLeft(ElementState element) {
+            if (element == ElementState.WATER) moveLeftWaterCount++;
+            else moveLeftFireCount++;
         }
 
         @Override
-        public void movePlayerRight() {
-            movePlayerRightCount++;
+        public void moveRight(ElementState element) {
+            if (element == ElementState.WATER) moveRightWaterCount++;
+            else moveRightFireCount++;
         }
 
         @Override
-        public void stopPlayer() {
-            stopPlayerCount++;
+        public void stop(ElementState element) {
+            if (element == ElementState.WATER) stopWaterCount++;
+            else stopFireCount++;
         }
 
         @Override
-        public void playerJump() {
-            playerJumpCount++;
-        }
-
-        @Override
-        public void movePlayer2Left() {
-            movePlayer2LeftCount++;
-        }
-
-        @Override
-        public void movePlayer2Right() {
-            movePlayer2RightCount++;
-        }
-
-        @Override
-        public void stopPlayer2() {
-            stopPlayer2Count++;
-        }
-
-        @Override
-        public void player2Jump() {
-            player2JumpCount++;
+        public void jump(ElementState element) {
+            if (element == ElementState.WATER) jumpWaterCount++;
+            else jumpFireCount++;
         }
 
         @Override

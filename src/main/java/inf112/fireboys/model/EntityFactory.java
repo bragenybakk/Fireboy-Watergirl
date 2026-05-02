@@ -33,6 +33,7 @@ public class EntityFactory {
     private final List<StaticEntity> movables = new ArrayList<>();
     private final Map<String, Consumer<Scanner>> parsers = new HashMap<>();
 
+    /** Creates an EntityFactory and registers all known entity token parsers. */
     public EntityFactory() {
         register();
     }
@@ -92,7 +93,15 @@ public class EntityFactory {
                 new Decoration(readPos(sc), sc.nextDouble(), sc.nextDouble(), 96, 256, 32, 32)));
     }
 
-    /** Builds one entity for the given token. Returns false if the token is unknown. */
+    /**
+     * Builds one entity for the given token. Returns false if the token is unknown.
+     *
+     * @param token
+     *            the level file token (e.g. "WALL", "BOX")
+     * @param sc
+     *            the scanner positioned after the token, to read parameters from
+     * @return true if the token was recognized and parsed, false otherwise
+     */
     public boolean parse(String token, Scanner sc) {
         Consumer<Scanner> p = parsers.get(token);
         if (p == null) return false;
@@ -100,7 +109,15 @@ public class EntityFactory {
         return true;
     }
 
-    /** Returns a Board with everything built so far. */
+    /**
+     * Returns a Board with everything built so far.
+     *
+     * @param width
+     *            the board width in logical units
+     * @param height
+     *            the board height in logical units
+     * @return the constructed Board
+     */
     public Board build(double width, double height) {
         return new Board(width, height, players, entities, enemies, decorations,
                 pools, gems, movingPlatforms, doors, movables);

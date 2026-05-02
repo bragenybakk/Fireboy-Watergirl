@@ -38,6 +38,9 @@ public interface IStaticEntity {
 
     /**
      * Decides what happens to the player and the entity when they come in contact.
+     *
+     * @param movableEntity
+     *            the movable entity that made contact
      */
     void whenContact(IMovable movableEntity);
 }
