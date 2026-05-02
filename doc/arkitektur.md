@@ -1,7 +1,7 @@
 # Arkitektur
 
 En 2D co-op platformer (Fireboy & Watergirl) bygget med Java 25, Maven og
-Swing. Koden følger et **Modell–View–Kontroller**-mønster. De tre lagene
+Swing. Koden følger et **Modell–View–Controller**-mønster. De tre lagene
 snakker bare med hverandre gjennom grensesnitt.
 
 ## Pakkestruktur

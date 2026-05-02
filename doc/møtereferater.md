@@ -4,7 +4,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-01-23 — Første møte
+## 2026-23-01 — Første møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Plan:**
@@ -20,7 +20,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-01-29 — Andre møte
+## 2026-29-01 — Andre møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -38,7 +38,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-05 — Tredje møte
+## 2026-05-02 — Tredje møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -53,7 +53,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-12 — Fjerde møte
+## 2026-12-02 — Fjerde møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -76,34 +76,33 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-02-19 — Femte møte
+## 2026-19-02 — Femte møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
 - Hoppelogikk og kollisjon mot vegger fungerer ✓
-- Sprites lagret i én felles fil ✓
 
 **Under møtet:**
-- Diskuterte hvordan vi skulle representere Fireboy og Watergirl som separate karakterer.
-- Startet arbeid med å laste inn karaktersprites fra spritesheet.
-- Planlagt strukturen for elementbaserte farer (pools).
+- Jobbet med brett-logikk og bevegelse.
+- Startet arbeid med nivålasting fra fil.
 
 **Til neste møte:**
-- Implementere vann- og ildpytter med elementtilstand.
-- Få karakterene til å se ut som Fireboy og Watergirl.
+- Få nivålasting til å fungere.
+- Rydde opp i kodestrukturen.
 
 ---
 
-## 2026-02-26 — Sjette møte
-**Til stede:** Petter, Brage, Oscar (3/4)
+## 2026-26-02 — Sjette møte
+**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
-- Karaktersprites for Fireboy og Watergirl lastet inn ✓
-- Grunnleggende pool-system på plass ✓
+- Fungerende brett-logikk og bevegelse ✓
+- Nivålasting fra fil på plass ✓
 
 **Under møtet:**
-- Implementerte gem-system med elementtilstand (røde gems til Fireboy, blå til Watergirl).
-- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+- Merget nivå-opprettingsarbeid inn i main.
+- Oppgraderte til Java 25.
+- Diskuterte videre plan for spillmekanikker.
 - **Justering av roller:** vi gikk bort fra kode-spesifikke roller
   (Oscar–spillbrett, Petter–Git, Brage–meny, Magnus–spiller) — alle skal
   kunne plukke hvilken som helst issue og kode i hele kodebasen, slik at
@@ -114,12 +113,12 @@ Korte referater fra teammøter og møter med gruppeleder.
   eierskap på testing, møteplanlegging og dokumentasjon.
 
 **Til neste møte:**
-- Fullføre gem-innsamling og poengsum.
-- Legge til dør som åpnes når alle gems er samlet.
+- Fikse double-jump-bug.
+- Forbedre menynavigasjon.
 
 ---
 
-## 2026-03-05 — Andre møte med gruppeleder
+## 2026-05-03 — Andre møte med gruppeleder
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Notater fra møtet:**
@@ -133,39 +132,47 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-03-12 — Sjuende møte
-**Til stede:** Petter, Brage, Oscar, Magnus (4/4)
+## 2026-12-03 — Sjuende møte
+**Til stede:** Petter, Brage, Oscar (3/4)
 
 **Fullført fra forrige møte:**
-- Gem-innsamling med poengsum fungerer ✓
-- Dør som åpnes ved fullføring av brett ✓
+- Double-jump-bug fikset ✓
+- Menynavigasjon til level select ✓
+- Første versjon av dør, fiender og dyttbare bokser ✓
+- Back-to-menu og første enhetstester ✓
 
 **Under møtet:**
-- Lagt til støtte for flere nivåer via `levels.txt`.
-- Startet arbeid med fiender.
-- Diskuterte og begynte å skrive tester for modellen.
+- Gikk gjennom gjenstående krav.
+- Diskuterte og planla dør-mekanikk og vinnbetingelse.
+- Planla pool-systemet og karaktersprites.
+- Fordelte oppgaver for neste sprint.
 
 **Til neste møte:**
-- Fullføre fiender med bevegelseslogikk.
-- Legge til lyd/musikk.
-- Skrive flere tester.
+- Pool-system med element-tilstand.
+- Karaktersprites for Fireboy og Watergirl.
+- Gems.
 
 *Ingen møter i påskeuken (29.03–06.04).
 
 ---
 
-## 2026-04-02 — Åttende møte
+## 2026-07-04 — Åttende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
-- Fiender med enkel patrol-bevegelse ✓
-- Bakgrunnsmusikk og lydavstemming implementert ✓
-- Tester for kjernefysikk skrevet ✓
+- Karaktersprites for Fireboy og Watergirl ✓
+- Pool-system med element-kill ✓
+- Gems med elementtilstand og poengsystem ✓
+- Fiender med patrol-bevegelse ✓
+- Tidsmåling og death/reset-skjerm ✓
+- Flere tester ✓
+- How to Play-skjerm og reklamebanner ✓
 
 **Under møtet:**
 - Gikk gjennom kravlisten for siste innlevering.
 - Markerte gjenstående krav med FSR (Final Sprint Requirements).
-- Fordelte oppgaver for siste sprint.
+- Fordelte oppgaver: levels med gem-gating, lyd, temaer, moving
+  platforms, settings, to-spiller-styring.
 
 **Til neste møte:**
 - Ferdigstille alle FSR-krav.
@@ -173,7 +180,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-04-13 — Tredje møte med gruppeleder
+## 2026-13-04 — Tredje møte med gruppeleder
 **Til stede:** Magnus, Petter, Brage (3/4)
 
 **Notater fra møtet:**
@@ -187,15 +194,20 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-04-20 — Niende møte
+## 2026-20-04 — Niende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført siden forrige møte:**
+- Levels-system med gem-gating ✓
 - Tid-taking per nivå med beste tid lagret ✓
-- Theme abstract factory (`CastleTheme` / `NullTheme`) ✓
-- Bevegelige plattformer, boost-plater, bokser ✓
-- Helkropps-sprites for Fireboy og Watergirl ✓
-- Redesign av menyer med konsistent stil ✓
+- Lyd (bakgrunnsmusikk og lydeffekter) ✓
+- Castle tileset og dekorasjoner ✓
+- Boost-plater med flamme-sprites ✓
+- Settings-skjerm ✓
+- Spiller 2 (Fireboy) med WASD-kontroller ✓
+- Theme abstract factory ✓
+- Helkropps-sprites og redesign av menyer ✓
+- Bevegelige plattformer ✓
 
 **Under møtet:**
 - Diskuterte siste polish-oppgaver: open-door-animasjon og win-fade når
