@@ -7,7 +7,6 @@ public class Box extends StaticEntity implements IMovable {
     private double velocityX;
     private double velocityY;
     private double weight;
-
     /** Creates a box at the given position with the given size and weight. */
     public Box(Position position, double width, double height, double weight) {
         super(position, width, height);

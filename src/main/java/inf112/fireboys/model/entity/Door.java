@@ -2,10 +2,12 @@ package inf112.fireboys.model.entity;
 
 import inf112.fireboys.coordinateSystem.Position;
 
-/** A door that players must reach to finish the level. Opens when a player stands on it. */
+/**
+ * A door that players must reach to finish the level. Opens when a player
+ * stands on it.
+ */
 public class Door extends StaticEntity {
     private boolean isOpen;
-
     /** Creates a door at the given position with the given size. */
     public Door(Position position, double width, double height) {
         super(position, width, height);

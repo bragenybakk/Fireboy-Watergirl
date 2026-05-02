@@ -4,11 +4,13 @@ import inf112.fireboys.coordinateSystem.Position;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.player.IPlayer;
 
-/** A collectible gem. Each gem has an element type — only the matching player can collect it. */
+/**
+ * A collectible gem. Each gem has an element type — only the matching player
+ * can collect it.
+ */
 public class Gem extends StaticEntity {
     private boolean collected;
     private ElementState element;
-
     /** Creates a gem at the given position with the given size and element type. */
     public Gem(Position position, double width, double height, ElementState element) {
         super(position, width, height);
