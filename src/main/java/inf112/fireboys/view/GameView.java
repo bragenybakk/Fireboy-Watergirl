@@ -6,7 +6,6 @@ import inf112.fireboys.coordinateSystem.Board;
 import inf112.fireboys.coordinateSystem.Decoration;
 import inf112.fireboys.model.ElementState;
 import inf112.fireboys.model.GameState;
-import inf112.fireboys.model.enemy.EnemyState;
 import inf112.fireboys.model.enemy.IEnemy;
 import inf112.fireboys.model.entity.Box;
 import inf112.fireboys.model.entity.Button;
@@ -20,6 +19,7 @@ import inf112.fireboys.model.entity.Wall;
 import inf112.fireboys.model.player.Player;
 import inf112.fireboys.view.theme.CastleTheme;
 import inf112.fireboys.view.theme.Theme;
+import inf112.fireboys.view.theme.ThemeFactory;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -68,14 +68,13 @@ public class GameView extends JPanel implements ControllableGameView {
     private SkeletonSpriteSheet skeletonSheet;
     // Per-enemy animation tick counter; incremented each draw call.
     private final Map<IEnemy, Integer> enemyAnimTick = new HashMap<>();
-
     public GameView(ViewableGameModel viewableGameModel) {
-        this(viewableGameModel, new CastleTheme());
+        this(viewableGameModel, CastleTheme::new);
     }
 
-    public GameView(ViewableGameModel viewableGameModel, Theme theme) {
+    public GameView(ViewableGameModel viewableGameModel, ThemeFactory factory) {
         this.viewableGameModel = viewableGameModel;
-        this.theme = theme;
+        this.theme = factory.create();
         this.setSize(windowWidth, windowHeight);
         this.setFont(font);
         this.setBackground(theme.getBackgroundColor());
@@ -134,32 +133,26 @@ public class GameView extends JPanel implements ControllableGameView {
         // --- BACKGROUND ---
         g2.setColor(Color.decode("#0d0d1f"));
         g2.fillRect(0, 0, windowWidth, windowHeight);
-
         // Fire glow bottom-left
         RadialGradientPaint fireGlow = new RadialGradientPaint(
-            new Point2D.Float(0, windowHeight),
-            windowHeight * 0.9f,
-            new float[]{0f, 1f},
-            new Color[]{new Color(200, 50, 0, 110), new Color(0, 0, 0, 0)}
-        );
+                new Point2D.Float(0, windowHeight),
+                windowHeight * 0.9f,
+                new float[] { 0f, 1f },
+                new Color[] { new Color(200, 50, 0, 110), new Color(0, 0, 0, 0) });
         g2.setPaint(fireGlow);
         g2.fillRect(0, 0, windowWidth, windowHeight);
-
         // Water glow bottom-right
         RadialGradientPaint waterGlow = new RadialGradientPaint(
-            new Point2D.Float(windowWidth, windowHeight),
-            windowHeight * 0.9f,
-            new float[]{0f, 1f},
-            new Color[]{new Color(0, 80, 200, 110), new Color(0, 0, 0, 0)}
-        );
+                new Point2D.Float(windowWidth, windowHeight),
+                windowHeight * 0.9f,
+                new float[] { 0f, 1f },
+                new Color[] { new Color(0, 80, 200, 110), new Color(0, 0, 0, 0) });
         g2.setPaint(waterGlow);
         g2.fillRect(0, 0, windowWidth, windowHeight);
-
         // --- CHARACTERS (large, bottom corners) ---
         int charH = 320;
         BufferedImage fireboySprite = theme.getPlayerHead(ElementState.FIRE);
         BufferedImage watergirlSprite = theme.getPlayerHead(ElementState.WATER);
-
         int charY = windowHeight - charH - 100;
         if (fireboySprite != null) {
             int charW = charH * fireboySprite.getWidth() / fireboySprite.getHeight();
@@ -169,7 +162,6 @@ public class GameView extends JPanel implements ControllableGameView {
             int charW = charH * watergirlSprite.getWidth() / watergirlSprite.getHeight();
             g2.drawImage(watergirlSprite, windowWidth - 20 - charW, charY, charW, charH, null);
         }
-
         // --- TITLE ---
         Font bigTitle = new Font("Impact", Font.PLAIN, 82);
         g2.setFont(bigTitle);
@@ -177,32 +169,26 @@ public class GameView extends JPanel implements ControllableGameView {
         FontMetrics fm = g2.getFontMetrics();
         int titleX = (windowWidth - fm.stringWidth(title)) / 2;
         int titleY = 130;
-
         // Drop shadow (layered for depth)
         for (int i = 5; i >= 1; i--) {
             g2.setColor(new Color(0, 0, 0, 40 + i * 20));
             g2.drawString(title, titleX + i, titleY + i);
         }
-
         // Gradient: fire orange → white → water blue
         GradientPaint titleGrad = new GradientPaint(
-            titleX, titleY, Color.decode("#ff4400"),
-            titleX + fm.stringWidth(title), titleY, Color.decode("#0099ff")
-        );
+                titleX, titleY, Color.decode("#ff4400"),
+                titleX + fm.stringWidth(title), titleY, Color.decode("#0099ff"));
         g2.setPaint(titleGrad);
         g2.drawString(title, titleX, titleY);
-
         // --- DECORATIVE DIVIDER ---
         int divY = titleY + 18;
         g2.setStroke(new BasicStroke(2f));
         GradientPaint divGrad = new GradientPaint(
-            150, divY, Color.decode("#ff4400"),
-            windowWidth - 150, divY, Color.decode("#0099ff")
-        );
+                150, divY, Color.decode("#ff4400"),
+                windowWidth - 150, divY, Color.decode("#0099ff"));
         g2.setPaint(divGrad);
         g2.drawLine(150, divY, windowWidth - 150, divY);
         g2.setStroke(new BasicStroke(1f));
-
         // --- MENU OPTIONS ---
         Font menuF = new Font("Arial", Font.PLAIN, 30);
         Font selectedF = new Font("Arial", Font.BOLD, 34);
@@ -210,7 +196,6 @@ public class GameView extends JPanel implements ControllableGameView {
         int selectedOption = viewableGameModel.getSelectedMenuOption();
         int startY = divY + 75;
         int spacing = 62;
-
         for (int i = 0; i < options.length; i++) {
             if (i == selectedOption) {
                 g2.setFont(selectedF);
@@ -219,7 +204,6 @@ public class GameView extends JPanel implements ControllableGameView {
                 int tw = fm.stringWidth(label);
                 int ox = (windowWidth - tw) / 2;
                 int oy = startY + i * spacing;
-
                 // Glowing selection box
                 g2.setColor(new Color(245, 166, 35, 25));
                 g2.fillRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
@@ -227,7 +211,6 @@ public class GameView extends JPanel implements ControllableGameView {
                 g2.setStroke(new BasicStroke(1.5f));
                 g2.drawRoundRect(ox - 24, oy - fm.getAscent() - 6, tw + 48, fm.getHeight() + 12, 12, 12);
                 g2.setStroke(new BasicStroke(1f));
-
                 g2.setColor(Color.decode("#f5a623"));
                 g2.drawString(label, ox, oy);
             } else {
@@ -238,7 +221,6 @@ public class GameView extends JPanel implements ControllableGameView {
                 g2.drawString(options[i], (windowWidth - tw) / 2, startY + i * spacing);
             }
         }
-
         // --- INSTRUCTIONS ---
         g2.setFont(new Font("Arial", Font.PLAIN, 13));
         g2.setColor(new Color(90, 90, 110));
@@ -295,7 +277,8 @@ public class GameView extends JPanel implements ControllableGameView {
 
     private void drawWinFade(Graphics2D g2) {
         double progress = viewableGameModel.getWinFadeProgress();
-        if (progress <= 0) return;
+        if (progress <= 0)
+            return;
         int alpha = (int) Math.min(255, progress * 255);
         g2.setColor(new Color(255, 255, 255, alpha));
         g2.fillRect(0, 0, getWidth(), getHeight());
@@ -492,21 +475,20 @@ public class GameView extends JPanel implements ControllableGameView {
             } else {
                 doorSprite = theme.getDoor();
             }
-            if (doorSprite == null) doorSprite = theme.getDoor();
+            if (doorSprite == null)
+                doorSprite = theme.getDoor();
             if (doorSprite != null) {
                 g2.drawImage(doorSprite, x, y, w, h, null);
                 return;
             }
         }
         if (entity instanceof Button button) {
-            g2.setColor(button.isPressed() ? new Color(0, 80, 200) : new Color(0, 140, 255));
-            g2.fillRect(x, y, w, h);
-            g2.setColor(Color.BLACK);
-            g2.drawRect(x, y, w, h);
+            drawButton(g2, button, x, y, w, h);
             drawLaser(g2, button, scale, diff_X, diff_Y);
             return;
         }
-        if (entity instanceof LaserWall) return;
+        if (entity instanceof LaserWall)
+            return;
         if (entity instanceof Box) {
             BufferedImage boxSprite = theme.getBox();
             if (boxSprite != null) {
@@ -533,26 +515,79 @@ public class GameView extends JPanel implements ControllableGameView {
         g2.drawRect(x, y, w, h);
     }
 
+    /** Draws a clearly recognizable physical button with metal frame and a colored cap. */
+    private void drawButton(Graphics2D g2, Button button, int x, int y, int w, int h) {
+        boolean pressed = button.isPressed();
+        int arc = Math.max(2, Math.min(h / 2 + 1, 6));
+        // Dark metal base
+        g2.setColor(new Color(40, 40, 50));
+        g2.fillRoundRect(x, y, Math.max(1, w), Math.max(1, h), arc, arc);
+        // Inner frame
+        g2.setColor(new Color(80, 80, 95));
+        g2.fillRoundRect(x + 1, y + 1, Math.max(1, w - 2), Math.max(1, h - 2),
+                Math.max(1, arc - 1), Math.max(1, arc - 1));
+        // Colored cap — sunken when pressed, raised when not
+        Color cap = pressed ? new Color(180, 40, 40) : new Color(255, 80, 80);
+        Color highlight = pressed ? new Color(120, 20, 20) : new Color(255, 160, 160);
+        int inset = Math.max(1, Math.min(w, h) / 5);
+        int capX = x + inset;
+        int capY = y + inset + (pressed ? 1 : 0);
+        int capW = Math.max(1, w - 2 * inset);
+        int capH = Math.max(1, h - 2 * inset - (pressed ? 1 : 0));
+        int capArc = Math.max(1, arc - inset);
+        g2.setColor(cap);
+        g2.fillRoundRect(capX, capY, capW, capH, capArc, capArc);
+        // Top highlight strip for raised look
+        if (!pressed) {
+            g2.setColor(highlight);
+            g2.fillRoundRect(capX, capY, capW, Math.max(1, capH / 3), capArc, capArc);
+        }
+        // Black outline
+        g2.setColor(Color.BLACK);
+        g2.drawRoundRect(x, y, Math.max(1, w), Math.max(1, h), arc, arc);
+    }
+
+    /** Draws a laser barrier with visible emitters at both ends. Beam glows red when active. */
     private void drawLaser(Graphics2D g2, Button button, double scale, int diff_X, int diff_Y) {
         int tx = (int) (diff_X + button.getTrapPos().x() * scale);
         int ty = (int) (diff_Y + button.getTrapPos().y() * scale);
         int tw = Math.max(2, (int) (button.getTrapWidth() * scale));
         int th = (int) (button.getTrapHeight() * scale);
-
-        if (button.isPressed()) {
-            g2.setColor(new Color(255, 30, 30, 25));
-            g2.fillRect(tx - 1, ty, tw + 2, th);
-            g2.setColor(new Color(255, 80, 80, 255));
-            g2.fillRect(tx, ty, tw, th);
+        boolean active = button.isPressed();
+        // Beam (only when active)
+        if (active) {
+            g2.setColor(new Color(255, 60, 60, 80));
+            g2.fillRect(tx - 2, ty + 2, tw + 4, th - 4);
+            g2.setColor(new Color(255, 30, 30));
+            g2.fillRect(tx, ty + 2, tw, th - 4);
+            g2.setColor(new Color(255, 200, 200));
+            int coreInset = Math.max(0, tw / 3);
+            g2.fillRect(tx + coreInset, ty + 2, Math.max(1, tw - 2 * coreInset), th - 4);
         }
-
-        g2.setColor(Color.WHITE);
-        g2.fillRect(tx, ty, tw, 1);
-        g2.fillRect(tx, ty + th - 1, tw, 1);
+        // Emitter caps (top and bottom) — visible at all times so the laser path is clear
+        int capH = Math.max(2, th / 8);
+        int capPad = Math.max(1, tw / 4);
+        Color emitterBody = new Color(70, 70, 80);
+        Color emitterLight = active ? new Color(255, 80, 80) : new Color(120, 120, 130);
+        // Top emitter
+        g2.setColor(emitterBody);
+        g2.fillRect(tx - capPad, ty, tw + 2 * capPad, capH);
+        g2.setColor(emitterLight);
+        g2.fillRect(tx, ty + capH - 1, tw, 1);
+        // Bottom emitter
+        g2.setColor(emitterBody);
+        g2.fillRect(tx - capPad, ty + th - capH, tw + 2 * capPad, capH);
+        g2.setColor(emitterLight);
+        g2.fillRect(tx, ty + th - capH, tw, 1);
+        // Outline
+        g2.setColor(Color.BLACK);
+        g2.drawRect(tx - capPad, ty, tw + 2 * capPad, capH);
+        g2.drawRect(tx - capPad, ty + th - capH, tw + 2 * capPad, capH);
     }
 
     private void drawDecoration(Graphics2D g2, Decoration decor, double scale, int diff_X, int diff_Y) {
-        BufferedImage sprite = theme.getDecorationSprite(decor.sheetX(), decor.sheetY(), decor.sheetW(), decor.sheetH());
+        BufferedImage sprite = theme.getDecorationSprite(decor.sheetX(), decor.sheetY(), decor.sheetW(),
+                decor.sheetH());
         if (sprite == null)
             return;
         int x = (int) (diff_X + (decor.pos().x() * scale));
@@ -618,7 +653,6 @@ public class GameView extends JPanel implements ControllableGameView {
             g2.fillRect(x, y, w, h);
         }
     }
-
     // --- Shared menu helpers ---
 
     private void drawMenuBackground(Graphics2D g2) {
@@ -679,7 +713,6 @@ public class GameView extends JPanel implements ControllableGameView {
         FontMetrics fm = g2.getFontMetrics();
         g2.drawString(hint, (windowWidth - fm.stringWidth(hint)) / 2, windowHeight - 20);
     }
-
     // --- Menu screens ---
 
     private void drawPauseMenu(Graphics2D g2) {
@@ -695,7 +728,6 @@ public class GameView extends JPanel implements ControllableGameView {
     private void drawLevelSelect(Graphics2D g2) {
         drawMenuBackground(g2);
         drawMenuTitle(g2, "LEVEL SELECT", 110, Color.decode("#ff4400"), Color.decode("#0099ff"));
-
         java.util.List<String> levels = viewableGameModel.getLevelNames();
         Map<String, Integer> bestTicks = viewableGameModel.getLevelBestTicks();
         int selected = viewableGameModel.getSelectedMenuOption();
@@ -704,7 +736,6 @@ public class GameView extends JPanel implements ControllableGameView {
         Font selF = new Font("Arial", Font.BOLD, 34);
         int startY = 200;
         int spacing = 62;
-
         for (int i = 0; i < levels.size(); i++) {
             String name = levels.get(i);
             boolean isUnlocked = i < unlockedLevelCount;
@@ -764,19 +795,17 @@ public class GameView extends JPanel implements ControllableGameView {
     private void drawHowToPlay(Graphics2D g2) {
         drawMenuBackground(g2);
         drawMenuTitle(g2, "HOW TO PLAY", 100, Color.decode("#ff4400"), Color.decode("#0099ff"));
-
         Font bodyF = new Font("Arial", Font.PLAIN, 26);
         g2.setFont(bodyF);
         String[][] sections = {
-            {"FIREBOY", "Move with A / D   •   Jump with W"},
-            {"WATERGIRL", "Move with ← →   •   Jump with ↑"},
+                { "FIREBOY", "Move with A / D   •   Jump with W" },
+                { "WATERGIRL", "Move with ← →   •   Jump with ↑" },
         };
         String[] rules = {
-            "Reach the doors to complete the level",
-            "Fireboy dies in water  •  Watergirl dies in fire",
-            "Avoid enemies and hazards",
+                "Reach the doors to complete the level",
+                "Fireboy dies in water  •  Watergirl dies in fire",
+                "Avoid enemies and hazards",
         };
-
         int y = 200;
         for (String[] section : sections) {
             // Character label
@@ -791,12 +820,10 @@ public class GameView extends JPanel implements ControllableGameView {
             g2.drawString(section[1], (windowWidth - fm.stringWidth(section[1])) / 2, y);
             y += 60;
         }
-
         // Divider
         g2.setColor(new Color(60, 60, 90));
         g2.setStroke(new BasicStroke(1f));
         g2.drawLine(250, y - 15, windowWidth - 250, y - 15);
-
         g2.setFont(bodyF);
         for (String rule : rules) {
             FontMetrics fm = g2.getFontMetrics();
@@ -804,7 +831,6 @@ public class GameView extends JPanel implements ControllableGameView {
             g2.drawString(rule, (windowWidth - fm.stringWidth(rule)) / 2, y + 10);
             y += 52;
         }
-
         drawMenuHint(g2, "Press ESC to go back");
     }
 }

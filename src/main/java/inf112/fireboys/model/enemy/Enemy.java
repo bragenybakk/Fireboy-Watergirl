@@ -9,6 +9,7 @@ import inf112.fireboys.model.player.IPlayer;
 import java.util.Collections;
 import java.util.List;
 
+/** An enemy that patrols the level and chases players when they get close. */
 public class Enemy implements IEnemy {
     private Position position;
     private double velocityX, velocityY;
@@ -21,19 +22,24 @@ public class Enemy implements IEnemy {
     private int jumpCooldown = 0;
     private static final double PATROL_SPEED = 0.3;
     private static final double DETECTION_RANGE_X = 25.0;
-    private static final double DETECTION_RANGE_Y = 18.0;
+    private static final double DETECTION_RANGE_Y = 15.0;
     private static final double CHASE_SPEED = 0.5;
     private static final int ALERT_DURATION = 30;
     private final List<? extends IPlayer> players;
     private final List<? extends IStaticEntity> entities;
     private EnemyState state = EnemyState.PATROL;
     private int alertTimer = 0;
+    /**
+     * Creates an enemy with awareness of the given players and entities.
+     * The entity list is used to detect edges so the enemy doesn't walk off
+     * platforms.
+     */
     public Enemy(Position position, double width, double height,
             List<? extends IPlayer> players, List<? extends IStaticEntity> entities) {
         this.position = position;
         this.velocityX = PATROL_SPEED;
         this.velocityY = 0;
-        this.weight = 1.0;
+        this.weight = 2.0;
         this.height = height;
         this.width = width;
         this.alive = true;
@@ -41,10 +47,14 @@ public class Enemy implements IEnemy {
         this.entities = entities;
     }
 
+    /**
+     * Creates an enemy aware of players but with no entity list for edge detection.
+     */
     public Enemy(Position position, double width, double height, List<? extends IPlayer> players) {
         this(position, width, height, players, Collections.emptyList());
     }
 
+    /** Creates a standalone enemy with no players or entities to interact with. */
     public Enemy(Position position, double width, double height) {
         this(position, width, height, Collections.emptyList(), Collections.emptyList());
     }
@@ -110,7 +120,7 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < PATROL_SPEED * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -1.4;
+                velocityY = -0.95;
                 jumpCooldown = 45;
             } else {
                 movingRight = !movingRight;
@@ -132,14 +142,14 @@ public class Enemy implements IEnemy {
         boolean blocked = Math.abs(velocityX) < CHASE_SPEED * 0.5;
         if (blocked && wasOnGround) {
             if (jumpCooldown == 0) {
-                velocityY = -1.4;
+                velocityY = -0.95;
                 jumpCooldown = 45;
             } else {
                 movingRight = !movingRight;
             }
         } else if (wasOnGround && !entities.isEmpty() && !hasGroundAhead(CHASE_SPEED)) {
             if (jumpCooldown == 0) {
-                velocityY = -1.4;
+                velocityY = -0.95;
                 jumpCooldown = 45;
             }
         }

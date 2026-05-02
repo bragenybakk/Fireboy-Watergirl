@@ -115,15 +115,19 @@ Kommunikasjonen har gått sømløst uten stor problemer.
   skulle se ut. Vi burde laget et eget `git-fremgangsmate.md`-dokument med
   regler for issue-flyt, branch-navngivning, commit-meldinger og MR-er,
   slik at alle gjorde det samme. Dette ble bedre utover prosjektet, men
-  starten kunne vært mye oversiktlig og effektivt.
+  starten kunne vært mye smidigere.
+- **Konfigurert JaCoCo-eksklusjoner for view/app fra første uke** slik at
+  coverage-tallet hele tiden reflekterte det vi faktisk testet (modellen).
 - **Brukt et grid-system for level-design.** Vi spesifiserer nivåer med rå
   doubles for hver entitet (`WALL 30 55 40 4`), noe som gjør det tungvint å
   plassere der vi vil ha det. Vi må regne ut piksel-koordinater manuelt
-  hver gang. Det var veldig mye manuelt arbeid i level-design prosessen 
+  hver gang. Det var veldig mye manuelt arbeid i level-design prosessen
   hvor man måtte åpne/lukke spillet etter hver lille endring for å sjekke hvordan det ser ut.
   Et tile-/grid-basert system (f.eks. en ASCII-rute der hvert
   tegn er en blokk) ville gjort level-design mye raskere og mer visuelt.
   Hvis vi hadde fortsatt utviklingen er dette første ting vi ville lagt om.
+- **Brukt mer pair programming på vanskelige biter** (kollisjoner,
+  fiende-AI). Når én person sitter alene blir det flaskehalser.
 
 ## Commit-fordeling
 Det er noe skjevhet i commit-fordelingen, og det har to hovedårsaker.

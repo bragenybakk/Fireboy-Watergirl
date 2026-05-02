@@ -99,7 +99,7 @@ public class GameModelTest {
             model.clockTick();
         }
         assertTrue(model.getPlayers().get(0).getPos().y() > initialPosition.y(), "Player should have fallen");
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < 50; i++) {
             model.clockTick();
         }
         double playerBottom = model.getPlayers().get(0).getPos().y() + model.getPlayers().get(0).getHeight();
@@ -133,13 +133,6 @@ public class GameModelTest {
                 "Game state should be GAME_OVER after player meets enemy");
         assertFalse(model.getPlayers().get(0).isAlive(),
                 "Player should not be alive after meeting enemy");
-    }
-
-    @Test
-    void testGetScoreInitiallyZero() {
-        Board board = readGameEasy();
-        GameModel model = new GameModel(board);
-        assertEquals(0, model.getScore());
     }
 
     @Test

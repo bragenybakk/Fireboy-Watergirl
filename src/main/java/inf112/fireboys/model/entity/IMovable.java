@@ -42,4 +42,8 @@ public interface IMovable extends IStaticEntity {
      * @return the weight as a double
      */
     double getWeight();
+
+    /** Called when this object lands on top of a solid surface. */
+    default void setOnGroundTRUE() {
+    }
 }

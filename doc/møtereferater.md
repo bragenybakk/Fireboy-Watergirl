@@ -92,7 +92,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-26-02 — Sjette møte
+## 2026-02-26 — Sjette møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**
@@ -132,7 +132,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-12-03 — Sjuende møte
+## 2026-03-12 — Sjuende møte
 **Til stede:** Petter, Brage, Oscar (3/4)
 
 **Fullført fra forrige møte:**
@@ -156,7 +156,7 @@ Korte referater fra teammøter og møter med gruppeleder.
 
 ---
 
-## 2026-07-04 — Åttende møte
+## 2026-04-07 — Åttende møte
 **Til stede:** Petter, Brage, Oscar, Magnus (4/4)
 
 **Fullført fra forrige møte:**

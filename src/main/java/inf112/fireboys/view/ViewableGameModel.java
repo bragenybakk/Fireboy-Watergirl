@@ -46,8 +46,6 @@ public interface ViewableGameModel {
     /** Returns whether sound effects are currently enabled. */
     boolean isSoundEnabled();
 
-    int getScore();
-
     int getTotalGems();
 
     int getCollectedGems();
