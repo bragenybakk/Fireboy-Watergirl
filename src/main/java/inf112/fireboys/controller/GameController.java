@@ -27,7 +27,8 @@ public class GameController implements KeyListener, MouseListener {
     private boolean p2LeftPressed = false;
     private boolean p2RightPressed = false;
     /**
-     * Creates the controller, wires input listeners to the view, and starts the 60 FPS game loop.
+     * Creates the controller, wires input listeners to the view, and starts the 60
+     * FPS game loop.
      *
      * @param gameModel
      *            the model to update on each tick and input event
@@ -125,7 +126,6 @@ public class GameController implements KeyListener, MouseListener {
                 syncAudioWithModel();
                 break;
             case KeyEvent.VK_ESCAPE:
-                // Go back to main menu from submenu
                 if (gameModel.getGameState() != GameState.MAIN_MENU) {
                     gameModel.setGameState(GameState.MAIN_MENU);
                 }
@@ -158,7 +158,7 @@ public class GameController implements KeyListener, MouseListener {
             case KeyEvent.VK_UP:
                 gameModel.jump(ElementState.WATER);
                 break;
-            // Fireboy: WASD
+            // Fireboy: WAD
             case KeyEvent.VK_A:
                 p2LeftPressed = true;
                 break;
@@ -171,11 +171,8 @@ public class GameController implements KeyListener, MouseListener {
         }
     }
 
-    private void handlePauseInput(int keyCode) {
+    private void handleMenuNavigation(int keyCode) {
         switch (keyCode) {
-            case KeyEvent.VK_ESCAPE:
-                gameModel.setGameState(GameState.PLAYING);
-                break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
                 gameModel.menuUp();
@@ -190,20 +187,21 @@ public class GameController implements KeyListener, MouseListener {
         }
     }
 
-    private void handleGameOverInput(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
-                gameModel.menuUp();
-                break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
-                gameModel.menuDown();
-                break;
-            case KeyEvent.VK_ENTER:
-                gameModel.menuSelect();
-                break;
+    private void handlePauseInput(int keyCode) {
+        if (keyCode == KeyEvent.VK_ESCAPE) {
+            gameModel.setGameState(GameState.PLAYING);
+            return;
         }
+        handleMenuNavigation(keyCode);
+    }
+
+    private void handleGameOverInput(int keyCode) {
+        handleMenuNavigation(keyCode);
+    }
+
+    private void stopIfNoKeyHeld(boolean left, boolean right, ElementState element) {
+        if (!left && !right)
+            gameModel.stop(element);
     }
 
     @Override
@@ -214,23 +212,19 @@ public class GameController implements KeyListener, MouseListener {
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     leftPressed = false;
-                    if (!leftPressed && !rightPressed)
-                        gameModel.stop(ElementState.WATER);
+                    stopIfNoKeyHeld(leftPressed, rightPressed, ElementState.WATER);
                     break;
                 case KeyEvent.VK_RIGHT:
                     rightPressed = false;
-                    if (!leftPressed && !rightPressed)
-                        gameModel.stop(ElementState.WATER);
+                    stopIfNoKeyHeld(leftPressed, rightPressed, ElementState.WATER);
                     break;
                 case KeyEvent.VK_A:
                     p2LeftPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stop(ElementState.FIRE);
+                    stopIfNoKeyHeld(p2LeftPressed, p2RightPressed, ElementState.FIRE);
                     break;
                 case KeyEvent.VK_D:
                     p2RightPressed = false;
-                    if (!p2LeftPressed && !p2RightPressed)
-                        gameModel.stop(ElementState.FIRE);
+                    stopIfNoKeyHeld(p2LeftPressed, p2RightPressed, ElementState.FIRE);
                     break;
             }
         }
